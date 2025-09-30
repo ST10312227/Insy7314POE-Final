@@ -1,0 +1,22 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-*.log
+
+# Env files (never commit real secrets)
+.env
+.env.local
+**/.env
+
+# Certificates / keys
+**/certs/*.key
+**/certs/*.crt
+**/keys/*
+*.pem
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+
+# Vite
+frontend/dist/
