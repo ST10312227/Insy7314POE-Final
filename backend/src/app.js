@@ -28,11 +28,29 @@ app.get('/health', (_req, res) => {
   res.json({ ok: true, env: process.env.NODE_ENV || 'development' });
 });
 
+const pino = require('pino');
+const pinoHttp = require('pino-http');
+
+const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
+app.use(pinoHttp({ logger, redact: ['req.headers.authorization', 'req.headers.cookie'] }));
+
+// simple start/end logs per request
+app.use((req, res, next) => {
+  req.log.info({ method: req.method, path: req.path }, 'request_start');
+  res.on('finish', () => req.log.info({ status: res.statusCode }, 'request_end'));
+  next();
+});
+
 const authRoutes = require('./routes/auth.routes');  
 app.use('/auth', authRoutes);
 
 const paymentsRoutes = require('./routes/payments.routes');
 app.use('/payments', paymentsRoutes);
+
+// --- Accounts routes ---
+const accountsRoutes = require('./routes/accounts.routes');
+app.use('/accounts', accountsRoutes);
+
 
 
 const { getDb } = require('./db/mongo');

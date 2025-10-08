@@ -1,0 +1,52 @@
+// backend/src/dev/seed_login_user.js
+const bcrypt = require('bcryptjs');
+const { initMongo, getDb } = require('../db/mongo');
+
+async function run() {
+  await initMongo();
+  const db = getDb();
+
+  const users = db.collection('users');
+  const accounts = db.collection('accounts');
+
+  const demo = {
+    name: 'Demo User',
+    email: 'demo@vault.app',
+    idNumber: '9001015008087',
+    role: 'user',
+    // password = Pass@123
+    passwordHash: await bcrypt.hash('Pass@123', 10),
+    createdAt: new Date(),
+  };
+
+  let user = await users.findOne({ email: demo.email });
+  if (!user) {
+    const ins = await users.insertOne(demo);
+    user = { _id: ins.insertedId, ...demo };
+    console.log('✓ User created:', demo.email);
+  } else {
+    console.log('↺ User already exists:', demo.email);
+  }
+
+  const accNumber = '1002003001';
+  const existingAcc = await accounts.findOne({ number: accNumber });
+  if (!existingAcc) {
+    await accounts.insertOne({
+      userId: user._id.toString(),
+      number: accNumber,
+      type: 'CHEQUE',
+      currency: 'ZAR',
+      balanceCents: 250000, // R2500.00
+      status: 'ACTIVE',
+      createdAt: new Date(),
+    });
+    console.log('✓ Account created:', accNumber);
+  } else {
+    console.log('↺ Account already exists:', accNumber);
+  }
+
+  console.log('\nSeed complete.\nLogin test creds:\n- Account Number: 1002003001\n- ID Number: 9001015008087\n- Password: Pass@123\n');
+  process.exit(0);
+}
+
+run().catch((e) => { console.error(e); process.exit(1); });
