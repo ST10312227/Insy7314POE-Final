@@ -1,0 +1,19 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  text-align: center;
+  padding: 6rem 2rem 2rem; /* extra padding-top to clear navbar */
+  box-sizing: border-box;
+}
+
+
+.hero-logo {
+  max-width: 1200px;   /* adjust size */
+  width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
