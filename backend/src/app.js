@@ -116,6 +116,10 @@ app.use('/accounts', accountsRoutes);
 const dashboardRoutes = require('./routes/dashboard.routes');
 app.use('/dashboard', dashboardRoutes);
 
+const transfersRoutes = require('./routes/transfers.routes');
+app.use('/payments/transfers', transfersRoutes);
+
+
 // ---------------- DB ping ----------------
 const { getDb } = require('./db/mongo');
 app.get('/db/ping', async (_req, res) => {
