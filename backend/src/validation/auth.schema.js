@@ -12,7 +12,40 @@ const accountNumberSchema = trimmedString(6, 32, 'accountNumber too short').rege
 // South African ID numbers are 13 digits (YYMMDDSSSSCAZ). Only validate length & digits here.
 const saIdNumberSchema = z.string().trim().regex(/^\d{13}$/, 'idNumber must be 13 digits');
 
-const passwordSchema = trimmedString(6, 128, 'password too short');
+// Strong password policy
+const passwordSchema = z.string()
+  .min(10, 'password must be ≥ 10 characters')
+  .max(128)
+  .regex(/[A-Z]/, 'password must include an uppercase letter')
+  .regex(/[a-z]/, 'password must include a lowercase letter')
+  .regex(/\d/, 'password must include a number')
+  .regex(/[^A-Za-z0-9]/, 'password must include a symbol');
+
+/**
+ * Human name whitelist:
+ * - Starts with a letter
+ * - Letters (incl. accents), combining marks, apostrophes, spaces, hyphens
+ * - 2–120 chars total (length enforced by trimmedString wrapper in schemas)
+ * NOTE: requires Unicode regex flag (Node 12+; you’re on Node 22 so it’s fine)
+ */
+const HUMAN_NAME_RE = /^[\p{L}][\p{L}\p{M}' -]*$/u;
+const humanName = z.string()
+  .trim()
+  .min(2, 'fullName too short')
+  .max(120, 'fullName too long')
+  .regex(HUMAN_NAME_RE, "fullName can only contain letters, spaces, apostrophes, and hyphens");
+
+/**
+ * Safe free-text (for later use on descriptions/notes)
+ * - Allows letters, numbers, spaces, and a small set of punctuation commonly needed
+ * - 1–200 chars by default (can be overridden)
+ */
+const makeSafeText = (min = 1, max = 200, label = 'text') =>
+  z.string()
+    .trim()
+    .min(min, `${label} too short`)
+    .max(max, `${label} too long`)
+    .regex(/^[A-Za-z0-9 .,'()\-&/]+$/, `${label} contains invalid characters`);
 
 // Accept either v3 token (`recaptchaToken`) or v2 checkbox (`g-recaptcha-response`)
 const recaptchaEnvelope = z
@@ -45,12 +78,12 @@ const loginSchema = z
 // Full registration used by the "Create Account" form
 const registerFullSchema = z
   .object({
-    fullName: trimmedString(2, 120, 'fullName too short'),
+    fullName: humanName, // <— tightened whitelist for names
     idNumber: saIdNumberSchema,
     accountNumber: accountNumberSchema,
     email: z.string().trim().email('invalid email'),
     password: passwordSchema,
-    confirmPassword: trimmedString(6, 128, 'confirmPassword too short'),
+    confirmPassword: trimmedString(10, 128, 'confirmPassword too short'),
   })
   .and(recaptchaEnvelope)
   .superRefine((data, ctx) => {
@@ -73,4 +106,9 @@ module.exports = {
   loginSchema,
   registerFullSchema,
   refreshSchema,
+
+  // Export helpers for upcoming routes (e.g., transactions)
+  HUMAN_NAME_RE,
+  humanName,
+  makeSafeText,
 };
