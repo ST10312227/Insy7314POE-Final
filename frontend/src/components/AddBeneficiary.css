@@ -1,0 +1,62 @@
+.add-beneficiary-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  position: relative;
+  background: #f8f9fc;
+}
+
+.form-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 60px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 450px;
+  text-align: center;
+  position: relative;
+}
+
+.icon-circle {
+  position: absolute;
+  top: 110px;
+  background-color: #112d6b;
+  color: white;
+  font-size: 1.5rem;
+  padding: 20px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-card h2 {
+  margin-bottom: 30px;
+  color: #112d6b;
+}
+
+form input,
+form select {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+form button {
+  background-color: #112d6b;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+form button:hover {
+  background-color: #0a1e4e;
+}

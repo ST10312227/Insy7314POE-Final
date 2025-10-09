@@ -1,0 +1,27 @@
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 15px 40px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-links span {
+  margin-right: 30px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+}
+
+.nav-links .active {
+  color: #112d6b;
+  font-weight: 700;
+  border-bottom: 3px solid #112d6b;
+  padding-bottom: 5px;
+}
+
+.user {
+  font-weight: 600;
+  color: #112d6b;
+}

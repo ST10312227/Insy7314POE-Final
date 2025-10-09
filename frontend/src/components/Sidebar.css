@@ -1,0 +1,25 @@
+.sidebar {
+  width: 220px;
+  background-color: #112d6b;
+  color: white;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 1.5rem;
+  margin-bottom: 40px;
+}
+
+.menu p {
+  margin: 15px 0;
+  cursor: pointer;
+}
+
+.bottom-links {
+  margin-top: 40px;
+  font-size: 0.9rem;
+}
