@@ -2,31 +2,29 @@ import "./AddBeneficiary.css";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaPhone } from "react-icons/fa";
 import { useState } from "react";
-import { useBeneficiaries } from "../context/BeneficiaryContext";
+import { useBeneficiaries } from "../context/BeneficiaryContext"; // ✅ import context
 
 function AddBeneficiary() {
   const navigate = useNavigate();
-  const { addBeneficiary } = useBeneficiaries();
-  const [form, setForm] = useState({ name: "", number: "", network: "" });
-  const [error, setError] = useState("");
+  const { addBeneficiary } = useBeneficiaries(); // ✅ use context
+  const [form, setForm] = useState({
+    name: "",
+    number: "",
+    network: "",
+  });
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
-
-    try {
-      await addBeneficiary(form);              // ← save to backend
-      navigate("/app/buy-airtime");            // ← back to list
-    } catch (err) {
-      setError(err.message || "Could not save beneficiary.");
-    }
+    addBeneficiary(form); // ✅ add to shared list
+    navigate("/beneficiary-confirmation"); // ✅ go back to list
   };
 
   return (
     <div className="add-beneficiary-page">
-      <button className="back-icon" onClick={() => navigate("/app/buy-airtime")}>
+      <button className="back-icon" onClick={() => navigate("/buy-airtime")}>
         <FaArrowLeft />
       </button>
 
@@ -37,20 +35,12 @@ function AddBeneficiary() {
 
         <h2 className="card-title">Add Beneficiary</h2>
 
-        {error && (
-          <div style={{
-            background: "#ffeaea", color: "#b10000", borderRadius: 10,
-            padding: "10px 12px", marginBottom: 12, fontSize: 14
-          }}>
-            {error}
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="beneficiary-form">
           <label>Beneficiary Name</label>
           <input
             type="text"
             name="name"
+            placeholder=""
             value={form.name}
             onChange={handleChange}
             required
@@ -60,14 +50,19 @@ function AddBeneficiary() {
           <input
             type="tel"
             name="number"
+            placeholder=""
             value={form.number}
             onChange={handleChange}
             required
-            inputMode="numeric"
           />
 
           <label>Choose Network</label>
-          <select name="network" value={form.network} onChange={handleChange} required>
+          <select
+            name="network"
+            value={form.network}
+            onChange={handleChange}
+            required
+          >
             <option value="">Choose Network</option>
             <option value="Cell C">Cell C</option>
             <option value="MTN">MTN</option>
@@ -75,7 +70,9 @@ function AddBeneficiary() {
             <option value="Vodacom">Vodacom</option>
           </select>
 
-          <button type="submit" className="add-btn">Add</button>
+          <button type="submit" className="add-btn">
+            Add
+          </button>
         </form>
       </div>
     </div>

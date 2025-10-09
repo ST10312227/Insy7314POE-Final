@@ -1,0 +1,57 @@
+/* === Beneficiary Confirmation === */
+.confirmation-page {
+  background-color: #f3f5ff;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 80px;
+  font-family: "Poppins", sans-serif;
+}
+
+.confirmation-card {
+  background-color: #fff;
+  border: 3px solid #1c2a8a;
+  border-radius: 20px;
+  padding: 50px;
+  width: 500px;
+  text-align: center;
+  color: #12255c;
+  box-shadow: 0 10px 25px rgba(28, 42, 138, 0.1);
+}
+
+.icon-circle.success {
+  background-color: #28a745;
+  color: white;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  font-size: 30px;
+}
+
+.card-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 30px;
+}
+
+.divider {
+  border: none;
+  border-top: 1.5px solid #e6e6e6;
+  margin: 20px 0;
+}
+
+.add-btn {
+  width: 100%;
+  background-color: #1c2a8a;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}

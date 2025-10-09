@@ -1,42 +1,39 @@
 import { useNavigate } from "react-router-dom";
-import "./BuyAirtime.css";
-import { FaArrowLeft, FaPlus, FaSearch, FaPhone } from "react-icons/fa";
+import { FaArrowLeft, FaPlus, FaSearch, FaUserFriends } from "react-icons/fa";
 import { useState } from "react";
-import { useBeneficiaries } from "../context/BeneficiaryContext";
+import { useBeneficiaries } from "../context/BeneficiaryContext"; // ✅ reuse same context
+import { useLocalTransfers } from "../context/LocalTransferContext";
+import "./LocalTransferBeneficiaries.css";
 
-function BuyAirtime() {
+function LocalTransferBeneficiaries() {
   const navigate = useNavigate();
-
-  // Prevents crash if context is not ready
-  const context = useBeneficiaries();
-  const beneficiaries = context?.beneficiaries ?? [];
-
-
+  const { beneficiaries } = useBeneficiaries();
+  const { transfers } = useLocalTransfers();
+  
   const [search, setSearch] = useState("");
 
   const filtered = beneficiaries.filter((b) =>
-    b.name?.toLowerCase().includes(search.toLowerCase())
+    b.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <div className="buy-airtime-page">
-      <button className="back-icon" onClick={() => navigate("/bill-payments")}>
+    <div className="local-transfer-page">
+      <button className="back-icon" onClick={() => navigate("/funds-transfer")}>
         <FaArrowLeft />
       </button>
 
-      <div className="buy-airtime-card fade-in">
+      <div className="local-transfer-card fade-in">
         <div className="icon-circle">
-          <FaPhone />
+          <FaUserFriends />
         </div>
 
-        <h2 className="card-title">Purchase Airtime</h2>
+        <h2 className="card-title">Local Transfer</h2>
         <hr className="divider" />
 
-        {/* ✅ Add Beneficiary above search bar */}
-        <div className="airtime-controls">
+        <div className="transfer-controls">
           <button
             className="add-beneficiary-btn"
-            onClick={() => navigate("/add-beneficiary")}
+            onClick={() => navigate("/local-transfer/add")}
           >
             <FaPlus /> Add Beneficiary
           </button>
@@ -53,13 +50,13 @@ function BuyAirtime() {
         </div>
 
         <div className="beneficiary-list">
-          <h4>All</h4>
+          <h4>Saved Beneficiaries</h4>
           {filtered.length > 0 ? (
             filtered.map((b, i) => (
               <div
                 className="beneficiary-item"
                 key={i}
-                onClick={() => navigate(`/beneficiary-details/${i}`)}
+                onClick={() => navigate(`/local-transfer/add?id=${i}`)}
               >
                 <span>{b.name}</span>
                 <span className="arrow">›</span>
@@ -74,4 +71,4 @@ function BuyAirtime() {
   );
 }
 
-export default BuyAirtime;
+export default LocalTransferBeneficiaries;
