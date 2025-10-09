@@ -13,9 +13,12 @@ router.get('/_ping', checkAuth, (_req, res) => res.json({ ok: true, scope: 'bene
 // List INTERNATIONAL beneficiaries
 router.get('/international', checkAuth, async (req, res) => {
   const col = await beneficiariesCol();
-  const rows = await col.find({ userId: new ObjectId(req.user.id), kind: 'INTERNATIONAL', archived: { $ne: true } })
-    .sort({ createdAt: -1 })
-    .toArray();
+  const rows = await col.find({
+    userId: new ObjectId(req.user.id),
+    kind: 'INTERNATIONAL',
+    archived: { $ne: true }
+  }).sort({ createdAt: -1 }).toArray();
+
   const out = rows.map(({ _id, ...rest }) => ({ id: _id.toString(), ...rest }));
   res.json(out);
 });
@@ -28,6 +31,8 @@ router.post('/international', checkAuth, validate(InternationalBeneficiarySchema
   const userId = new ObjectId(req.user.id);
 
   const dedupeKey = buildDedupeKey(doc);
+  await col.createIndex({ userId: 1, dedupeKey: 1 }, { unique: true });
+
   const insert = {
     userId,
     kind: 'INTERNATIONAL',
@@ -48,12 +53,15 @@ router.post('/international', checkAuth, validate(InternationalBeneficiarySchema
   }
 });
 
-// Soft delete
+// Soft delete (any kind)
 router.delete('/:id', checkAuth, async (req, res) => {
   const col = await beneficiariesCol();
   const { id } = req.params;
   const userId = new ObjectId(req.user.id);
-  const upd = await col.updateOne({ _id: new ObjectId(id), userId }, { $set: { archived: true, updatedAt: new Date() } });
+  const upd = await col.updateOne(
+    { _id: new ObjectId(id), userId },
+    { $set: { archived: true, updatedAt: new Date() } }
+  );
   if (upd.matchedCount === 0) return res.status(404).json({ error: 'not_found' });
   res.json({ ok: true });
 });
