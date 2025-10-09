@@ -2,29 +2,25 @@ import "./AddBeneficiary.css";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaPhone } from "react-icons/fa";
 import { useState } from "react";
-import { useBeneficiaries } from "../context/BeneficiaryContext"; // ✅ import context
+import { useBeneficiaries } from "../context/BeneficiaryContext";
 
 function AddBeneficiary() {
   const navigate = useNavigate();
-  const { addBeneficiary } = useBeneficiaries(); // ✅ use context
-  const [form, setForm] = useState({
-    name: "",
-    number: "",
-    network: "",
-  });
+  const { addBeneficiary } = useBeneficiaries();
+  const [form, setForm] = useState({ name: "", number: "", network: "" });
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addBeneficiary(form); // ✅ add to shared list
-    navigate("/beneficiary-confirmation"); // ✅ go back to list
+    await addBeneficiary(form);     // if async; okay if sync as well
+    navigate("/app/buy-airtime");   // ✅ stay inside /app shell
   };
 
   return (
     <div className="add-beneficiary-page">
-      <button className="back-icon" onClick={() => navigate("/buy-airtime")}>
+      <button className="back-icon" onClick={() => navigate("/app/buy-airtime")}>
         <FaArrowLeft />
       </button>
 
@@ -40,7 +36,6 @@ function AddBeneficiary() {
           <input
             type="text"
             name="name"
-            placeholder=""
             value={form.name}
             onChange={handleChange}
             required
@@ -50,10 +45,10 @@ function AddBeneficiary() {
           <input
             type="tel"
             name="number"
-            placeholder=""
             value={form.number}
             onChange={handleChange}
             required
+            inputMode="numeric"
           />
 
           <label>Choose Network</label>
@@ -70,9 +65,7 @@ function AddBeneficiary() {
             <option value="Vodacom">Vodacom</option>
           </select>
 
-          <button type="submit" className="add-btn">
-            Add
-          </button>
+          <button type="submit" className="add-btn">Add</button>
         </form>
       </div>
     </div>

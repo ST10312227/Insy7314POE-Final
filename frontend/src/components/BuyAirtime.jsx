@@ -7,20 +7,18 @@ import { useBeneficiaries } from "../context/BeneficiaryContext";
 function BuyAirtime() {
   const navigate = useNavigate();
 
-  // Prevents crash if context is not ready
-  const context = useBeneficiaries();
-  const beneficiaries = context?.beneficiaries ?? [];
-
+  // Safe access to context
+  const { beneficiaries = [] } = useBeneficiaries() ?? {};
 
   const [search, setSearch] = useState("");
-
   const filtered = beneficiaries.filter((b) =>
-    b.name?.toLowerCase().includes(search.toLowerCase())
+    (b.name || "").toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <div className="buy-airtime-page">
-      <button className="back-icon" onClick={() => navigate("/bill-payments")}>
+      {/* go back inside the /app shell */}
+      <button className="back-icon" onClick={() => navigate("/app/bill-payments")}>
         <FaArrowLeft />
       </button>
 
@@ -32,11 +30,11 @@ function BuyAirtime() {
         <h2 className="card-title">Purchase Airtime</h2>
         <hr className="divider" />
 
-        {/* ✅ Add Beneficiary above search bar */}
         <div className="airtime-controls">
+          {/* open the add form under /app */}
           <button
             className="add-beneficiary-btn"
-            onClick={() => navigate("/add-beneficiary")}
+            onClick={() => navigate("/app/add-beneficiary")}
           >
             <FaPlus /> Add Beneficiary
           </button>
@@ -59,7 +57,7 @@ function BuyAirtime() {
               <div
                 className="beneficiary-item"
                 key={i}
-                onClick={() => navigate(`/beneficiary-details/${i}`)}
+                onClick={() => navigate(`/app/beneficiary-details/${i}`)}
               >
                 <span>{b.name}</span>
                 <span className="arrow">›</span>
