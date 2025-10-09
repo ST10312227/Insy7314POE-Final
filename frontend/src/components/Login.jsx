@@ -100,6 +100,7 @@ export default function Login() {
       }
 
       if (data?.token) localStorage.setItem("token", data.token);
+      if (data?.user?.name) localStorage.setItem("userName", data.user.name);
       navigate("/app/dashboard");
     } catch (err) {
       console.error("Login error:", err);
