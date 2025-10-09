@@ -23,3 +23,29 @@
   margin-top: 40px;
   font-size: 0.9rem;
 }
+
+.sidebar-menu li a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+}
+
+/* remove link colors */
+.sidebar-menu li a:link,
+.sidebar-menu li a:visited {
+  color: inherit;
+}
+
+/* Active (selected) link effect */
+.sidebar-menu li a.active .sidebar-label {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+  color: #ffffff;
+}
+
+/* hover color consistency */
+.sidebar-menu li a:hover .sidebar-label {
+  color: rgba(255, 255, 255, 0.85);
+}

@@ -1,0 +1,165 @@
+.buy-airtime-container,
+.add-beneficiary-container,
+.beneficiary-details-container {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 40px 60px;
+  font-family: "Poppins", sans-serif;
+  height: 100%;
+  color: #12255c;
+}
+
+/* Header and icon */
+.airtime-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #12255c;
+}
+
+.airtime-icon {
+  background-color: #1c2a8a;
+  color: #fff;
+  border-radius: 50%;
+  padding: 15px;
+  font-size: 20px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+/* Title */
+.airtime-title {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.airtime-title span {
+  color: #1c2a8a;
+}
+
+/* Add Beneficiary Row */
+.add-beneficiary-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.add-beneficiary-btn {
+  border: none;
+  background: none;
+  color: #12255c;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Search box */
+.search-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 20px 0;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+}
+
+.search-icon {
+  color: #1c2a8a;
+}
+
+/* Beneficiary list */
+.beneficiary-list h4 {
+  margin-bottom: 10px;
+}
+
+.beneficiary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.beneficiary-item:hover {
+  color: #1c2a8a;
+}
+
+/* Form + Buttons */
+.beneficiary-form label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  margin-top: 10px;
+}
+
+.beneficiary-form input,
+.beneficiary-form select,
+.dropdown,
+.input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  outline: none;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.submit-btn,
+.buy-btn {
+  width: 100%;
+  background-color: #1c2a8a;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.submit-btn:hover,
+.buy-btn:hover {
+  background-color: #12255c;
+}
+
+/* Account card (for BeneficiaryDetails) */
+.account-card {
+  background-color: #1c2a8a;
+  color: #fff;
+  border-radius: 10px;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 25px 0;
+}
+
+.beneficiary-subtext {
+  color: #12255c;        /* dark navy like rest of the app */
+  font-size: 14px;
+  margin: 4px 0;
+}
+
+.beneficiary-info p {
+  color: #12255c;        /* ensure visibility */
+  font-size: 15px;
+  margin: 8px 0;
+}
