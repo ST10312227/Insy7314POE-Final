@@ -122,9 +122,6 @@ app.use('/payments/transfers', transfersRoutes);
 const beneficiariesRoutes = require('./routes/beneficiaries.routes');
 app.use('/payments/beneficiaries', beneficiariesRoutes);
 
-const transfersRoutes = require('./routes/transfers.routes');
-app.use('/payments/transfers', transfersRoutes);
-
 
 
 // ---------------- DB ping ----------------

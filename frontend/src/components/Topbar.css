@@ -1,60 +1,27 @@
 .topbar {
-  background-color: transparent;
-  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 78%;                /* ✅ Match white box width */
-  margin-left: 10rem;        /* ✅ Align with .dashboard-content margin */
-  margin-top: 2rem;          /* Small drop to center visually */
-  font-family: "Poppins", sans-serif;
-  position: relative;
-  z-index: 10;
+  background-color: white;
+  padding: 15px 40px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Center links horizontally */
-.topbar-left {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  margin-top: 8rem;    
-  gap: 18rem;                /* Slightly smaller gap for tighter grouping */
-  margin-top: 20px;          /* Bring back up slightly */
-}
-
-/* Topbar Links (Dashboard / Bill Payments / Account Details) */
-.topbar-link {
-  color: rgba(255, 255, 255, 0.5); /* faded white by default */
-  font-weight: 600;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-size: 1.3rem;
-  transition: all 0.3s ease;
-}
-
-.topbar-link:hover {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-/* Active page styling */
-.topbar-link.active {
-  color: #ffffff;
-  font-weight: 700;
-}
-
-/* Right side (user greeting) */
-.topbar-right {
-  text-align: right;
-  min-width: 180px; /* keeps consistent spacing on wide screens */
-  margin-right: -8rem;
-}
-
-.topbar-user {
-  font-size: 1.2rem;
+.nav-links span {
+  margin-right: 30px;
   font-weight: 500;
-  color: white;
-  opacity: 0.85;
-  letter-spacing: 0.3px;
+  color: #555;
+  cursor: pointer;
+}
+
+.nav-links .active {
+  color: #112d6b;
+  font-weight: 700;
+  border-bottom: 3px solid #112d6b;
+  padding-bottom: 5px;
+}
+
+.user {
+  font-weight: 600;
+  color: #112d6b;
 }

@@ -3,11 +3,11 @@ const router = require('express').Router();
 const { ObjectId } = require('mongodb');
 
 const validate = require('../middlewares/validate');
-const checkAuth = require('../middlewares/authRequired'); // you already have this
+const checkAuth = require('../middlewares/authRequired');
 const { paymentSchema } = require('../schemas/payment.schema');
 const { paymentsCol } = require('../models/payments');
 
-// small probe if you want to test wiring
+// Health
 router.get('/_ping', checkAuth, (_req, res) => res.json({ ok: true, scope: 'payments' }));
 
 // Create a payment
@@ -17,15 +17,18 @@ router.post('/', checkAuth, validate(paymentSchema), async (req, res) => {
 
   const doc = {
     userId: new ObjectId(req.user.id),
-    beneficiary,
-    iban: iban.toUpperCase(),
-    amount: Number(amount),
-    reference,
+    beneficiary: beneficiary.trim(),
+    iban: iban.replace(/\s+/g, '').toUpperCase(),
+    amount,
+    currency: 'ZAR',
+    reference: reference.trim(),
+    status: 'PENDING_STAFF_REVIEW',
     createdAt: new Date(),
+    updatedAt: new Date(),
   };
 
-  const result = await col.insertOne(doc);
-  return res.status(201).json({ id: result.insertedId.toString() });
+  const ins = await col.insertOne(doc);
+  res.status(201).json({ id: ins.insertedId.toString(), ...doc });
 });
 
 // List my payments (newest first)
@@ -36,7 +39,6 @@ router.get('/', checkAuth, async (req, res) => {
     .sort({ createdAt: -1 })
     .toArray();
 
-  // map _id -> id
   const out = rows.map(({ _id, ...rest }) => ({ id: _id.toString(), ...rest }));
   res.json(out);
 });

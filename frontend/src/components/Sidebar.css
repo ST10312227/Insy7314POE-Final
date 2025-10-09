@@ -1,164 +1,27 @@
-/* === Sidebar Layout === */
 .sidebar {
-  width: 185px;
-  background-color: #1d2f7c;
+  width: 220px;
+  background-color: #112d6b;
+  color: white;
+  padding: 30px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;              /* ✅ center all items horizontally */
-  border-right: none;
-  box-shadow: none;
-  outline: none;
-  padding: 2rem 0;                  /* ✅ remove side padding so true center */
-  height: 100vh;
-  overflow: hidden;
 }
 
-/* === Logo Section === */
-.sidebar-logo {
-  width: 115px;                      /* ✅ smaller logo */
-  height: auto;
-  object-fit: contain;
-  margin-top: 1rem;
-  margin-left: 5rem;
-  margin-bottom: 0.2rem;
-  display: block;
-  align-self: center;               /* ✅ centers it explicitly */
+.logo {
+  font-weight: 800;
+  font-size: 1.5rem;
+  margin-bottom: 40px;
 }
 
-.sidebar-menu {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;              /* ✅ keep everything centered */
-  justify-content: center;
-  gap: 5rem;                        /* a bit tighter vertical spacing */
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.sidebar-bottom {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;              /* ✅ keep everything centered */
-  justify-content: center;
-  gap: 2rem;                        /* a bit tighter vertical spacing */
-  width: 100%;
-  margin-left: 10rem;
-  margin-block-start: 5rem;
-  padding: 0;
-}
-
-/* === Icons === */
-.sidebar-icon{
-  width: 30px;                      /* ✅ slightly smaller for balance */
-  height: 30px;
-  object-fit: contain;
-  display: block;
-  margin-left: 5rem;
-  margin-bottom: 0.3rem;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.sidebar-bottom-icon {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
-  margin: 0;           /* ✅ remove old margins */
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.sidebar-icon:hover,
-.sidebar-bottom-icon:hover {
-  transform: scale(1.1);
-  opacity: 1;
-}
-
-/* === Sidebar Menu Items (Top Section) === */
-.sidebar-menu li {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 50px;
-  border-radius: 16px;
-}
-
-/* === Sidebar Bottom Items (Notifications, Logout, Help) === */
-.sidebar-bottom div {
-  display: flex;
-  flex-direction: row;  /* ✅ icon next to text */
-  align-items: center;  /* vertically centered */
-  gap: 0.6rem;          /* space between icon & label */
-  cursor: pointer;
-  width: auto;          /* remove fixed width constraint */
-}
-
-.sidebar-menu li.active,
-.sidebar-bottom div.active {
-  align-content: center;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-  transform: scale(1.03);
-}
-
-.sidebar-label {
-  font-size: 14px;
-  text-align: center;
-  color: white;
-  margin-left: 5rem;
-  margin-top: 0.7rem;
-  font-family: "Poppins", sans-serif;
-  text-transform: uppercase;
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-.sidebar-bottom-label {
-  font-size: 11px;
-  text-align: left;
-  color: white;
-  font-family: "Poppins", sans-serif;
-  text-transform: uppercase;
-  font-weight: 600;
-  line-height: 1.2;
-  margin: 0;
-}
-
-/* === Bottom Section === */
-.sidebar-bottom {
-  display: flex;
-  flex-direction: column; /* still stacked overall (Notifications / Logout / Help) */
-  align-items: flex-start; /* aligns content to left side neatly */
-  gap: 1rem;
-  margin-left: 3rem; /* moves items inward for spacing */
-  margin-bottom: 1.5rem;
-}
-
-.sidebar-bottom div {
-  display: flex;
-  align-items: center; /* ✅ icon next to label */
-  gap: 0.6rem;   
-  margin-left: 3rem;      /* spacing between icon and text */
+.menu p {
+  margin: 15px 0;
   cursor: pointer;
 }
 
-.sidebar-menu li.active .sidebar-label,
-.sidebar-bottom div.active .sidebar-bottom-label {
-  text-decoration: underline;
-  text-underline-offset: 4px; /* gives nice spacing below the text */
-  text-decoration-thickness: 2px; /* makes the line more visible */
-  color: #ffffff; /* keeps text bright white when active */
-}
-
-/* ✅ Optional: lighten color on hover */
-.sidebar-menu li:hover .sidebar-label,
-.sidebar-bottom div:hover .sidebar-bottom-label {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.sidebar-bottom div:hover .sidebar-bottom-label {
-  color: rgba(255, 255, 255, 0.85);
+.bottom-links {
+  margin-top: 40px;
+  font-size: 0.9rem;
 }
 
 .sidebar-menu li a {

@@ -1,0 +1,101 @@
+.airtime-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  position: relative;
+  background: #f8f9fc;
+}
+
+.icon-circle {
+  position: absolute;
+  top: 110px;
+  background-color: #112d6b;
+  color: white;
+  font-size: 1.5rem;
+  padding: 20px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.airtime-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 60px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 500px;
+  text-align: left;
+  position: relative;
+}
+
+.airtime-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.airtime-header h2 {
+  color: #112d6b;
+  font-size: 1.4rem;
+}
+
+.add-beneficiary-btn {
+  background: none;
+  border: none;
+  color: #112d6b;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.add-beneficiary-btn:hover {
+  text-decoration: underline;
+}
+
+.search-box {
+  margin-top: 25px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.beneficiary-list {
+  margin-top: 20px;
+}
+
+.beneficiary-category {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.beneficiary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fafafa;
+  border-radius: 10px;
+
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.beneficiary-item:hover {
+  background-color: #f0f4ff;
+  border-color: #112d6b;
+}
+
+.arrow {
+  font-size: 1.2rem;
+  color: #112d6b;
+}

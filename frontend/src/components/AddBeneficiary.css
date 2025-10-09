@@ -1,105 +1,62 @@
-/* === Add Beneficiary Page === */
-.add-beneficiary-page {
-  position: relative;
-  height: 100%;
-  background-color: #fff;
-  border-radius: 20px;
-  padding: 40px;
-  font-family: "Poppins", sans-serif;
+.add-beneficiary-container {
   display: flex;
-  align-items: center;
   justify-content: center;
-}
-
-/* Back arrow (top left corner) */
-.back-icon {
-  position: absolute;
-  top: 40px;
-  left: 40px;
-  background: none;
-  border: none;
-  color: #12255c;
-  font-size: 22px;
-  cursor: pointer;
-}
-
-/* Main card */
-.add-beneficiary-card {
+  align-items: center;
+  flex-grow: 1;
   position: relative;
-  background-color: #ffffff;
-  border: 3px solid #1c2a8a;
-  border-radius: 25px;
-  padding: 60px 80px;
-  width: 550px;
-  text-align: center;
-  box-shadow: none;
+  background: #f8f9fc;
 }
 
-/* Phone icon above card */
+.form-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 60px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 450px;
+  text-align: center;
+  position: relative;
+}
+
 .icon-circle {
   position: absolute;
-  top: -35px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #1c2a8a;
+  top: 110px;
+  background-color: #112d6b;
   color: white;
+  font-size: 1.5rem;
+  padding: 20px;
   border-radius: 50%;
-  width: 70px;
-  height: 70px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 28px;
 }
 
-/* Card Title */
-.card-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #12255c;
-  margin-top: 30px;
-  margin-bottom: 25px;
+.form-card h2 {
+  margin-bottom: 30px;
+  color: #112d6b;
 }
 
-/* Form Fields */
-.beneficiary-form {
-  text-align: left;
-  margin-top: 15px;
-}
-
-.beneficiary-form label {
-  font-weight: 600;
-  display: block;
-  color: #12255c;
-  margin-bottom: 6px;
-  margin-top: 15px;
-}
-
-.beneficiary-form input,
-.beneficiary-form select {
+form input,
+form select {
   width: 100%;
-  border: 1.8px solid #ccc;
-  border-radius: 8px;
   padding: 12px;
-  outline: none;
-  font-size: 14px;
-  transition: 0.2s ease;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
 }
 
-.beneficiary-form input:focus,
-.beneficiary-form select:focus {
-  border-color: #1c2a8a;
-}
-
-/* Add button */
-.add-btn {
-  width: 100%;
-  background-color: #1c2a8a;
-  color: #fff;
+form button {
+  background-color: #112d6b;
+  color: white;
   border: none;
-  padding: 14px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 15px;
-  cursor: p
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+form button:hover {
+  background-color: #0a1e4e;
 }
