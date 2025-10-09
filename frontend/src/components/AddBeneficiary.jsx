@@ -19,7 +19,7 @@ function AddBeneficiary() {
   const handleSubmit = (e) => {
     e.preventDefault();
     addBeneficiary(form); // ✅ add to shared list
-    navigate("/buy-airtime"); // ✅ go back to list
+    navigate("/beneficiary-confirmation"); // ✅ go back to list
   };
 
   return (

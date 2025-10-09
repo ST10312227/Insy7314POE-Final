@@ -7,43 +7,89 @@ import bellIcon from "../assets/notification.png";
 import logoutIcon from "../assets/logout.png";
 import helpIcon from "../assets/help.png";
 import "./Sidebar.css";
+import { NavLink, useNavigate } from "react-router-dom";
 
 
 function Sidebar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userName");
+    navigate("/login");
+  };
+
   return (
     <div className="sidebar">
-      <img src={logoWhite} alt="Vault Logo" className="sidebar-logo"/>
+      {/* Logo */}
+      <img src={logoWhite} alt="Vault Logo" className="sidebar-logo" />
 
+      {/* === Top Menu === */}
       <ul className="sidebar-menu">
         <li>
-            
-        <img src="/src/assets/search.png" alt="Search" className="sidebar-icon" />
-        <p className="sidebar-label">Search</p>
+          <NavLink
+            to="/app/search"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <img src={searchIcon} alt="Search" className="sidebar-icon" />
+            <p className="sidebar-label">Search</p>
+          </NavLink>
         </li>
-        <li>
-        <img src="/src/assets/funds_transfer.png" alt="Fund Transfer" className="sidebar-icon" />
-        <p className="sidebar-label">Fund Transfer</p>
-        </li>
-        <li>
-        <img src="/src/assets/transaction_history.png" alt="Transaction History" className="sidebar-icon" />
-        <p className="sidebar-label">Transaction History</p>
-        </li>
-    </ul>
 
+        <li>
+          <NavLink
+            to="/app/funds-transfer"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <img
+              src={transferIcon}
+              alt="Funds Transfer"
+              className="sidebar-icon"
+            />
+            <p className="sidebar-label">Fund Transfer</p>
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink
+            to="/app/transaction-history"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <img
+              src={historyIcon}
+              alt="Transaction History"
+              className="sidebar-icon"
+            />
+            <p className="sidebar-label">Transaction History</p>
+          </NavLink>
+        </li>
+      </ul>
+
+      {/* === Bottom Section === */}
       <div className="sidebar-bottom">
-    <div>
-    <img src="/src/assets/notification.png" alt="Notifications" className="sidebar-bottom-icon" />
-    <p className="sidebar-bottom-label">Notifications</p>
-    </div>
-    <div>
-    <img src="/src/assets/logout.png" alt="Logout" className="sidebar-bottom-icon" />
-    <p className="sidebar-bottom-label">Logout</p>
-    </div>
-    <div>
-    <img src="/src/assets/help.png" alt="Help" className="sidebar-bottom-icon" />
-    <p className="sidebar-bottom-label">Help</p>
-    </div>
-    </div>
+        <div>
+          <img
+            src={bellIcon}
+            alt="Notifications"
+            className="sidebar-bottom-icon"
+          />
+          <p className="sidebar-bottom-label">Notifications</p>
+        </div>
+
+        <div onClick={handleLogout} style={{ cursor: "pointer" }}>
+          <img
+            src={logoutIcon}
+            alt="Logout"
+            className="sidebar-bottom-icon"
+          />
+          <p className="sidebar-bottom-label">Logout</p>
+        </div>
+
+        <div>
+          <img src={helpIcon} alt="Help" className="sidebar-bottom-icon" />
+          <p className="sidebar-bottom-label">Help</p>
+        </div>
+      </div>
     </div>
   );
 }

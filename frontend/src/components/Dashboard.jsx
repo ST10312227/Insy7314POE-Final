@@ -1,5 +1,12 @@
 import "./Dashboard.css";
-import { FaSearch, FaFileInvoice, FaPaperPlane, FaEllipsisH, FaPlus } from "react-icons/fa";
+import {
+  FaSearch,
+  FaFileInvoice,
+  FaPaperPlane,
+  FaEllipsisH,
+  FaPlus,
+  FaMoneyBillWave,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 function Dashboard() {
@@ -25,7 +32,7 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* Balance Section */}
+        {/* Total Balance */}
         <div className="dashboard-card balance-card">
           <h3>Your Total Balance</h3>
           <h1 className="balance-amount">R105,520.50</h1>
@@ -47,6 +54,23 @@ function Dashboard() {
           </div>
         </div>
 
+        {/* ✅ Bill Payments Card (Link to /app/bill-payments) */}
+        <Link
+          to="/app/bill-payments"
+          className="dashboard-card white-card"
+          style={{
+            textDecoration: "none",
+            color: "inherit",
+            cursor: "pointer",
+          }}
+        >
+          <h3>
+            <FaMoneyBillWave style={{ marginRight: "8px", color: "#1d2f7c" }} />
+            Bill Payments
+          </h3>
+          <p>Pay utilities, airtime, and subscriptions in one place.</p>
+        </Link>
+
         {/* Recent Transactions */}
         <div className="dashboard-card transactions-card">
           <h3>Recent Transactions</h3>
@@ -59,17 +83,25 @@ function Dashboard() {
 
           <div className="transactions-list">
             <div className="transaction-item">
-              <p><strong>iTunes – Apple Music</strong><br /><span>22 August 2025, 08:20 AM</span></p>
+              <p>
+                <strong>iTunes – Apple Music</strong>
+                <br />
+                <span>22 August 2025, 08:20 AM</span>
+              </p>
               <span className="amount">R850,00</span>
             </div>
             <div className="transaction-item">
-              <p><strong>Nandos Flame Grilled Chicken</strong><br /><span>21 August 2025, 11:50 PM</span></p>
+              <p>
+                <strong>Nandos Flame Grilled Chicken</strong>
+                <br />
+                <span>21 August 2025, 11:50 PM</span>
+              </p>
               <span className="amount">R350,99</span>
             </div>
           </div>
 
           <p className="see-more">
-            <Link to="/transaction-history">See All</Link>
+            <Link to="/app/transaction-history">See All</Link>
           </p>
         </div>
 
@@ -79,8 +111,12 @@ function Dashboard() {
           <div className="chart-placeholder">
             <div className="donut"></div>
             <div className="legend">
-              <p><span className="dot income"></span> Income 71.4%</p>
-              <p><span className="dot expense"></span> Expenses 28.6%</p>
+              <p>
+                <span className="dot income"></span> Income 71.4%
+              </p>
+              <p>
+                <span className="dot expense"></span> Expenses 28.6%
+              </p>
             </div>
           </div>
         </div>

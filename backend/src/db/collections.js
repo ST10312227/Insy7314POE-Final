@@ -9,6 +9,9 @@ function collections() {
     transactions: db.collection('transactions'),
     beneficiaries: db.collection('beneficiaries'),
     idempotency: db.collection('idempotency'),
+    airtimePurchases: db.collection('airtimePurchases'),
+    localBeneficiaries: db.collection('local_beneficiaries'),
+    localTransfers: db.collection('local_transfers'),
   };
 }
 

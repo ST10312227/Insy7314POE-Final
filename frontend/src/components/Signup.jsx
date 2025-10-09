@@ -1,106 +1,104 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import "./Signup.css";
-import bg from "../assets/login_signup_background.png";
+import AuthLayout from "../layouts/AuthLayout";
 import logo from "../assets/thevault_small_logo_blue.png";
-import eyeOpen from "../assets/password_eye_open.png";
-import eyeClosed from "../assets/password_eye_closed.png";
 
-function Signup() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+const ACCOUNT_RE = /^[A-Za-z0-9\- ]+$/;
+const ID_13_DIGITS = /^\d{13}$/;
+const hasUpper = /[A-Z]/;
+const hasLower = /[a-z]/;
+const hasDigit = /\d/;
+const hasSymbol = /[^A-Za-z0-9]/;
+const HUMAN_NAME_RE = /^[\p{L}][\p{L}\p{M}' -]*$/u;
+const DEV_RECAPTCHA = "dev-local-recaptcha-token-aaaaaaaaaaaa";
+
+export default function Signup() {
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState("");
   const [formData, setFormData] = useState({
     fullName: "",
     idNumber: "",
     accountNumber: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const navigate = useNavigate();
+
+  const handleChange = (e) =>
+    setFormData((s) => ({ ...s, [e.target.name]: e.target.value }));
+
+  const validateLocal = () => {
+    const { fullName, idNumber, accountNumber, email, password, confirmPassword } = formData;
+
+    if (!HUMAN_NAME_RE.test(fullName))
+      return "Enter a valid name (letters, hyphens, or spaces only).";
+    if (!ID_13_DIGITS.test(idNumber)) return "ID number must be exactly 13 digits.";
+    if (!ACCOUNT_RE.test(accountNumber)) return "Invalid account number format.";
+    if (!email.includes("@")) return "Invalid email.";
+    if (
+      password.length < 10 ||
+      !hasUpper.test(password) ||
+      !hasLower.test(password) ||
+      !hasDigit.test(password) ||
+      !hasSymbol.test(password)
+    )
+      return "Password must include upper, lower, number, and symbol.";
+    if (password !== confirmPassword) return "Passwords do not match.";
+    return "";
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("New Account Data:", formData);
-    alert("Account created successfully!");
+    setApiError("");
+
+    const localErr = validateLocal();
+    if (localErr) return setApiError(localErr);
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/register-full", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, recaptchaToken: DEV_RECAPTCHA }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setApiError(data?.error || "Signup failed. Try again.");
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      alert("Account created successfully!");
+      navigate("/dashboard");
+    } catch {
+      setApiError("Could not reach the server.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="signup-page" style={{ backgroundImage: `url(${bg})` }}>
+    <AuthLayout>
       <div className="signup-box">
         <img src={logo} alt="The Vault Logo" className="form-logo" />
         <h2 className="signup-title">Create Account</h2>
 
+        {apiError && <div className="error-box">{apiError}</div>}
+
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            value={formData.fullName}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            name="idNumber"
-            placeholder="ID Number"
-            value={formData.idNumber}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            name="accountNumber"
-            placeholder="Account Number"
-            value={formData.accountNumber}
-            onChange={handleChange}
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={formData.email}
-            onChange={handleChange}
-          />
+          <input name="fullName" placeholder="Full Name" value={formData.fullName} onChange={handleChange} />
+          <input name="idNumber" placeholder="ID Number" value={formData.idNumber} onChange={handleChange} />
+          <input name="accountNumber" placeholder="Account Number" value={formData.accountNumber} onChange={handleChange} />
+          <input name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} />
+          <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} />
+          <input type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} />
 
-          {/* Password Field */}
-          <div className="password-container">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              className="password-input"
-            />
-            <img
-              src={showPassword ? eyeOpen : eyeClosed}
-              alt="Toggle password"
-              className="toggle-password-icon"
-              onClick={() => setShowPassword(!showPassword)}
-            />
-          </div>
-
-          {/* Confirm Password Field */}
-          <div className="password-container">
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className="password-input"
-            />
-            <img
-              src={showConfirmPassword ? eyeOpen : eyeClosed}
-              alt="Toggle confirm password"
-              className="toggle-password-icon"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            />
-          </div>
-
-          <button className="signup-button" type="submit">
-            Create Account
+          <button className="signup-button" type="submit" disabled={loading}>
+            {loading ? "Creating..." : "Create Account"}
           </button>
         </form>
 
@@ -110,11 +108,9 @@ function Signup() {
         </p>
 
         <p className="switch-login">
-          Have an account? <a href="/login">Log in</a>
+          Have an account? <Link to="/login">Log in</Link>
         </p>
       </div>
-    </div>
+    </AuthLayout>
   );
 }
-
-export default Signup;

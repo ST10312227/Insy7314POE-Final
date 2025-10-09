@@ -1,0 +1,12 @@
+.home-page {
+  background-color: #ffffff; /* clean white background */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  color: #12255c;
+  padding: 40px 20px;
+}

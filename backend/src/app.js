@@ -1,3 +1,4 @@
+// backend/src/app.js
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -15,7 +16,7 @@ const app = express();
 
 // ---------------- Security headers (Helmet – hardened) ----------------
 const IS_PROD = (process.env.NODE_ENV || 'development') === 'production';
-const FRONTEND = process.env.FRONTEND_ORIGIN || 'https://localhost:5173';
+const FRONTEND = process.env.FRONTEND_ORIGIN || 'http://localhost:5173';
 
 app.use(helmet({
   contentSecurityPolicy: {
@@ -103,6 +104,27 @@ app.use((req, res, next) => {
   next();
 });
 
+// ---------------- DB migration at startup (code-based) ----------------
+const { getDb } = require('./db/mongo');
+const { runBeneficiariesMigration } = require('./migrations/beneficiaries-numberNorm.migration');
+
+// Kick off migration once the DB is reachable.
+// This runs in the background; if you want fail-fast on migration error, handle the throw accordingly.
+(async () => {
+  try {
+    // Ensure a connection is established (adapt if you have an explicit connect() function)
+    const db = getDb();
+    logger.info({ db: db?.databaseName }, 'mongo_connected');
+
+    await runBeneficiariesMigration(logger);
+    logger.info('beneficiaries_migration_completed');
+  } catch (e) {
+    logger.error({ err: e?.message }, 'beneficiaries_migration_failed');
+    // Optional: crash the process if you require the unique index to exist
+    // process.exit(1);
+  }
+})();
+
 // ---------------- Routers ----------------
 const authRoutes = require('./routes/auth.routes');
 app.use('/auth', authRoutes);
@@ -122,10 +144,15 @@ app.use('/payments/transfers', transfersRoutes);
 const beneficiariesRoutes = require('./routes/beneficiaries.routes');
 app.use('/payments/beneficiaries', beneficiariesRoutes);
 
+// ⬇️ FIXED: don’t mount two different routers on the same path
+const internationalbeneficiariesRoutes = require('./routes/internationalbeneficiaries.routes');
+app.use('/payments/international-beneficiaries', internationalbeneficiariesRoutes);
+
+const localTransfersRoutes = require('./routes/localTransfers.routes');
+app.use('/payments/local', localTransfersRoutes);
 
 
 // ---------------- DB ping ----------------
-const { getDb } = require('./db/mongo');
 app.get('/db/ping', async (_req, res) => {
   try {
     const db = getDb();

@@ -1,0 +1,111 @@
+.local-transfer-details-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  background-color: #f3f5ff;
+  padding-top: 80px;
+  font-family: "Poppins", sans-serif;
+}
+
+.local-transfer-card {
+  background-color: #fff;
+  border: 3px solid #1c2a8a;
+  border-radius: 20px;
+  width: 480px;
+  padding: 50px 60px;
+  text-align: center;
+  color: #12255c;
+  box-shadow: 0 10px 25px rgba(28, 42, 138, 0.08);
+  position: relative;
+}
+
+/* Top circle icon */
+.icon-circle {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1c2a8a;
+  color: white;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+}
+
+/* Title */
+.card-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #12255c;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+/* Divider line */
+.divider {
+  border: none;
+  border-top: 1.5px solid #e6e6e6;
+  margin: 20px 0;
+}
+
+/* Info block */
+.beneficiary-info {
+  text-align: left;
+  background-color: #f9f9ff;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  padding: 18px;
+  margin-top: 15px;
+  margin-bottom: 25px;
+}
+
+.beneficiary-info p {
+  font-size: 14px;
+  margin: 6px 0;
+  color: #12255c;
+}
+
+.beneficiary-info strong {
+  color: #1c2a8a;
+}
+
+/* Button */
+.add-btn {
+  width: 100%;
+  background-color: #1c2a8a;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-btn:hover {
+  background-color: #12255c;
+}
+
+/* Back icon */
+.back-icon {
+  position: absolute;
+  top: 30px;
+  left: 40px;
+  background: none;
+  border: none;
+  color: #1c2a8a;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Subtext (bank name, account number below name) */
+.beneficiary-subtext {
+  font-size: 14px;
+  color: #555;
+  margin: 3px 0;
+}
