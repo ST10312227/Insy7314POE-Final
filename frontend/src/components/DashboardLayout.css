@@ -21,7 +21,6 @@
   margin: 3rem auto 2.5rem 6rem; /* ✅ add left margin */
   width: 88%; /* slightly narrower to stay balanced */
   height: 82%;
-  padding: 2rem 3rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   overflow-y: auto;
 }

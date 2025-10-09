@@ -1,0 +1,227 @@
+.dashboard-container {
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  color: #0b1a44;
+  font-family: "Poppins", sans-serif;
+}
+
+.welcome-text {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.welcome-text span {
+  color: #1a2a6c;
+}
+
+.subtitle {
+  color: #6b6b6b;
+  margin-bottom: 30px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 25px;
+}
+
+.dashboard-card {
+  background-color: #1a2a6c;
+  color: #fff;
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.dashboard-card h3 {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+/* Debit Card Account */
+.account-card {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-graphic {
+  background-color: #15307a;
+  width: 250px;
+  height: 140px;
+  border-radius: 12px;
+  position: relative;
+}
+
+.card-chip {
+  width: 40px;
+  height: 25px;
+  background: linear-gradient(90deg, gold, orange);
+  border-radius: 4px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.add-card {
+  background-color: #293b94;
+  border-radius: 12px;
+  width: 130px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-icon {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+/* Balance */
+.balance-card {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: center;
+}
+
+.balance-amount {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 10px 0;
+}
+
+.balance-date {
+  color: #d0d4f1;
+  font-size: 13px;
+  margin-bottom: 25px;
+}
+
+.balance-actions {
+  display: flex;
+  justify-content: space-around;
+}
+
+.action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 13px;
+  color: #fff;
+}
+
+.action i,
+.action svg {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+/* Transactions */
+.transactions-card {
+  grid-column: 1;
+  grid-row: 2;
+  background-color: #1a2a6c;
+  color: #fff;
+}
+
+.transactions-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.search {
+  background-color: #293b94;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.filter-btn {
+  background-color: #293b94;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 0;
+}
+
+.transaction-item span {
+  font-size: 13px;
+  color: #d0d4f1;
+}
+
+.amount {
+  font-weight: 600;
+}
+
+.see-more a {
+  color: #1c2a8a;
+  text-decoration: none;
+  font-weight: 600;
+}
+.see-more a:hover {
+  text-decoration: underline;
+}
+
+/* Income vs Expense */
+.chart-card {
+  grid-column: 2;
+  grid-row: 2;
+  text-align: center;
+}
+
+.chart-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: conic-gradient(#24c275 0% 71.4%, #e54545 71.4% 100%);
+  margin-bottom: 15px;
+}
+
+.legend {
+  text-align: left;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.income {
+  background-color: #24c275;
+}
+
+.expense {
+  background-color: #e54545;
+}
