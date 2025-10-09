@@ -1,0 +1,129 @@
+.local-transfer-form-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 80vh;
+  padding-top: 40px;
+  background-color: white;
+  font-family: "Poppins", sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.local-transfer-form-card {
+  background-color: #ffffff;
+  border: 3px solid #1c2a8a;
+  border-radius: 20px;
+  width: 500px;
+  height: 700px;
+  padding: 50px;
+  text-align: center;
+  color: #12255c;
+  box-shadow: 0 10px 25px rgba(28, 42, 138, 0.08);
+  position: relative;
+}
+
+.icon-circle {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1c2a8a;
+  color: white;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+}
+
+.card-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #12255c;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.divider {
+  border: none;
+  border-top: 1.5px solid #e6e6e6;
+  margin: 20px 0;
+}
+
+.transfer-form {
+  text-align: left;
+}
+
+.transfer-form label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #12255c;
+  display: block;
+  margin-bottom: 6px;
+  margin-top: 15px;
+}
+
+.transfer-form input,
+.transfer-form select {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  outline: none;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #12255c;
+  font-family: "Poppins", sans-serif;
+}
+
+.transfer-form select:focus,
+.transfer-form input:focus {
+  border-color: #1c2a8a;
+  box-shadow: 0 0 5px rgba(28, 42, 138, 0.2);
+}
+
+.submit-btn {
+  width: 100%;
+  background-color: #1c2a8a;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 25px;
+  font-size: 15px;
+}
+
+.submit-btn:hover {
+  background-color: #12255c;
+}
+
+.back-icon {
+  position: absolute;
+  top: 30px;
+  left: 40px;
+  background: none;
+  border: none;
+  color: #1c2a8a;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

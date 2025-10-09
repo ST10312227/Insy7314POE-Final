@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useBeneficiaries } from "../context/BeneficiaryContext";
-import "./AirtimeShared.css";
+import "./BeneficiaryDetails.css";
 import { FaArrowLeft, FaPhone } from "react-icons/fa";
 
 function BeneficiaryDetails() {
@@ -8,7 +8,6 @@ function BeneficiaryDetails() {
   const { beneficiaries } = useBeneficiaries();
   const navigate = useNavigate();
 
-  // Find beneficiary by ID (the index we passed in BuyAirtime)
   const beneficiary = beneficiaries[id];
 
   if (!beneficiary) {
@@ -42,11 +41,27 @@ function BeneficiaryDetails() {
         <hr className="divider" />
 
         <div className="beneficiary-info">
-          <p><strong>Network:</strong> {beneficiary.network}</p>
-          <p><strong>Phone:</strong> {beneficiary.number}</p>
+          <p>
+            <strong>Network:</strong> {beneficiary.network}
+          </p>
+          <p>
+            <strong>Phone:</strong> {beneficiary.number}
+          </p>
         </div>
 
-        <button className="add-btn" onClick={() => alert("Proceed to buy airtime")}>
+        {/* Navigate to BuyBundleOptions page */}
+        <button
+          className="add-btn"
+          onClick={() =>
+            navigate(`/buy-airtime/${id}/options`, {
+              state: {
+                network: beneficiary.network,
+                number: beneficiary.number,
+                name: beneficiary.name,
+              },
+            })
+          }
+        >
           Buy Airtime
         </button>
       </div>

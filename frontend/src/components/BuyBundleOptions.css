@@ -1,0 +1,81 @@
+/* === Buy Bundle Options === */
+.buy-airtime-page {
+  background-color: #f3f5ff;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 80px;
+  font-family: "Poppins", sans-serif;
+}
+
+.buy-airtime-card {
+  background-color: #ffffff;
+  border: 3px solid #1c2a8a;
+  border-radius: 20px;
+  padding: 60px 80px;
+  width: 600px;
+  text-align: center;
+  color: #12255c;
+  box-shadow: 0 10px 25px rgba(28, 42, 138, 0.1);
+}
+
+.icon-circle {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1c2a8a;
+  color: white;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+}
+
+.card-title {
+  margin-top: 30px;
+  margin-bottom: 5px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.vault-select {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  margin: 10px 0 20px;
+  font-size: 15px;
+  color: #12255c;
+}
+
+.divider {
+  border: none;
+  border-top: 1.5px solid #e6e6e6;
+  margin: 20px 0;
+}
+
+.bundle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bundle-item {
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: left;
+  background-color: #fff;
+}
+
+.bundle-item:hover {
+  background-color: #f3f5ff;
+  border-color: #1c2a8a;
+}
