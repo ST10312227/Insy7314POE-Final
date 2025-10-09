@@ -58,3 +58,11 @@
   opacity: 0.85;
   letter-spacing: 0.3px;
 }
+
+.topbar-user {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: white;
+  opacity: 0.85;
+  letter-spacing: 0.3px;
+}

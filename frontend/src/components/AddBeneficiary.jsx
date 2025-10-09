@@ -19,12 +19,12 @@ function AddBeneficiary() {
   const handleSubmit = (e) => {
     e.preventDefault();
     addBeneficiary(form); // ✅ add to shared list
-    navigate("/buy-airtime"); // ✅ go back to list
+    navigate("/app/buy-airtime"); // ✅ go back to list
   };
 
   return (
     <div className="add-beneficiary-page">
-      <button className="back-icon" onClick={() => navigate("/buy-airtime")}>
+      <button className="back-icon" onClick={() => navigate("/app/buy-airtime")}>
         <FaArrowLeft />
       </button>
 

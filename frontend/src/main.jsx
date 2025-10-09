@@ -8,7 +8,9 @@ import { BeneficiaryProvider } from "./context/BeneficiaryContext";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <BeneficiaryProvider>   {/* ✅ Wrap here */}
+        <App />
+      </BeneficiaryProvider>
     </BrowserRouter>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);

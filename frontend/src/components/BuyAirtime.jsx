@@ -16,7 +16,8 @@ function BuyAirtime() {
   return (
     <div className="buy-airtime-container">
       <div className="airtime-header">
-        <button className="back-btn" onClick={() => navigate("/bill-payments")}>
+        {/* ✅ back to /app/bill-payments */}
+        <button className="back-btn" onClick={() => navigate("/app/bill-payments")}>
           <FaArrowLeft />
         </button>
         <div className="airtime-icon">
@@ -29,9 +30,10 @@ function BuyAirtime() {
       </h2>
 
       <div className="add-beneficiary-row">
+        {/* ✅ go to /app/add-beneficiary */}
         <button
           className="add-beneficiary-btn"
-          onClick={() => navigate("/add-beneficiary")}
+          onClick={() => navigate("/app/add-beneficiary")}
         >
           <FaPlus /> Add Beneficiary
         </button>
@@ -51,16 +53,16 @@ function BuyAirtime() {
         <h4>All</h4>
         {filtered.length > 0 ? (
           filtered.map((b, i) => (
-      <div
-        className="beneficiary-item"
-        key={i}
-        onClick={() => navigate(`/beneficiary-details/${i}`)} // ✅ pass index
-    >
-        <span>{b.name}</span>
-        <span className="arrow">›</span>
-    </div>
-  ))
-
+            // ✅ details page under /app
+            <div
+              className="beneficiary-item"
+              key={i}
+              onClick={() => navigate(`/app/beneficiary-details/${i}`)}
+            >
+              <span>{b.name}</span>
+              <span className="arrow">›</span>
+            </div>
+          ))
         ) : (
           <p>No beneficiaries found.</p>
         )}

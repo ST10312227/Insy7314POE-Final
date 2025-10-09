@@ -14,17 +14,29 @@ function BillPayments() {
       </p>
 
       <div className="bill-card-wrapper">
-        <div className="bill-card white-card" onClick={() => navigate("/buy-airtime")}>
+        {/* ✅ Redirect to /app/buy-airtime */}
+        <div
+          className="bill-card white-card"
+          onClick={() => navigate("/app/buy-airtime")}
+        >
           <i className="fa-solid fa-phone"></i>
           <h3>Buy Airtime</h3>
         </div>
 
-        <div className="bill-card blue-card">
+        {/* ✅ Redirect to /app/recurring-payments (future page) */}
+        <div
+          className="bill-card blue-card"
+          onClick={() => navigate("/app/recurring-payments")}
+        >
           <i className="fa-solid fa-hand-holding-dollar"></i>
           <h3>Recurring Payments</h3>
         </div>
 
-        <div className="bill-card white-card">
+        {/* ✅ Redirect to /app/buy-electricity (future page) */}
+        <div
+          className="bill-card white-card"
+          onClick={() => navigate("/app/buy-electricity")}
+        >
           <i className="fa-solid fa-bolt"></i>
           <h3>Buy Electricity</h3>
         </div>
