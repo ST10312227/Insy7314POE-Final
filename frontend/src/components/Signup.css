@@ -1,28 +1,40 @@
+/* ✅ ensure page itself can scroll */
+html, body {
+  height: auto;
+  min-height: 100%;
+  overflow-y: auto; /* ✅ always show vertical scroll when needed */
+}
+
+/* --- SIGNUP PAGE --- */
 .signup-page {
   background-size: cover;
   background-position: center;
   display: flex;
   justify-content: flex-end;
-  align-items:center;
-  height: 100vh;
+  align-items: center;
+  min-height: 100vh;
   width: 100%;
-  padding-top: 26rem; 
-  padding-bottom: 10rem;
-  padding-right: 5%;
+  padding: 3rem 5%;
+  overflow-y: auto; /* ✅ keep scroll active even inside signup-page */
+  overflow-x: hidden; /* ✅ prevent sideways scrolling */
 }
 
+/* --- SIGNUP BOX --- */
 .signup-box {
   background: #ffffff;
   border-radius: 20px;
-  width: 580px;
+  width: 100%;
+  max-width: 480px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   text-align: center;
-  padding: 2rem 2rem 2.5rem 2rem;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 2rem 0;
 }
 
+/* --- TITLES --- */
 .signup-title {
   font-family: "Poppins", sans-serif;
   font-size: 2rem;
@@ -31,22 +43,23 @@
   margin-bottom: 1.5rem;
 }
 
+/* --- INPUTS --- */
 input {
-  width: 180%;
-  max-width: 700px;
+  width: 100%;
   box-sizing: border-box;
-  align-items: center;
   padding: 1rem;
   border-radius: 24px;
   border: 1.5px solid #000;
   font-family: "Poppins", sans-serif;
   font-size: 1rem;
+  margin-bottom: 1rem;
 }
 
+/* --- PASSWORD FIELDS --- */
 .password-container {
   position: relative;
-  width: 180%;
-  max-width: 700px;
+  width: 100%;
+  margin-bottom: 1rem;
 }
 
 .password-input {
@@ -58,17 +71,18 @@ input {
   right: 18px;
   top: 50%;
   transform: translateY(-50%);
-  width: 26px;      /* adjust icon size */
+  width: 24px;
   height: 16px;
   cursor: pointer;
   opacity: 0.8;
   transition: opacity 0.2s ease;
 }
 
+/* --- BUTTON --- */
 .signup-button {
-  background: #1d2f7c !important;
-  color: white !important;
-  width: 180%;
+  background: #1d2f7c;
+  color: white;
+  width: 100%;
   padding: 0.8rem;
   border: 2px solid #1d2f7c;
   border-radius: 24px;
@@ -76,15 +90,17 @@ input {
   font-weight: 600;
   font-family: "Poppins", sans-serif;
   transition: all 0.3s ease;
+  margin-top: 0.5rem;
 }
 
 .signup-button:hover {
-  background: white !important;
-  color: #1d2f7c !important;
+  background: white;
+  color: #1d2f7c;
   border: 2px solid #1d2f7c;
   box-shadow: 0 0 10px rgba(29, 47, 124, 0.4);
 }
 
+/* --- FOOTER LINKS --- */
 .switch-login {
   margin-top: 1rem;
   font-size: 0.9rem;
@@ -96,3 +112,19 @@ input {
   font-weight: 600;
 }
 
+/* --- MOBILE --- */
+@media (max-width: 768px) {
+  .signup-page {
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .signup-box {
+    width: 100%;
+    padding: 1.5rem;
+  }
+
+  .signup-title {
+    font-size: 1.6rem;
+  }
+}

@@ -1,17 +1,27 @@
-body {
+/* === GLOBAL RESET === */
+html,
+body,
+#root {
   margin: 0;
-  font-family: "Poppins", sans-serif;
-  background-color: #f8f9fc;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1d2f7c;
+  overflow: hidden;
 }
 
-.app-container {
-  display: flex;
-  height: 100vh;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  box-shadow: none;
 }
 
-.main-section {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background-color: #f8f9fc;
+body {
+  font-family: "Poppins", system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color: #fff;
+  border: none !important;
+  outline: none !important;
 }
