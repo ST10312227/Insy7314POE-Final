@@ -1,3 +1,4 @@
+// src/components/LocalTransferForm.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUserFriends } from "react-icons/fa";
@@ -21,7 +22,6 @@ function LocalTransferForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // ✅ Basic validation
     if (
       !formData.bank ||
       !formData.branchCode ||
@@ -33,8 +33,8 @@ function LocalTransferForm() {
       return;
     }
 
-    // ✅ Navigate to password page (temporary: confirmation page)
-    navigate("/local-transfer/pay", { state: formData });
+    // → Go to Pay screen (ad-hoc, no :id) with this beneficiary in state
+    navigate("/app/local-transfer/pay", { state: formData });
   };
 
   return (
@@ -53,12 +53,7 @@ function LocalTransferForm() {
 
         <form className="transfer-form" onSubmit={handleSubmit}>
           <label htmlFor="bank">Select Bank</label>
-          <select
-            id="bank"
-            name="bank"
-            value={formData.bank}
-            onChange={handleChange}
-          >
+          <select id="bank" name="bank" value={formData.bank} onChange={handleChange}>
             <option value="">Select bank</option>
             <option value="Absa">Absa</option>
             <option value="Nedbank">Nedbank</option>
@@ -110,9 +105,7 @@ function LocalTransferForm() {
             onChange={handleChange}
           />
 
-          <button type="submit" className="submit-btn">
-            Next
-          </button>
+          <button type="submit" className="submit-btn">Next</button>
         </form>
       </div>
     </div>
@@ -120,4 +113,3 @@ function LocalTransferForm() {
 }
 
 export default LocalTransferForm;
- 

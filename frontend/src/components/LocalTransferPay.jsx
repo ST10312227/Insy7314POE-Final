@@ -1,13 +1,18 @@
-import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUserFriends } from "react-icons/fa";
 import "./LocalTransferPay.css";
 
-function LocalTransferPay() {
+export default function LocalTransferPay() {
   const navigate = useNavigate();
-  const { state } = useLocation(); // ✅ get beneficiary info from previous page
+  const { state } = useLocation(); // beneficiary details from step 1 or from list
+  const [saveBeneficiary, setSaveBeneficiary] = useState(false);
 
-  const beneficiary = state || {};
+  useEffect(() => {
+    if (!state) navigate("/app/local-transfer/new", { replace: true });
+  }, [state, navigate]);
+
+  if (!state) return null;
 
   const [formData, setFormData] = useState({
     amount: "",
@@ -16,19 +21,13 @@ function LocalTransferPay() {
     paymentType: "Real-time",
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const handleChange = (e) =>
+    setFormData((s) => ({ ...s, [e.target.name]: e.target.value }));
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Merge all data (beneficiary + form)
-    const completeData = { ...beneficiary, ...formData };
-
-    // ✅ Navigate to password screen with all data
-    navigate("/local-transfer/password", { state: completeData });
+    const payload = { ...state, ...formData, saveBeneficiary };
+    navigate("/app/local-transfer/password", { state: payload });
   };
 
   return (
@@ -38,30 +37,23 @@ function LocalTransferPay() {
       </button>
 
       <div className="local-transfer-card">
-        <div className="icon-circle">
-          <FaUserFriends />
-        </div>
-
+        <div className="icon-circle"><FaUserFriends /></div>
         <h2 className="card-title">Pay</h2>
         <hr className="divider" />
 
         <div className="account-box">
           <div>
-            <strong>Main Account</strong>
-            <br />
+            <strong>Main Account</strong><br />
             <small>Available Balance</small>
           </div>
           <div className="account-balance">R15 000.00</div>
         </div>
 
         <div className="beneficiary-box">
+          <p><strong>{state.bank}</strong></p>
           <p>
-            <strong>{beneficiary.bank}</strong>
-          </p>
-          <p>
-            {beneficiary.accountNumber}
-            <br />
-            <small>Branch Code - {beneficiary.branchCode}</small>
+            {state.accountNumber}<br />
+            <small>Branch Code - {state.branchCode}</small>
           </p>
         </div>
 
@@ -120,13 +112,18 @@ function LocalTransferPay() {
             </label>
           </div>
 
-          <button type="submit" className="submit-btn">
-            Pay Now
-          </button>
+          <label style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 12 }}>
+            <input
+              type="checkbox"
+              checked={saveBeneficiary}
+              onChange={(e) => setSaveBeneficiary(e.target.checked)}
+            />
+            Save this beneficiary for later
+          </label>
+
+          <button type="submit" className="submit-btn">Pay Now</button>
         </form>
       </div>
     </div>
   );
 }
-
-export default LocalTransferPay;

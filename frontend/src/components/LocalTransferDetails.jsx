@@ -3,27 +3,22 @@ import { useLocalTransfers } from "../context/LocalTransferContext";
 import { FaArrowLeft, FaUser } from "react-icons/fa";
 import "./LocalTransferDetails.css";
 
-function LocalTransferDetails() {
+export default function LocalTransferDetails() {
   const { id } = useParams();
   const { transfers } = useLocalTransfers();
   const navigate = useNavigate();
 
   const beneficiary = transfers[id];
-
-  if (!beneficiary) {
-    return <p>Beneficiary not found</p>;
-  }
+  if (!beneficiary) return <p>Beneficiary not found</p>;
 
   return (
     <div className="add-beneficiary-page">
-      <button className="back-icon" onClick={() => navigate("/local-transfer")}>
+      <button className="back-icon" onClick={() => navigate("/app/funds-transfer")}>
         <FaArrowLeft />
       </button>
 
       <div className="add-beneficiary-card">
-        <div className="icon-circle">
-          <FaUser />
-        </div>
+        <div className="icon-circle"><FaUser /></div>
 
         <h2 className="card-title">{beneficiary.name}</h2>
         <p>{beneficiary.bank}</p>
@@ -40,11 +35,7 @@ function LocalTransferDetails() {
 
         <button
           className="add-btn"
-          onClick={() =>
-            navigate(`/local-transfer/pay/${id}`, {
-              state: { beneficiary },
-            })
-          }
+          onClick={() => navigate(`/app/local-transfer/pay/${id}`, { state: { beneficiary } })}
         >
           Make Payment
         </button>
@@ -52,5 +43,3 @@ function LocalTransferDetails() {
     </div>
   );
 }
-
-export default LocalTransferDetails;
