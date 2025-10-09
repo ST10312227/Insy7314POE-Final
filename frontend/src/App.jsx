@@ -1,3 +1,12 @@
+import { Routes, Route } from 'react-router-dom';
+import DashboardLayout from './components/DashboardLayout';
+import BuyElectricityWater from './components/BuyElectricityWater';
+import AddBeneficiaryForm from './components/AddBeneficiaryForm';
+import InternationalPayments from './components/InternationalPayments';
+import InternationalBeneficiaries from './components/InternationalBeneficiaries';
+import AddBeneficiaryIntlPayments from './components/AddBeneficiaryIntlPayments';
+import IntlSwiftConfirmation from './components/IntlSwiftConfirmation';
+// Import other page components as needed
 import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
 import Dashboard from "./components/Dashboard";
@@ -25,6 +34,10 @@ import "./App.css";
 function App() {
   return (
     <Routes>
+      <Route path="/" element={<DashboardLayout />}>
+        <Route index element={<IntlSwiftConfirmation />} />
+        <Route path="IntlSwiftConfirmation" element={<IntlSwiftConfirmation />} />
+        
       {/* PUBLIC PAGES */}
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
