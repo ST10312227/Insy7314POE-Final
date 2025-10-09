@@ -1,0 +1,80 @@
+.fund-transfer-container {
+  text-align: center;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  height: 100%;
+  font-family: "Poppins", sans-serif;
+}
+
+/* === Title === */
+.fund-title {
+  font-size: 34px;
+  font-weight: 700;
+  color: #12255c;
+  margin-bottom: 5px;
+}
+
+.fund-title span {
+  color: #1c2a8a;
+}
+
+/* === Subtitle === */
+.fund-subtitle {
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+/* === Card Layout === */
+.fund-card-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+/* === Card Style === */
+.fund-card {
+  flex: 1 1 250px;
+  max-width: 280px;
+  min-height: 550px; /* match Bill Payments height */
+  border-radius: 18px;
+  border: 3px solid #1c2a8a;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* === White & Blue Variants === */
+.fund-card.white-card {
+  background-color: #fff;
+  color: #1c2a8a;
+}
+
+.fund-card.blue-card {
+  background-color: #1c2a8a;
+  color: #fff;
+}
+
+/* === Icon & Text === */
+.fund-card i {
+  font-size: 70px;
+  margin-bottom: 20px;
+}
+
+.fund-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* === Hover Effect === */
+.fund-card:hover {
+  transform: translateY(-15px);
+  box-shadow: 1px 60px 20px rgba(28, 42, 138, 0.3);
+}

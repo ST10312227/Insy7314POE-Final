@@ -1,8 +1,34 @@
+import { useNavigate } from "react-router-dom";
+import "./BillPayments.css";
+
 function BillPayments() {
+  const navigate = useNavigate();
+
   return (
-    <div>
-      <h1>Bill Payments</h1>
-      <p>Here you can manage and pay your bills.</p>
+    <div className="bill-payments-container">
+      <h2 className="bill-title">
+        Bill <span>Payments</span>
+      </h2>
+      <p className="bill-subtitle">
+        Easily pay your utility bills, airtime, and subscriptions in one place.
+      </p>
+
+      <div className="bill-card-wrapper">
+        <div className="bill-card white-card" onClick={() => navigate("/buy-airtime")}>
+          <i className="fa-solid fa-phone"></i>
+          <h3>Buy Airtime</h3>
+        </div>
+
+        <div className="bill-card blue-card">
+          <i className="fa-solid fa-hand-holding-dollar"></i>
+          <h3>Recurring Payments</h3>
+        </div>
+
+        <div className="bill-card white-card">
+          <i className="fa-solid fa-bolt"></i>
+          <h3>Buy Electricity</h3>
+        </div>
+      </div>
     </div>
   );
 }

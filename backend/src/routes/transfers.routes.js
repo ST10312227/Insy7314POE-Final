@@ -73,41 +73,29 @@ router.post('/', checkAuth, createLimiter, validate(transferSchema), async (req,
     if (!intlBeneficiary) return res.status(404).json({ error: 'beneficiary_not_found' });
   }
 
-  // FX handling for international
-  let fx = null;
-  if (payload.type === 'INTERNATIONAL') {
-    const toCurr = payload.fxTargetCurrency;
-    const fromCurr = payload.currency;
-    const rate = getFxRate(fromCurr, toCurr);
-    if (!rate) return res.status(422).json({ error: 'unsupported_fx_pair' });
-    fx = {
-      rate,
-      to: toCurr.toUpperCase(),
-      convertedCents: Math.floor(payload.amountCents * rate),
-    };
-  }
+  // Optional source account existence check
+  const acol = await accountsCol();
+  const source = await acol.findOne({ number: payload.sourceAccount, userId: userId.toString(), status: 'ACTIVE' });
+  if (!source) return res.status(404).json({ error: 'source_account_not_found' });
 
-  // debit source account atomically if enough funds
-  const accounts = await accountsCol();
-  const totalDebit = payload.amountCents + feesCents;
+  // Build FX object only for international
+  const fx = (payload.type === 'INTERNATIONAL')
+    ? (() => {
+        const rate = getFxRate(payload.currency, payload.fxTargetCurrency);
+        if (!rate) return null;
+        const convertedCents = Math.floor(payload.amountCents * rate);
+        return { rate, from: payload.currency, to: payload.fxTargetCurrency, convertedCents };
+      })()
+    : null;
 
-  const accRes = await accounts.updateOne(
-    { userId, accountNumber: payload.sourceAccount, balanceCents: { $gte: totalDebit }, archived: { $ne: true } },
-    { $inc: { balanceCents: -totalDebit }, $setOnInsert: { createdAt: now } },
-    { upsert: false }
-  );
-  if (accRes.matchedCount === 0 || accRes.modifiedCount === 0) {
-    return res.status(400).json({ error: 'insufficient_funds_or_account_not_found' });
-  }
-
-  // Build beneficiary object to store on transfer
+  // Beneficiary block
   const beneficiary = (() => {
     if (payload.type === 'INTERNATIONAL') {
       if (intlBeneficiary) {
         const b = intlBeneficiary;
         return {
-          name: b.who === 'PERSON' ? `${b.firstName} ${b.lastName}`.trim() : b.businessName,
-          country: b.country.toUpperCase(),
+          name: b.who === 'PERSON' ? `${b.firstName} ${b.lastName}` : b.businessName,
+          country: b.country,
           bankName: b.bankName,
           iban: b.accountNumber,
           swiftBic: b.swiftBic
@@ -139,29 +127,23 @@ router.post('/', checkAuth, createLimiter, validate(transferSchema), async (req,
     feesCents,
     fx,
     beneficiary,
-    scheduleAt: payload.scheduleAt || null,
-    status: payload.type === 'INTERNATIONAL' ? 'PENDING_SWIFT' : 'POSTED',
-    postedAt: now,
-    createdAt: now,
     idempotencyKey: idem,
-    audit: [{ at: now, action: 'CREATE', by: userId }],
+    status: 'PENDING_STAFF_REVIEW',
+    createdAt: now,
+    updatedAt: now,
   };
 
-  try {
-    const ins = await transfers.insertOne(doc);
-    return res.status(201).json({ id: ins.insertedId.toString(), ...doc });
-  } catch (e) {
-    if (e && e.code === 11000 && idem) {
-      const existing = await transfers.findOne({ userId, idempotencyKey: idem });
-      return res.status(201).json({ id: existing._id.toString(), ...existing });
+  // Idempotency (best-effort)
+  if (idem) {
+    const existing = await transfers.findOne({ userId, idempotencyKey: idem });
+    if (existing) {
+      const { _id, ...rest } = existing;
+      return res.status(200).json({ id: _id.toString(), ...rest, idempotent: true });
     }
-    // rollback debit on failure
-    await accounts.updateOne(
-      { userId, accountNumber: payload.sourceAccount },
-      { $inc: { balanceCents: totalDebit } }
-    );
-    throw e;
   }
+
+  const ins = await transfers.insertOne(doc);
+  res.status(201).json({ id: ins.insertedId.toString(), ...doc });
 });
 
 router.get('/', checkAuth, async (req, res) => {
