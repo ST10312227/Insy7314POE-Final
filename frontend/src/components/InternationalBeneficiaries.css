@@ -1,0 +1,181 @@
+.intl-section-bg {
+  width: 100%;
+  min-height: 82vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 38px;
+  background: transparent;
+}
+
+.intl-card {
+  position: relative;
+  width: 540px;
+  background: #fff;
+  border-radius: 24px;
+  border: 2px solid #233678;
+  box-shadow: 0 0 18px 0 rgba(35,54,120,0.08);
+  padding: 38px 36px 35px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.intl-badge {
+  position: absolute;
+  left: 50%;
+  top: -36px;
+  transform: translateX(-50%);
+  background: #dbe7fc;
+  border-radius: 50%;
+  border: 2px solid #233678;
+  width: 68px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intl-title {
+  margin-top: 30px;
+  font-size: 1.38rem;
+  font-weight: 700;
+  color: #233678;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.intl-tabs {
+  margin-top: 26px;
+  display: flex;
+  width: 100%;
+  border-bottom: 1.5px solid #23367815;
+}
+
+.intl-tab-btn {
+  background: none;
+  border: none;
+  outline: none;
+  color: #233678;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 96px;
+  height: 32px;
+  margin-right: 24px;
+  margin-bottom: -2px;
+  border-bottom: 2.4px solid transparent;
+  transition: border-color .16s;
+}
+.intl-tab-btn.active {
+  border-bottom: 2.4px solid #233678;
+  color: #233678;
+}
+
+.intl-beneficiaries-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* History List */
+.intl-history-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 36px;
+  margin-bottom: 22px;
+}
+.intl-history-item {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 2px solid #233678;
+  border-radius: 12px;
+  padding: 15px 18px;
+  width: 100%;
+  max-width: 380px;
+  box-sizing: border-box;
+  box-shadow: 0 0 0 #00000000;
+  position: relative;
+  font-family: inherit;
+}
+.intl-history-item.credit {
+  border: 2px solid #2dbe7f;
+}
+.intl-history-item.debit {
+  border: 2px solid #e15d64;
+}
+
+.intl-history-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #bcd4f7;
+  background: #f6f9ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 18px;
+}
+
+.intl-history-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.intl-history-name {
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: #233678;
+  margin-bottom: 2px;
+}
+.intl-history-amount {
+  font-weight: 700;
+  font-size: 1.08rem;
+}
+
+.intl-history-date {
+  font-size: 0.95rem;
+  color: #333c64cc;
+  font-weight: 500;
+  margin-left: 10px;
+  min-width: 85px;
+  text-align: right;
+}
+
+.intl-no-beneficiaries {
+  margin: 60px 0 30px 0;
+  color: #233678;
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.intl-add-beneficiary-btn {
+  width: 100%;
+  max-width: 510px;
+  background: #233678;
+  color: #fff;
+  border-radius: 13px;
+  border: none;
+  padding: 13px 0;
+  font-size: 1.12rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 13px 0 rgba(35,54,120,0.09);
+  margin-bottom: 18px;
+  transition: background 0.15s;
+}
+.intl-add-beneficiary-btn:hover {
+  background: #162147;
+}
+
+@media (max-width: 620px) {
+  .intl-card { width: 99vw; padding: 20px 4vw; }
+}
