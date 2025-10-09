@@ -1,25 +1,20 @@
-import React from "react";
-import Sidebar from "./components/Sidebar";
-import Topbar from "./components/Topbar";
-import AddBeneficiaryForm from "./components/AddBeneficiaryForm";
-import PurchaseAirtimeDetails from "./components/PurchaseAirtimeDetails";
-import BuyElectricityWater from "./components/BuyElectricityWater";
-import "./components/AddBeneficiary.css";
-import "./components/PurchaseAirtimeDetails.css";
-import "./components/BuyElectricityWater.css";
-import "./App.css";
+import { Routes, Route } from 'react-router-dom';
+import DashboardLayout from './components/DashboardLayout';
+import BuyElectricityWater from './components/BuyElectricityWater';
+import AddBeneficiaryForm from './components/AddBeneficiaryForm';
+// Import other page components as needed
 
 function App() {
   return (
-    <div className="app-container">
-      <Sidebar />
-      <div className="main-section">
-        <Topbar />
-        <BuyElectricityWater />
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<DashboardLayout />}>
+        <Route index element={<AddBeneficiaryForm />} />
+        <Route path="AddBeneficiaryForm" element={<AddBeneficiaryForm />} />
+        {/* <Route path="bill-payments" element={<BillPayments />} /> */}
+      </Route>
+      {/* Add other top-level routes if needed */}
+    </Routes>
   );
 }
 
 export default App;
-
