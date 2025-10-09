@@ -1,8 +1,12 @@
+html,
+body,
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  margin: 0;
+  padding: 0;
+  background-color: #1d2f7c;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 .logo {
@@ -43,6 +47,11 @@ h1 {
   padding: 2em;
 }
 
-.read-the-docs {
-  color: #888;
+/* Optional — you can leave this empty if you’re styling components separately */
+.app {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #1d2f7c;
 }

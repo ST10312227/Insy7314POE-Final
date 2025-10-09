@@ -1,20 +1,19 @@
-// src/middlewares/validate.js
-module.exports = (schema) => (req, res, next) => {
-  // Quick guard if schema wasn't passed correctly
-  if (!schema || typeof schema.safeParse !== 'function') {
-    console.error('[VALIDATE] Missing or invalid schema:', schema);
-    return res.status(500).json({ error: 'Server misconfiguration: schema not provided to validator' });
+// verbose Zod validator
+module.exports = (schema) => async (req, res, next) => {
+  try {
+    const parsed = await schema.parseAsync(req.body);
+    req.validated = parsed;
+    next();
+  } catch (err) {
+    if (err?.issues) {
+      return res.status(400).json({
+        error: "validation_failed",
+        issues: err.issues.map(i => ({
+          path: i.path.join('.'),
+          message: i.message
+        }))
+      });
+    }
+    return res.status(400).json({ error: "validation_failed" });
   }
-
-  console.log('[VALIDATE] body =', req.body); // temp debug
-
-  const result = schema.safeParse(req.body);
-  if (!result.success) {
-    return res.status(400).json({
-      error: 'Validation failed',
-      details: result.error.errors, // path + message
-    });
-  }
-  req.validated = result.data;
-  next();
 };

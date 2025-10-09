@@ -31,6 +31,10 @@ async function start() {
   // 1) Connect to Mongo first
   await initMongo();
 
+  const { ensureIndexes } = require('./db/indexes');
+  await ensureIndexes();
+
+
   // 2) Start HTTPS server
   https.createServer({ key: fs.readFileSync(keyPath), cert: fs.readFileSync(certPath) }, app)
     .listen(PORT_HTTPS, () => {

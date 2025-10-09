@@ -1,0 +1,136 @@
+.login-page {
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: flex-end; /* pushes box to right */
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  padding-right: 5%; /* spacing from edge */
+}
+
+/* the white box */
+.login-box {
+  background: #ffffff;
+  padding: 2rem 2.2rem;
+  border-radius: 20px;
+  width: 580px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+/* logo inside box */
+.form-logo {
+  width: 90px;
+  margin-bottom: 1rem;
+  align-self: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center; 
+  font-family: 'Poppins', sans-serif;
+}
+
+/* title */
+.login-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 1000;
+  color: black;
+  margin-bottom: 1.5rem;
+}
+
+input {
+  width: 180%;
+  max-width: 700px; /* 👈 allows wider fields */
+  box-sizing: border-box;
+  align-items: center;
+  padding: 1rem; /* adds more height and comfort */
+  border-radius: 24px;
+  border: 1.5px solid #000; /* thicker, cleaner border */
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+}
+
+.login-button {
+  background: #1d2f7c !important;
+  color: white !important;
+  width: 180%;
+  padding: 0.8rem;
+  border: 2px solid #1d2f7c;        
+  border-radius: 24px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(29, 47, 124, 0.2); 
+}
+
+.login-button:hover {
+  background: white !important;
+  color: #1d2f7c !important;
+  border: 2px solid #1d2f7c;
+  box-shadow: 0 0 10px rgba(29, 47, 124, 0.4);
+}
+
+.forgot {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #1d2f7c;
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+}
+
+.terms {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: #444;
+  font-family: 'Poppins', sans-serif;
+}
+
+.terms a {
+  color: #1d2f7c;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+}
+
+.password-container {
+  position: relative;
+  width: 180%;
+  max-width: 700px;
+}
+
+.password-input {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 24px;
+  border: 1.5px solid #000;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Eye icon positioning */
+.toggle-password-icon {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;      /* adjust icon size */
+  height: 16px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.toggle-password-icon:hover {
+  opacity: 1;
+}
