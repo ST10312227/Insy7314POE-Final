@@ -10,24 +10,22 @@ import TransactionHistory from "./components/TransactionHistory";
 import BuyAirtime from "./components/BuyAirtime";
 import AddBeneficiary from "./components/AddBeneficiary";
 import BeneficiaryDetails from "./components/BeneficiaryDetails";
-
-// ✅ Make sure this path matches where your file lives
 import Signup from "./components/Signup";
-import Login from "./components/Login"; // optional (stub below)
-
+import Login from "./components/Login";
+import Home from "./components/Home";
+import About from "./components/About";
 import "./App.css";
 
 function App() {
   return (
     <Routes>
-      {/* Default: go to signup */}
-      <Route path="/" element={<Navigate to="/signup" replace />} />
-
-      {/* Auth pages (no dashboard layout) */}
-      <Route path="/signup" element={<Signup />} />
+      {/* PUBLIC PAGES */}
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
-      {/* Main app under /app with the dashboard shell */}
+      {/* DASHBOARD (protected area later) */}
       <Route path="/app" element={<DashboardLayout />}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
@@ -41,8 +39,8 @@ function App() {
         <Route path="beneficiary-details/:id" element={<BeneficiaryDetails />} />
       </Route>
 
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/signup" replace />} />
+      {/*  Fallback route */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
