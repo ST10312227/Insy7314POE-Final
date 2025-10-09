@@ -1,0 +1,27 @@
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background-color: #1d2f7c;
+  overflow: hidden;
+  position: relative; /* no fixed, no scaling */
+}
+
+.dashboard-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #1d2f7c;
+}
+
+.dashboard-content {
+  background: #ffffff;
+  border-radius: 25px;
+  margin: 3rem auto 2.5rem 6rem; /* ✅ add left margin */
+  width: 88%; /* slightly narrower to stay balanced */
+  height: 82%;
+  padding: 2rem 3rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+}

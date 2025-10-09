@@ -1,0 +1,76 @@
+.navbar {
+  position: fixed;
+  top: 20px;                  /* space from top */
+  left: 50%;
+  transform: translateX(-50%); /* center horizontally */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1d2f7c;
+  padding: 0.3rem 2rem;
+  border-radius: 50px;        /* rounded pill shape */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* floating shadow */
+  width: 93%;              /* only as wide as content */
+  min-width: 60%;             /* ensures it doesn’t look too small */
+  color: white;
+  z-index: 1000;
+  transition: all 0.5s ease;
+}
+
+/* white navbar for login page */
+.navbar-login,
+.navbar-signup {
+  background-color: #ffffff;
+  color: #1d2f7c;
+  box-shadow: none;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.nav-links {
+ list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  font-family: 'Poppins', sans-serif; 
+  font-weight: 500; 
+  color: white;
+}
+
+.nav-links li {
+  cursor: pointer;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+  color: white;
+}
+
+/* Login version link color (blue) */
+.nav-links-login a {
+  color: #1d2f7c;
+}
+
+.nav-links-login a:hover {
+    text-decoration: underline;
+    color: #1d2f7c;
+}
+
+.nav-links-login li {
+  cursor: pointer;
+  color: #1d2f7c;
+}
+
+.logo-img {
+  height: 40px;    
+  width: auto;
+  display: block;
+}
