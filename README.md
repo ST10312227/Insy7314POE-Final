@@ -198,7 +198,7 @@ Authorization: Bearer <token>
 
 **Dashboard**
 
-<img width="1366" height="850" alt="dashboard" src="https://github.com/user-attachments/assets/161d52ff-01de-4170-8983-91cf267f314b" />
+
 
 
 Overview of Accounts
