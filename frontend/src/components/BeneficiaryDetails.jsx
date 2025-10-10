@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useBeneficiaries } from "../context/BeneficiaryContext";
-import "./AirtimeShared.css";
+import "./BeneficiaryDetails.css";
 import { FaArrowLeft, FaPhone } from "react-icons/fa";
 import { useState } from "react";
 
@@ -104,8 +104,12 @@ function BeneficiaryDetails() {
         <hr className="divider" />
 
         <div className="beneficiary-info">
-          <p><strong>Network:</strong> {beneficiary.network}</p>
-          <p><strong>Phone:</strong> {beneficiary.number}</p>
+          <p>
+            <strong>Network:</strong> {beneficiary.network}
+          </p>
+          <p>
+            <strong>Phone:</strong> {beneficiary.number}
+          </p>
         </div>
 
         {/* Amount input */}

@@ -1,0 +1,174 @@
+.local-transfer-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 60vh;
+  padding-top: 50px;
+  background-color: white;
+  font-family: "Poppins", sans-serif;
+  position: relative;
+}
+
+.local-transfer-card {
+  background-color: #fff;
+  border: 3px solid #1c2a8a;
+  border-radius: 20px;
+  width: 500px;
+  margin-top: 10px;
+  padding: 50px;
+  text-align: center;
+  color: #12255c;
+  box-shadow: 0 10px 25px rgba(28, 42, 138, 0.08);
+  position: relative;
+}
+
+.icon-circle {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1c2a8a;
+  color: white;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+}
+
+.card-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #12255c;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.divider {
+  border: none;
+  border-top: 1.5px solid #e6e6e6;
+  margin: 20px 0;
+}
+
+/* Account info section */
+.account-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1c2a8a;
+  color: white;
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.account-balance {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* Beneficiary info block */
+.beneficiary-box {
+  background-color: #f9f9ff;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 25px;
+}
+
+.beneficiary-box p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #12255c;
+}
+
+.beneficiary-box small {
+  color: #666;
+}
+
+/* === FORM FIELDS === */
+.payment-form {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.payment-form label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #12255c;
+}
+
+.payment-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  outline: none;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.payment-form input:focus {
+  border-color: #1c2a8a;
+  box-shadow: 0 0 5px rgba(28, 42, 138, 0.2);
+}
+
+/* Payment type radio buttons */
+.payment-type {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 15px 0 25px;
+  padding-left: 2px;
+}
+
+.payment-type label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #12255c;
+  cursor: pointer;
+  white-space: nowrap; /* prevents wrapping to the next line */
+  text-align: left;
+}
+
+/* Radio circle styling */
+.payment-type input[type="radio"] {
+  accent-color: #1c2a8a;
+  transform: scale(1.2);
+  cursor: pointer;
+  margin: 0;
+}
+
+.submit-btn {
+  width: 100%;
+  background-color: #1c2a8a;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #12255c;
+}
+
+.back-icon {
+  position: absolute;
+  top: 30px;
+  left: 40px;
+  background: none;
+  border: none;
+  color: #1c2a8a;
+  font-size: 22px;
+  cursor: pointer;
+}
