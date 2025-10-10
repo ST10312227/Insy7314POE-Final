@@ -1,18 +1,12 @@
-#  Vault Banking App
-
-![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-blue?logo=react)
-<br>
-![Backend](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-green?logo=node.js)
-<br>
-![Database](https://img.shields.io/badge/Database-MongoDB-brightgreen?logo=mongodb)
-<br>
-![License](https://img.shields.io/badge/License-MIT-yellow)
-<br>
-![Status](https://img.shields.io/badge/Status-In%20Development-orange)
+# The Vault Banking App
 
 <img width="300" height="300" alt="logo" src="https://github.com/user-attachments/assets/0bbafbbb-335e-450f-8390-2ccaf8b1ad37" />
 
----
+![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-blue?logo=react)  ![Backend](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-green?logo=node.js)
+![Database](https://img.shields.io/badge/Database-MongoDB-brightgreen?logo=mongodb)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![Status](https://img.shields.io/badge/Status-In%20Development-orange)
+
 ## Application Overview
 
 **Vault** is a modern digital banking application built with React + Vite, Node.js, and MongoDB that provides a seamless experience for managing both local and international financial transactions. The app replicates the core features of an online banking system while focusing on usability, security, and performance.
@@ -200,16 +194,28 @@ Authorization: Bearer <token>
 
 ## Screens
 
-**Dashboard**
+## Home Page:
 
 
+
+<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/1dd5f094-7370-4951-89f8-c2bca8b30589" />
+
+## Log In Page:
+
+
+
+<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/1bc00236-3b04-40b7-a26f-165acdccb977" />
+
+## Create Account Page:
+
+
+
+<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/fd0de8e1-52ea-4be1-b2cd-649c38c4cfe4" />
 
 
 Overview of Accounts
 
-**Local Transfer**
 
-(Insert here)
 
 Add Beneficiaries, send local payments
 
