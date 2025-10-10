@@ -1,0 +1,165 @@
+/* === Add Beneficiary Page === */
+.add-beneficiary-page {
+  position: relative;
+  height: 100%;
+  background-color: #fff;
+  border-radius: 20px;
+  margin-top: 200px;
+  margin-bottom: 200px;
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Back arrow (top left corner) */
+.back-icon {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  background: none;
+  border: none;
+  color: #12255c;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Main card */
+.add-beneficiary-card {
+  position: relative;
+  background-color: #ffffff;
+  border: 3px solid #1c2a8a;
+  border-radius: 25px;
+  padding: 60px 80px;
+  width: 550px;
+  text-align: center;
+  box-shadow: none;
+}
+
+/* Phone icon above card */
+.icon-circle {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1c2a8a;
+  color: white;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+}
+
+/* Card Title */
+.card-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #12255c;
+  margin-top: 30px;
+  margin-bottom: 25px;
+}
+
+/* Form Fields */
+.beneficiary-form {
+  text-align: left;
+  margin-top: 15px;
+}
+
+.beneficiary-form label {
+  font-weight: 600;
+  display: block;
+  color: #12255c;
+  margin-bottom: 3px;
+  margin-top: 5px;
+}
+
+.beneficiary-form input,
+.beneficiary-form select {
+  width: 100%;
+  border: 1.8px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  outline: none;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.beneficiary-form input:focus,
+.beneficiary-form select:focus {
+  border-color: #1c2a8a;
+}
+
+/* Add button */
+.add-btn {
+  width: 100%;
+  background-color: #1c2a8a;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: p
+}
+
+.confirmation-page {
+  position: relative;
+  height: 100%;
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 40px; /* same as Add Beneficiary */
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center; /*  vertically and horizontally centered */
+  overflow: hidden; /*  no scrollbars */
+}
+
+/* Confirmation card */
+.confirmation-card {
+  position: relative;
+  background-color: #ffffff;
+  border: 3px solid #1c2a8a;
+  border-radius: 25px;
+  padding: 60px 80px;
+  width: 550px;
+  text-align: center;
+  box-shadow: none;
+}
+
+/* Tick icon */
+.icon-circle.success {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #b7ff4a; /* bright lime */
+  color: #fff;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  animation: popIn 0.5s ease-out;
+  z-index: 2;
+}
+
+/* Center fade in animation */
+@keyframes popIn {
+  0% {
+    transform: scale(0) translateX(-50%);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2) translateX(-50%);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateX(-50%);
+  }
+}
