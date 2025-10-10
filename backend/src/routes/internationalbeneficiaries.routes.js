@@ -33,10 +33,14 @@ const writeLimiter = rateLimit({
     // Drop any legacy conflicting unique index (ignore errors)
     try {
       await internationalBeneficiaries.dropIndex("uniq_user_bank_account");
-    } catch (_) {}
+    } catch (err) {
+      /* ignore if index doesn't exist */ void 0;
+    }
     try {
       await internationalBeneficiaries.dropIndex({ userId: 1, bankCode: 1, accountNumber: 1 });
-    } catch (_) {}
+    } catch (err) {
+      /* ignore if compound index doesn't exist */ void 0;
+    }
 
     await internationalBeneficiaries.createIndex(
       { userId: 1, bankCode: 1, accountNumber: 1 },
@@ -50,7 +54,9 @@ const writeLimiter = rateLimit({
         },
       }
     );
-  } catch (_) {}
+  } catch (err) {
+    /* ignore index setup errors on startup */ void 0;
+  }
 })();
 
 // debug

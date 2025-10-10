@@ -65,7 +65,9 @@ router.get("/_diag/indexes", async (_req, res) => {
         // ignore if missing
         // eslint-disable-next-line no-await-in-loop
         await beneficiaries.dropIndex(name);
-      } catch (_) {}
+      } catch (err) {
+        /* ignore missing index during cleanup */ void 0;
+      }
     }
 
     await beneficiaries.createIndex(
@@ -78,8 +80,8 @@ router.get("/_diag/indexes", async (_req, res) => {
         partialFilterExpression: { numberNorm: { $type: "string" } },
       }
     );
-  } catch (_) {
-    // ignore on startup
+  } catch (err) {
+    /* ignore index setup errors on startup */ void 0;
   }
 })();
 
