@@ -1,0 +1,82 @@
+.local-transfer-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 60vh;
+ margin-top: 200px;
+ margin-bottom: 200px;
+  background-color: white;
+  font-family: "Poppins", sans-serif;
+  position: relative;
+}
+
+.local-transfer-card {
+  background-color: #fff;
+  border: 3px solid #1c2a8a;
+  border-radius: 20px;
+  width: 500px;
+  margin-top: 10px;
+  padding: 50px;
+  text-align: center;
+  color: #12255c;
+  box-shadow: 0 10px 25px rgba(28, 42, 138, 0.08);
+  position: relative;
+}
+
+.icon-circle {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1c2a8a;
+  color: white;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+}
+
+.card-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #12255c;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.divider {
+  border: none;
+  border-top: 1.5px solid #e6e6e6;
+  margin: 20px 0;
+}
+
+/* Account info section */
+.account-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: left;
+  background: #1c2a8a;
+  color: white;
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: left;
+  
+}
+
+
+
+
+.back-icon {
+  position: absolute;
+  top: 30px;
+  left: 40px;
+  background: none;
+  border: none;
+  color: #1c2a8a;
+  font-size: 22px;
+  cursor: pointer;
+}
