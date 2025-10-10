@@ -1,17 +1,16 @@
-// frontend/.eslintrc.cjs
+// backend/.eslintrc.cjs
 module.exports = {
   root: true,
-  env: { browser: true, es2022: true },
+  env: { node: true, es2022: true },
   extends: [
     'eslint:recommended',
-    'plugin:react/recommended',
+    'plugin:security/recommended',
   ],
-  plugins: ['react', 'react-hooks'],
-  settings: { react: { version: 'detect' } },
-  parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
+  plugins: ['security', 'node'],
+  parserOptions: { ecmaVersion: 'latest', sourceType: 'script' },
   rules: {
-    'react/react-in-jsx-scope': 'off',
     'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    'no-console': 'off',
   },
-  ignorePatterns: ['node_modules/', 'dist/', 'build/'],
+  ignorePatterns: ['node_modules/', 'dist/', 'coverage/', 'build/'],
 };
