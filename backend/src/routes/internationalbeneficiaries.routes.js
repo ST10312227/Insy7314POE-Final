@@ -1,12 +1,10 @@
-const router = require('express').Router();
-const { ObjectId } = require('mongodb');
-const rateLimit = require('express-rate-limit');
-const checkAuth = require('../middlewares/authRequired');
-const validate = require('../middlewares/validate');
-const { collections } = require('../db/collections');
-const { z } = require('zod');
-
-
+const router = require("express").Router();
+const { ObjectId } = require("mongodb");
+const rateLimit = require("express-rate-limit");
+const checkAuth = require("../middlewares/authRequired");
+const validate = require("../middlewares/validate");
+const { collections } = require("../db/collections");
+const { z } = require("zod");
 
 // ---- validation ----
 const createIntlBeneficiarySchema = z.object({
@@ -33,18 +31,22 @@ const writeLimiter = rateLimit({
     const { internationalBeneficiaries } = collections();
 
     // Drop any legacy conflicting unique index (ignore errors)
-    try { await internationalBeneficiaries.dropIndex('uniq_user_bank_account'); } catch (_) {}
-    try { await internationalBeneficiaries.dropIndex({ userId: 1, bankCode: 1, accountNumber: 1 }); } catch (_) {}
+    try {
+      await internationalBeneficiaries.dropIndex("uniq_user_bank_account");
+    } catch (_) {}
+    try {
+      await internationalBeneficiaries.dropIndex({ userId: 1, bankCode: 1, accountNumber: 1 });
+    } catch (_) {}
 
     await internationalBeneficiaries.createIndex(
       { userId: 1, bankCode: 1, accountNumber: 1 },
       {
-        name: 'uniq_user_bank_account',
+        name: "uniq_user_bank_account",
         unique: true,
         background: true,
         partialFilterExpression: {
-          bankCode: { $type: 'string' },
-          accountNumber: { $type: 'string' },
+          bankCode: { $type: "string" },
+          accountNumber: { $type: "string" },
         },
       }
     );
@@ -52,60 +54,58 @@ const writeLimiter = rateLimit({
 })();
 
 // debug
-router.get('/_ping', (_req, res) => res.json({ ok: true, scope: 'international-beneficiaries' }));
+router.get("/_ping", (_req, res) => res.json({ ok: true, scope: "international-beneficiaries" }));
 
 // list
-router.get('/', checkAuth, async (req, res) => {
-  const { internationalBeneficiaries } = collections();
-  const userId = new ObjectId(req.user.id);
-  const items = await internationalBeneficiaries
-    .find({ userId, archived: { $ne: true } })
-    .project({ userId: 0 })
-    .sort({ createdAt: -1 })
-    .toArray();
-  res.json({ items });
+router.get("/", checkAuth, async (req, res, next) => {
+  try {
+    const { internationalBeneficiaries } = collections();
+    const userId = new ObjectId(req.user.id);
+    const items = await internationalBeneficiaries
+      .find({ userId, archived: { $ne: true } })
+      .project({ userId: 0 })
+      .sort({ createdAt: -1 })
+      .toArray();
+    res.json({ items });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // create
-router.post(
-  '/',
-  checkAuth,
-  writeLimiter,
-  validate(createIntlBeneficiarySchema),
-  async (req, res) => {
-    const { name, bankCode, accountNumber, currency, note } = req.validated;
-    const { internationalBeneficiaries } = collections();
-    const now = new Date();
+router.post("/", checkAuth, writeLimiter, validate(createIntlBeneficiarySchema), async (req, res) => {
+  const { name, bankCode, accountNumber, currency, note } = req.validated;
+  const { internationalBeneficiaries } = collections();
+  const now = new Date();
 
-    const doc = {
-      userId: new ObjectId(req.user.id),
-      name: name.trim(),
-      bankCode: bankCode.trim(),
-      accountNumber: accountNumber.trim(),
-      currency: currency?.toUpperCase() || 'ZAR',
-      note: note || null,
-      archived: false,
-      createdAt: now,
-      updatedAt: now,
-    };
+  const doc = {
+    userId: new ObjectId(req.user.id),
+    name: name.trim(),
+    bankCode: bankCode.trim(),
+    accountNumber: accountNumber.trim(),
+    currency: currency?.toUpperCase() || "ZAR",
+    note: note || null,
+    archived: false,
+    createdAt: now,
+    updatedAt: now,
+  };
 
-    try {
-      const r = await internationalBeneficiaries.insertOne(doc);
-      const out = { id: r.insertedId.toString(), ...doc };
-      delete out.userId;
-      return res.status(201).json(out);
-    } catch (err) {
-      if (err?.code === 11000) {
-        req.log?.warn(
-          { code: err.code, idx: 'uniq_user_bank_account', keyValue: err.keyValue },
-          'intl_beneficiary_duplicate_key'
-        );
-        return res.status(409).json({ error: 'beneficiary_exists' });
-      }
-      req.log?.error({ err }, 'intl_beneficiary_create_error');
-      return res.status(500).json({ error: 'create_failed' });
+  try {
+    const r = await internationalBeneficiaries.insertOne(doc);
+    const out = { id: r.insertedId.toString(), ...doc };
+    delete out.userId;
+    return res.status(201).json(out);
+  } catch (err) {
+    if (err?.code === 11000) {
+      req.log?.warn(
+        { code: err.code, idx: "uniq_user_bank_account", keyValue: err.keyValue },
+        "intl_beneficiary_duplicate_key"
+      );
+      return res.status(409).json({ error: "beneficiary_exists" });
     }
+    req.log?.error({ err }, "intl_beneficiary_create_error");
+    return res.status(500).json({ error: "create_failed" });
   }
-);
+});
 
 module.exports = router;

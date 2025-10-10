@@ -1,4 +1,3 @@
-// backend/src/routes/beneficiaries.routes.js
 const router = require("express").Router();
 const { ObjectId } = require("mongodb");
 const rateLimit = require("express-rate-limit");
@@ -6,8 +5,6 @@ const checkAuth = require("../middlewares/authRequired");
 const validate = require("../middlewares/validate");
 const { collections } = require("../db/collections");
 const { z } = require("zod");
-
-
 
 // ---- Validation ----
 const NETWORKS = ["Cell C", "MTN", "Telkom Mobile", "Vodacom"];
@@ -53,7 +50,7 @@ router.get("/_diag/indexes", async (_req, res) => {
 
     // Find bad/old indexes to drop
     const toDrop = existing
-      .filter(ix => {
+      .filter((ix) => {
         const key = ix.key || {};
         const name = ix.name || "";
         // Drop if it's a single-field { number: 1 } index OR any legacy uniq_user_number*
@@ -61,13 +58,16 @@ router.get("/_diag/indexes", async (_req, res) => {
         const isLegacyName = /^uniq_user_number$/i.test(name);
         return isNumberOnly || isLegacyName;
       })
-      .map(ix => ix.name);
+      .map((ix) => ix.name);
 
     for (const name of toDrop) {
-      try { await beneficiaries.dropIndex(name); } catch (_) {}
+      try {
+        // ignore if missing
+        // eslint-disable-next-line no-await-in-loop
+        await beneficiaries.dropIndex(name);
+      } catch (_) {}
     }
 
-    // Create the desired unique index (id + normalized number)
     await beneficiaries.createIndex(
       { userId: 1, numberNorm: 1 },
       {
@@ -84,17 +84,21 @@ router.get("/_diag/indexes", async (_req, res) => {
 })();
 
 // ---- GET /payments/beneficiaries ----
-router.get("/", checkAuth, async (req, res) => {
-  const { beneficiaries } = collections();
-  const userId = new ObjectId(req.user.id);
+router.get("/", checkAuth, async (req, res, next) => {
+  try {
+    const { beneficiaries } = collections();
+    const userId = new ObjectId(req.user.id);
 
-  const list = await beneficiaries
-    .find({ userId, archived: { $ne: true } })
-    .project({ userId: 0, numberNorm: 0 }) // hide internal fields
-    .sort({ createdAt: -1 })
-    .toArray();
+    const list = await beneficiaries
+      .find({ userId, archived: { $ne: true } })
+      .project({ userId: 0, numberNorm: 0 }) // hide internal fields
+      .sort({ createdAt: -1 })
+      .toArray();
 
-  res.json({ items: list });
+    res.json({ items: list });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // ---- POST /payments/beneficiaries ----
@@ -106,8 +110,8 @@ router.post("/", checkAuth, writeLimiter, validate(createBeneficiarySchema), asy
   const doc = {
     userId: new ObjectId(req.user.id),
     name: name.trim(),
-    number: number.trim(),              // keep original formatting for display
-    numberNorm: normalizeMsisdn(number),// used for uniqueness
+    number: number.trim(), // keep original formatting for display
+    numberNorm: normalizeMsisdn(number), // used for uniqueness
     network,
     archived: false,
     createdAt: now,
