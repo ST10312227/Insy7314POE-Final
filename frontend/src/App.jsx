@@ -89,7 +89,7 @@ export default function App() {
 
          {/* Local Transfer routes */}
 <Route path="local-transfer/beneficiaries" element={<LocalTransferBeneficiaries />} />
-<Route path="local-transfer/add" element={<LocalTransferForm />} />
+<Route path="local-transfer/new" element={<LocalTransferForm />} />
 <Route path="local-transfer/details/:id" element={<LocalTransferDetails />} />
 <Route path="local-transfer/pay" element={<LocalTransferPay />} />
 <Route path="local-transfer/password" element={<LocalTransferPassword />} />

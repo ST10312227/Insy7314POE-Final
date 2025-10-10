@@ -1,148 +1,116 @@
-import { useEffect, useState } from "react";
+// src/components/LocalTransferPassword.jsx
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaLock, FaCheckCircle } from "react-icons/fa";
+import { useMemo, useState } from "react";
 import "./LocalTransferPassword.css";
 import { useLocalTransfers } from "../context/LocalTransferContext";
 
 export default function LocalTransferPassword() {
   const navigate = useNavigate();
-  const { state } = useLocation(); // all fields from Pay step
-  const { addLocalBeneficiary, createLocalTransfer } = useLocalTransfers();
+  const { state } = useLocation();
+  const { createLocalTransfer } = useLocalTransfers();
 
+  // state should contain:
+  // {
+  //   bank, branchCode, accountType, name, accountNumber,
+  //   amount, paymentType, beneficiaryReference, statementDescription
+  // }
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [confirmed, setConfirmed] = useState(false);
-  const [tx, setTx] = useState(null);
-  const [working, setWorking] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [err, setErr] = useState("");
 
-  // Guard: if no state, send back
-  useEffect(() => {
-    if (!state) navigate("/app/local-transfer/new", { replace: true });
-  }, [state, navigate]);
+  // If someone hits this screen directly, return them to the start of the flow.
+  if (!state) {
+    navigate("/app/local-transfer", { replace: true });
+    return null;
+  }
 
-  if (!state) return null;
+  const recap = useMemo(
+    () => ({
+      bank: state.bank || "",
+      branchCode: state.branchCode || "",
+      accountType: state.accountType || "",
+      name: state.name || "",
+      accountNumber: state.accountNumber || "",
+      amount: state.amount || "",
+      paymentType: state.paymentType || "Real-time",
+      beneficiaryReference: state.beneficiaryReference || "",
+      statementDescription: state.statementDescription || "",
+    }),
+    [state]
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setErr("");
+    setSubmitting(true);
 
-    // Demo password gate
-    if (password !== "1234") {
-      setError("Incorrect password. Please try again.");
-      return;
-    }
-
-    setWorking(true);
     try {
-      // 1) Save beneficiary (optional)
-      if (state.saveBeneficiary) {
-        try {
-          await addLocalBeneficiary({
-            name: state.name,
-            bank: state.bank,
-            branchCode: state.branchCode,
-            accountType: state.accountType,
-            accountNumber: state.accountNumber,
-          });
-        } catch (err) {
-          // Ignore duplicate save
-          if (!String(err?.message || "").includes("already exists")) {
-            throw err;
-          }
-        }
-      }
-
-      // 2) Create transfer
-      const result = await createLocalTransfer({
-        name: state.name,
-        bank: state.bank,
-        branchCode: state.branchCode,
-        accountType: state.accountType,
-        accountNumber: state.accountNumber,
-        amount: Number(state.amount),
-        ownReference: state.ownReference,
-        recipientReference: state.recipientReference,
-        paymentType: state.paymentType,
+      // IMPORTANT: pass the user's login password for backend verification
+      const transfer = await createLocalTransfer({
+        beneficiary: {
+          bank: recap.bank,
+          branchCode: recap.branchCode,
+          accountType: recap.accountType,
+          name: recap.name,
+          accountNumber: recap.accountNumber,
+        },
+        amount: recap.amount,
+        paymentType: recap.paymentType,
+        beneficiaryReference: recap.beneficiaryReference,
+        statementDescription: recap.statementDescription,
+        password, // user's login password
       });
 
-      setTx({
-        reference: result.reference,
-        date: new Date(result.date || Date.now()).toLocaleString("en-ZA", {
-          dateStyle: "medium",
-          timeStyle: "short",
-        }),
+      // Go to receipt/details (keep server payload in route state too)
+      navigate(`/app/local-transfer/details/${transfer?.id || ""}`, {
+        state: transfer,
+        replace: true,
       });
-      setConfirmed(true);
-
-      // Redirect after a moment
-      setTimeout(() => navigate("/app/funds-transfer"), 6000);
-    } catch (err) {
-      console.error("Local transfer error:", err);
-      setError(err?.message || "Payment failed. Please try again.");
+    } catch (e2) {
+      console.error("Local transfer error:", e2);
+      setErr(
+        e2?.message || e2?.data?.error || "Could not complete transfer."
+      );
     } finally {
-      setWorking(false);
+      setSubmitting(false);
     }
   };
 
-  if (confirmed) {
-    return (
-      <div className="confirmation-page fade-in">
-        <div className="confirmation-card">
-          <div className="icon-circle success">
-            <FaCheckCircle size={32} />
-          </div>
-          <h2 className="card-title">Payment Successful!</h2>
-          <p className="beneficiary-subtext">
-            Your transfer to <strong>{state.name}</strong> has been processed successfully.
-          </p>
-
-          <hr className="divider" />
-
-          <div className="beneficiary-info">
-            <p><strong>Transaction Ref:</strong> {tx?.reference}</p>
-            <p><strong>Date:</strong> {tx?.date}</p>
-            <p><strong>Bank:</strong> {state.bank}</p>
-            <p><strong>Branch Code:</strong> {state.branchCode}</p>
-            <p><strong>Account Number:</strong> {state.accountNumber}</p>
-            <p><strong>Account Type:</strong> {state.accountType}</p>
-            <p><strong>Amount:</strong> R{state.amount}</p>
-            <p><strong>Own Reference:</strong> {state.ownReference}</p>
-            <p><strong>Recipient Reference:</strong> {state.recipientReference}</p>
-            <p><strong>Payment Type:</strong> {state.paymentType}</p>
-          </div>
-
-          <hr className="divider" />
-          <p className="redirect-text">Redirecting to Fund Transfer…</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="local-transfer-password-page fade-in">
-      <button className="back-icon" onClick={() => navigate(-1)}>
-        <FaArrowLeft />
-      </button>
-
+    <div className="local-transfer-password-page">
       <div className="local-transfer-password-card">
-        <div className="icon-circle"><FaLock /></div>
-        <h2 className="card-title">Enter Password</h2>
-        <hr className="divider" />
+        <h2>Confirm Transfer</h2>
+
+        {/* Quick recap */}
+        <div className="lt-recap">
+          <div><strong>To:</strong> {recap.name} ({recap.bank})</div>
+          <div><strong>Account:</strong> {recap.accountNumber}</div>
+          <div><strong>Amount:</strong> {recap.amount}</div>
+          <div><strong>Type:</strong> {recap.paymentType}</div>
+          {recap.beneficiaryReference && (
+            <div><strong>Beneficiary Ref:</strong> {recap.beneficiaryReference}</div>
+          )}
+          {recap.statementDescription && (
+            <div><strong>Statement Desc:</strong> {recap.statementDescription}</div>
+          )}
+        </div>
+
+        {err && <div className="lt-error">{err}</div>}
 
         <form onSubmit={handleSubmit}>
+          <label htmlFor="vault-password">Vault Password</label>
           <input
+            id="vault-password"
             type="password"
-            placeholder="Enter your password (try 1234)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="input"
-            disabled={working}
+            placeholder="Enter your login password"
+            autoComplete="current-password"
+            required
           />
 
-          {error && <p className="error-text">{error}</p>}
-
-          <button type="submit" className="submit-btn" disabled={working}>
-            {working ? "Processing..." : "Confirm Payment"}
+          <button className="submit-btn" type="submit" disabled={submitting}>
+            {submitting ? "Processing…" : "Pay"}
           </button>
         </form>
       </div>
