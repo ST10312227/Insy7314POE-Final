@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   backend:
-    name: Backend – install & lint
+    name: Backend – install, lint, test, audit
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -24,9 +24,16 @@ jobs:
           cache-dependency-path: backend/package-lock.json
       - run: npm ci
       - run: npm run lint
+      - run: npm test
+      # Security audit (non-blocking) + upload JSON
+      - run: npm audit --omit=dev --json > audit-backend.json || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: audit-backend
+          path: backend/audit-backend.json
 
   frontend:
-    name: Frontend – install, lint & build
+    name: Frontend – install, lint & build (+ audit)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -41,3 +48,9 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build
+      # Security audit (non-blocking) + upload JSON
+      - run: npm audit --omit=dev --json > audit-frontend.json || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: audit-frontend
+          path: frontend/audit-frontend.json
