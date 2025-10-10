@@ -10,6 +10,10 @@ function collections() {
     beneficiaries: db.collection('beneficiaries'),
     idempotency: db.collection('idempotency'),
     airtimePurchases: db.collection('airtimePurchases'),
+    localBeneficiaries: db.collection('local_beneficiaries'),
+    localTransfers: db.collection('local_transfers'),
+    internationalBeneficiaries: db.collection('intl_beneficiaries'),
+    internationalTransfers: db.collection('intl_transfers'),
   };
 }
 

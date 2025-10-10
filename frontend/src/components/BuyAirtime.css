@@ -1,11 +1,12 @@
 .buy-airtime-page {
-  height: 10vh;
+  /* Let it fill and scroll */
+  min-height: 100vh;
   background-color: #fff;
   border-radius: 20px;
   padding: 60px 40px;
   font-family: "Poppins", sans-serif;
   position: relative;
-  overflow-y: hidden;
+  overflow-y: auto;        /* enable scrolling if content is tall */
 }
 
 .buy-airtime-card {
@@ -15,7 +16,8 @@
   border-radius: 20px;
   padding: 50px;
   margin: 40px auto 60px;
-  width: 600px;
+  width: 100%;
+  max-width: 640px;        /* responsive max width */
   text-align: center;
   color: #12255c;
   box-shadow: none;
@@ -128,8 +130,8 @@
 
 .back-icon {
   position: absolute;
-  top: 40px;
-  left: 40px;
+  top: 24px;             
+  left: 24px;
   background: none;
   border: none;
   color: #12255c;

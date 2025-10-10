@@ -1,6 +1,10 @@
+// components/FundsTransfer.jsx
+import { useNavigate } from "react-router-dom";
 import "./FundsTransfer.css";
 
-function FundsTransfer() {
+export default function FundsTransfer() {
+  const navigate = useNavigate();
+
   return (
     <div className="fund-transfer-container">
       <h2 className="fund-title">
@@ -11,20 +15,32 @@ function FundsTransfer() {
       </p>
 
       <div className="fund-card-wrapper">
-        {/* === Local Transfer === */}
-        <div className="fund-card white-card">
+        <div
+          className="fund-card white-card"
+          onClick={() => navigate("/app/local-transfer")}
+          role="button"
+          tabIndex={0}
+        >
           <i className="fa-solid fa-user-group"></i>
           <h3>Local Transfer</h3>
         </div>
 
-        {/* === International Transfer === */}
-        <div className="fund-card blue-card">
+        <div
+          className="fund-card blue-card"
+          onClick={() => navigate("/app/international")}
+          role="button"
+          tabIndex={0}
+        >
           <i className="fa-solid fa-globe"></i>
           <h3>International Transfer</h3>
         </div>
 
-        {/* === Same Bank Transfer === */}
-        <div className="fund-card white-card">
+        <div
+          className="fund-card white-card"
+          onClick={() => navigate("/app/funds-transfer")}
+          role="button"
+          tabIndex={0}
+        >
           <i className="fa-solid fa-landmark"></i>
           <h3>Same Bank Transfer</h3>
         </div>
@@ -32,5 +48,3 @@ function FundsTransfer() {
     </div>
   );
 }
-
-export default FundsTransfer;
