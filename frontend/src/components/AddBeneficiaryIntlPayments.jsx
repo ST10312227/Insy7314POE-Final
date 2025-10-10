@@ -1,11 +1,14 @@
+// src/components/AddBeneficiaryIntlPayments.jsx
 import "./AddBeneficiaryIntlPayments.css";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaPhone } from "react-icons/fa";
 import { useState } from "react";
 import { CountryDropdown } from "react-country-region-selector";
+import { useInternational } from "../context/InternationalContext";
 
 function AddBeneficiaryIntlPayments() {
   const navigate = useNavigate();
+  const { addBeneficiary } = useInternational();
   const [step, setStep] = useState(1);
 
   const [country, setCountry] = useState("");
@@ -15,52 +18,53 @@ function AddBeneficiaryIntlPayments() {
     lastName: "",
     address: "",
     cityName: "",
+    country: "",
     accountNumber: "",
     bank: "",
     swiftCode: "",
-    currency: "",
+    currency: "USD",
     amount: "",
-    reference: ""
+    reference: "",
   });
+  const [error, setError] = useState("");
 
-  function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleCountryChange = (val) => { setCountry(val); setForm({ ...form, country: val }); };
+  const handleNext = (e) => { e.preventDefault(); setStep(2); };
+  const handleBackToStep1 = () => setStep(1);
 
-  function handleCountryChange(val) {
-    setCountry(val);
-    setForm({ ...form, country: val });
-  }
-
-  function handleNext(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setStep(2);
-  }
-
-  function handleBackToStep1() {
-    setStep(1);
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    // Save beneficiary logic here
-    alert("Beneficiary submitted!");
-    navigate("/beneficiaries");
-  }
+    setError("");
+    try {
+      // Save beneficiary in Mongo
+      const saved = await addBeneficiary(form);
+      // Then go to confirmation; you can also hit POST /transfers later from that page
+      navigate("/app/international/confirm", { state: { data: saved } });
+    } catch (err) {
+      setError(err.message || "Could not save beneficiary.");
+    }
+  };
 
   return (
     <div className="add-beneficiary-page">
-      <button className="back-icon" onClick={() => step === 1 ? navigate("/buy-airtime") : handleBackToStep1()}>
+      <button
+        className="back-icon"
+        onClick={() => (step === 1 ? navigate("/app/international") : handleBackToStep1())}
+      >
         <FaArrowLeft />
       </button>
+
       <div className="add-beneficiary-card">
-        <div className="icon-circle">
-          <FaPhone />
-        </div>
+        <div className="icon-circle"><FaPhone /></div>
+
         {step === 1 ? (
           <>
             <h2 className="card-title">Add Beneficiary</h2>
-            <div className="step-indicator">STEP 1 OUT OF 2</div>
+            <div className="step-indicator">STEP 1 OF 2</div>
+
+            {error && <div style={{ background:'#ffeaea', color:'#b10000', borderRadius:10, padding:'10px 12px', marginBottom:12 }}>{error}</div>}
+
             <form className="beneficiary-form" onSubmit={handleNext}>
               <label>Who are you Paying?</label>
               <select name="who" value={form.who} onChange={handleChange} required>
@@ -79,72 +83,30 @@ function AddBeneficiaryIntlPayments() {
               />
 
               <label>First Name</label>
-              <input
-                type="text"
-                name="firstName"
-                placeholder="John"
-                value={form.firstName}
-                onChange={handleChange}
-                required
-              />
-
+              <input name="firstName" value={form.firstName} onChange={handleChange} required />
               <label>Last Name</label>
-              <input
-                type="text"
-                name="lastName"
-                placeholder="Doe"
-                value={form.lastName}
-                onChange={handleChange}
-                required
-              />
-
+              <input name="lastName" value={form.lastName} onChange={handleChange} required />
               <label>Address</label>
-              <input
-                type="text"
-                name="address"
-                placeholder="123 Main St"
-                value={form.address}
-                onChange={handleChange}
-                required
-              />
-
+              <input name="address" value={form.address} onChange={handleChange} required />
               <label>City / Town</label>
-              <input
-                type="text"
-                name="cityName"
-                placeholder="Cape Town"
-                value={form.cityName}
-                onChange={handleChange}
-                required
-              />
+              <input name="cityName" value={form.cityName} onChange={handleChange} required />
 
-              <button type="submit" className="add-btn">
-                Next
-              </button>
+              <button type="submit" className="add-btn">Next</button>
             </form>
           </>
         ) : (
           <>
             <h2 className="card-title">Beneficiary Bank Details</h2>
-            <div className="step-indicator">STEP 2 OUT OF 2</div>
+            <div className="step-indicator">STEP 2 OF 2</div>
+
+            {error && <div style={{ background:'#ffeaea', color:'#b10000', borderRadius:10, padding:'10px 12px', marginBottom:12 }}>{error}</div>}
+
             <form className="beneficiary-form" onSubmit={handleSubmit}>
               <label>Account Number</label>
-              <input
-                type="text"
-                name="accountNumber"
-                placeholder="CN123456789012"
-                value={form.accountNumber}
-                onChange={handleChange}
-                required
-              />
+              <input name="accountNumber" value={form.accountNumber} onChange={handleChange} required />
 
               <label>Choose Bank</label>
-              <select
-                name="bank"
-                value={form.bank}
-                onChange={handleChange}
-                required
-              >
+              <select name="bank" value={form.bank} onChange={handleChange} required>
                 <option value="">Choose Bank</option>
                 <option value="Bank of China">Bank of China</option>
                 <option value="Bank of America">Bank of America</option>
@@ -153,54 +115,26 @@ function AddBeneficiaryIntlPayments() {
               <div className="row">
                 <div className="col">
                   <label>SWIFT Code</label>
-                  <input
-                    type="text"
-                    name="swiftCode"
-                    placeholder="BKCHCNBJ"
-                    value={form.swiftCode}
-                    onChange={handleChange}
-                    required
-                  />
+                  <input name="swiftCode" value={form.swiftCode} onChange={handleChange} required />
                 </div>
                 <div className="col">
                   <label>Currency</label>
-                  <select
-                    name="currency"
-                    value={form.currency}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Currency</option>
-                    <option value="CNY">CNY</option>
+                  <select name="currency" value={form.currency} onChange={handleChange} required>
                     <option value="USD">USD</option>
                     <option value="EUR">EUR</option>
+                    <option value="CNY">CNY</option>
+                    <option value="ZAR">ZAR</option>
+                    <option value="GBP">GBP</option>
                   </select>
                 </div>
               </div>
 
               <label>Amount</label>
-              <input
-                type="text"
-                name="amount"
-                placeholder="10,000"
-                value={form.amount}
-                onChange={handleChange}
-                required
-              />
-
+              <input name="amount" value={form.amount} onChange={handleChange} required />
               <label>Beneficiary Reference</label>
-              <input
-                type="text"
-                name="reference"
-                placeholder="Family Funds"
-                value={form.reference}
-                onChange={handleChange}
-                required
-              />
+              <input name="reference" value={form.reference} onChange={handleChange} />
 
-              <button type="submit" className="add-btn">
-                Pay Now
-              </button>
+              <button type="submit" className="add-btn">Pay Now</button>
             </form>
           </>
         )}

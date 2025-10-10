@@ -1,3 +1,4 @@
+// components/FundsTransfer.jsx
 import { useNavigate } from "react-router-dom";
 import "./FundsTransfer.css";
 
@@ -14,7 +15,6 @@ export default function FundsTransfer() {
       </p>
 
       <div className="fund-card-wrapper">
-        {/* ✅ Local Transfer → list page */}
         <div
           className="fund-card white-card"
           onClick={() => navigate("/app/local-transfer")}
@@ -25,10 +25,9 @@ export default function FundsTransfer() {
           <h3>Local Transfer</h3>
         </div>
 
-        {/* Stubs for later */}
         <div
           className="fund-card blue-card"
-          onClick={() => navigate("/app/funds-transfer")}
+          onClick={() => navigate("/app/international")}
           role="button"
           tabIndex={0}
         >

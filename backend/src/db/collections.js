@@ -12,6 +12,8 @@ function collections() {
     airtimePurchases: db.collection('airtimePurchases'),
     localBeneficiaries: db.collection('local_beneficiaries'),
     localTransfers: db.collection('local_transfers'),
+    internationalBeneficiaries: db.collection('intl_beneficiaries'),
+    internationalTransfers: db.collection('intl_transfers'),
   };
 }
 

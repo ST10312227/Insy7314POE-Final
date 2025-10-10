@@ -1,28 +1,31 @@
 /* === Add Beneficiary Page === */
 .add-beneficiary-page {
   position: relative;
-  height: 100%;
+  min-height: 100vh;            /* ← fill the viewport */
   background-color: #fff;
   border-radius: 20px;
-  padding: 40px;
-  margin-top: 200px; /* to push down below sidebar */;
-  margin-bottom: 200px;
+  padding: 96px 24px 120px;     /* ← create space instead of huge margins */
+  margin: 0;                    /* ← no big margins */
   font-family: "Poppins", sans-serif;
   display: flex;
-  align-items: center;
+  align-items: flex-start;      /* start at top; lets it scroll naturally */
   justify-content: center;
+  overflow-y: auto;             /* ← enable scrolling if content is tall */
 }
 
-/* Back arrow (top left corner) */
+/* Back arrow */
 .back-icon {
-  position: absolute;
-  top: 40px;
-  left: 40px;
+  position: sticky;             /* ← stays visible as you scroll */
+  top: 24px;
+  left: 24px;
   background: none;
   border: none;
   color: #12255c;
   font-size: 22px;
   cursor: pointer;
+  z-index: 5;
+  align-self: flex-start;       /* keep it aligned to the top */
+  margin-right: 16px;
 }
 
 /* Main card */
@@ -31,13 +34,14 @@
   background-color: #ffffff;
   border: 8px solid #1d2f7c;
   border-radius: 25px;
-  padding: 25px 30px;
-  width: 600px;
+  padding: 28px 32px 36px;
+  width: 100%;
+  max-width: 720px;             /* ← responsive width */
   text-align: center;
   box-shadow: none;
 }
 
-/* Phone icon above card */
+/* Icon above card */
 .icon-circle {
   position: absolute;
   top: -35px;
@@ -54,27 +58,26 @@
   font-size: 28px;
 }
 
-/* Card Title */
+/* Title */
 .card-title {
   font-size: 22px;
   font-weight: 700;
   color: #12255c;
   margin-top: 30px;
-  margin-bottom: 25px;
+  margin-bottom: 18px;
 }
 
-/* Form Fields */
+/* Form */
 .beneficiary-form {
   text-align: left;
-  margin-top: 15px;
+  margin-top: 8px;
 }
 
 .beneficiary-form label {
   font-weight: 600;
   display: block;
   color: #12255c;
-  margin-bottom: 0px;
-  margin-top: 10px;
+  margin: 12px 0 6px;
 }
 
 .beneficiary-form input,
@@ -86,6 +89,7 @@
   outline: none;
   font-size: 14px;
   transition: 0.2s ease;
+  background: #fff;
 }
 
 .beneficiary-form input:focus,
@@ -93,63 +97,7 @@
   border-color: #1c2a8a;
 }
 
-/* Add button */
-.add-btn {
-  width: 100%;
-  background-color: #1c2a8a;
-  color: #fff;
-  border: none;
-  padding: 14px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 15px;
-  cursor: p
-}
-
-.confirmation-page {
-  position: relative;
-  height: 100%;
-  background-color: #fff;
-  border-radius: 20px;
-  padding: 40px; /* same as Add Beneficiary */
-  font-family: "Poppins", sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center; /*  vertically and horizontally centered */
-  overflow: hidden; /*  no scrollbars */
-}
-
-/* Confirmation card */
-.confirmation-card {
-  position: relative;
-  background-color: #ffffff;
-  border: 3px solid #1c2a8a;
-  border-radius: 25px;
-  padding: 60px 80px;
-  width: 550px;
-  text-align: center;
-  box-shadow: none;
-}
-
-/* Tick icon */
-.icon-circle.success {
-  position: absolute;
-  top: -35px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #b7ff4a; /* bright lime */
-  color: #fff;
-  border-radius: 50%;
-  width: 70px;
-  height: 70px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 28px;
-  animation: popIn 0.5s ease-out;
-  z-index: 2;
-}
-
+/* Two-column row */
 .row {
   display: flex;
   gap: 12px;
@@ -160,18 +108,24 @@
   flex-direction: column;
 }
 
+/* Primary button */
+.add-btn {
+  width: 100%;
+  background-color: #1c2a8a;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;              /* ← fixed typo */
+  margin-top: 16px;
+}
 
-/* Center fade in animation */
-@keyframes popIn {
-  0% {
-    transform: scale(0) translateX(-50%);
-    opacity: 0;
+/* Optional: better on small screens */
+@media (max-width: 640px) {
+  .add-beneficiary-card {
+    padding: 24px 20px 28px;
   }
-  60% {
-    transform: scale(1.2) translateX(-50%);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1) translateX(-50%);
-  }
+  .row { flex-direction: column; }
 }

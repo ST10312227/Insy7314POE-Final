@@ -1,108 +1,96 @@
-import React, { useState } from "react";
+// src/components/InternationalBeneficiaries.jsx
+import React, { useState, useMemo } from "react";
 import "./InternationalBeneficiaries.css";
+import { useNavigate } from "react-router-dom";
+import { useInternational } from "../context/InternationalContext";
 
 export default function InternationalBeneficiaries() {
   const [activeTab, setActiveTab] = useState("Pay");
+  const navigate = useNavigate();
 
-  // Fake transaction data for demonstration
-  const transactionHistory = [
-    {
-      id: 1,
-      name: "Janie Doe",
-      iconColor: "#e15d64", // red/cross
-      amount: "-R1 000.00",
-      amountColor: "#e15d64",
-      date: "09.04.2025",
-      type: "debit",
-    },
-    {
-      id: 2,
-      name: "Joe Doe",
-      iconColor: "#2dbe7f", // green/tick
-      amount: "+R1 500.00",
-      amountColor: "#233678",
-      date: "09.04.2025",
-      type: "credit",
-    },
-  ];
+  const { items, loading, error } = useInternational();
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter((b) =>
+      [b.firstName, b.lastName, b.country, b.bank, b.accountNumber]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(q))
+    );
+  }, [items, search]);
 
   return (
     <div className="intl-section-bg">
       <div className="intl-card">
         <div className="intl-badge">
-          <img
-            src="/international.svg"
-            alt="International"
-            style={{width:'38px',height:'38px'}}
-          />
+          <img src="/international.svg" alt="International" style={{ width: 38, height: 38 }} />
         </div>
+
         <div className="intl-title">International Payments</div>
+
         <div className="intl-tabs">
-          <button
-            className={`intl-tab-btn${activeTab === "Pay" ? " active" : ""}`}
-            onClick={() => setActiveTab("Pay")}
-          >
-            Pay
-          </button>
-          <button
-            className={`intl-tab-btn${activeTab === "History" ? " active" : ""}`}
-            onClick={() => setActiveTab("History")}
-          >
-            History
-          </button>
+          <button className={`intl-tab-btn${activeTab === "Pay" ? " active" : ""}`} onClick={() => setActiveTab("Pay")}>Pay</button>
+          <button className={`intl-tab-btn${activeTab === "History" ? " active" : ""}`} onClick={() => setActiveTab("History")}>History</button>
         </div>
+
         <div className="intl-beneficiaries-content">
           {activeTab === "Pay" ? (
-            <div className="intl-no-beneficiaries">
-              You have no beneficiaries.
-            </div>
-          ) : (
-            <div className="intl-history-list">
-              {transactionHistory.map((tx, idx) => (
-                <div
-                  key={tx.id}
-                  className={`intl-history-item ${tx.type === "credit" ? "credit" : "debit"}`}
+            <>
+              <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search beneficiaries"
+                  className="intl-search"
+                />
+                <button
+                  className="intl-add-beneficiary-btn"
+                  onClick={() => navigate("/app/international/add")}
                 >
-                  <div
-                    className="intl-history-icon"
-                    style={{ borderColor: tx.iconColor }}
-                  >
-                    {tx.type === "debit" ? (
-                      <svg width="15" height="15" viewBox="0 0 15 15">
-                        <circle cx="7.5" cy="7.5" r="7" stroke={tx.iconColor} strokeWidth="1.5" fill="none"/>
-                        <path d="M5.2 5.2 l4.6 4.6 M9.8 5.2 l-4.6 4.6" stroke={tx.iconColor} strokeWidth="1.6" strokeLinecap="round"/>
-                      </svg>
-                    ) : (
-                      <svg width="15" height="15" viewBox="0 0 15 15">
-                        <circle cx="7.5" cy="7.5" r="7" stroke={tx.iconColor} strokeWidth="1.5" fill="none"/>
-                        <polyline points="4.5,8 7,10.5 10.5,5.5" fill="none" stroke={tx.iconColor} strokeWidth="1.6" strokeLinecap="round"/>
-                      </svg>
-                    )}
-                  </div>
-                  <div className="intl-history-text">
-                    <span className="intl-history-name">{tx.name}</span>
-                  </div>
+                  Add Beneficiary
+                </button>
+              </div>
 
-                  <div className="intl-history-text">
-                    <span
-                      className="intl-history-amount"
-                      style={{ color: tx.amountColor }}
-                    >
-                      {tx.amount}
-                    </span>
-                  <div className="intl-history-date">{tx.date}</div>
-                  </div>
-                  
+              {loading ? (
+                <div className="intl-no-beneficiaries">Loading…</div>
+              ) : error ? (
+                <div className="intl-no-beneficiaries" style={{ color: "#b10000" }}>{error}</div>
+              ) : filtered.length === 0 ? (
+                <div className="intl-no-beneficiaries">You have no beneficiaries.</div>
+              ) : (
+                <div className="intl-history-list">
+                  {filtered.map((b) => (
+                    <div key={b.id || b._id} className="intl-history-item">
+                      <div className="intl-history-text">
+                        <span className="intl-history-name">
+                          {b.firstName} {b.lastName} — {b.country}
+                        </span>
+                        <div className="intl-history-date" style={{ opacity: 0.7 }}>
+                          {b.bank} · {b.accountNumber}
+                        </div>
+                      </div>
+                      <button
+                        className="intl-mini-btn"
+                        onClick={() =>
+                          navigate("/app/international/confirm", {
+                            state: { data: { ...b, amount: '', currency: b.currency || 'USD' } },
+                          })
+                        }
+                      >
+                        Pay
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              )}
+            </>
+          ) : (
+            <div className="intl-no-beneficiaries">No history in this demo.</div>
           )}
-          <button className="intl-add-beneficiary-btn">
-            Add Beneficiaries
-          </button>
         </div>
       </div>
     </div>
   );
 }
-

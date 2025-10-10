@@ -144,6 +144,10 @@ app.use('/payments/transfers', transfersRoutes);
 const beneficiariesRoutes = require('./routes/beneficiaries.routes');
 app.use('/payments/beneficiaries', beneficiariesRoutes);
 
+const internationalRoutes = require('./routes/international.routes');
+app.use('/payments/international', internationalRoutes);
+
+
 // ⬇️ FIXED: don’t mount two different routers on the same path
 const internationalbeneficiariesRoutes = require('./routes/internationalbeneficiaries.routes');
 app.use('/payments/international-beneficiaries', internationalbeneficiariesRoutes);
