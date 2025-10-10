@@ -5,7 +5,7 @@ import "./Topbar.css";
 
 export default function Topbar() {
   const { pathname } = useLocation();
-  const { profile, loading } = useAccount(); // ✅ pull from context
+  const { profile, loading, error } = useAccount();
 
   const userName = loading
     ? ""
@@ -40,9 +40,15 @@ export default function Topbar() {
       </div>
 
       <div className="topbar-right">
-        <span className="topbar-user">
-          {loading ? "Loading…" : `Hello, ${userName}!`}
-        </span>
+        {error ? (
+          <span className="topbar-user" style={{ color: "#b10000" }}>
+            {error}
+          </span>
+        ) : (
+          <span className="topbar-user">
+            {loading ? "Loading…" : `Hello, ${userName}!`}
+          </span>
+        )}
       </div>
     </div>
   );
