@@ -27,7 +27,22 @@ async function run() {
     console.log('↺ User already exists:', demo.email);
   }
 
-
+  const accNumber = '1002003001';
+  const existingAcc = await accounts.findOne({ number: accNumber });
+  if (!existingAcc) {
+    await accounts.insertOne({
+      userId: user._id.toString(),
+      number: accNumber,
+      type: 'CHEQUE',
+      currency: 'ZAR',
+      balanceCents: 250000, // R2500.00
+      status: 'ACTIVE',
+      createdAt: new Date(),
+    });
+    console.log('✓ Account created:', accNumber);
+  } else {
+    console.log('↺ Account already exists:', accNumber);
+  }
 
   console.log('\nSeed complete.\nLogin test creds:\n- Account Number: 1002003001\n- ID Number: 9001015008087\n- Password: Pass@123\n');
   process.exit(0);
