@@ -1,4 +1,4 @@
-#  The Vault — Banking App
+#  Vault Banking App
 
 ![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-blue?logo=react)
 ![Backend](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-green?logo=node.js)
@@ -6,7 +6,9 @@
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Status](https://img.shields.io/badge/Status-In%20Development-orange)
 
+<img width="300" height="300" alt="logo" src="https://github.com/user-attachments/assets/0bbafbbb-335e-450f-8390-2ccaf8b1ad37" />
 
+---
 ## Application Overview
 
 **Vault** is a modern digital banking application built with React + Vite, Node.js, and MongoDB that provides a seamless experience for managing both local and international financial transactions. The app replicates the core features of an online banking system while focusing on usability, security, and performance.
