@@ -1,54 +1,55 @@
+// src/components/Topbar.jsx
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useAccount } from "../context/AccountContext";
 import "./Topbar.css";
 
-function Topbar() {
-  const location = useLocation();
-  const activePath = location.pathname;
-  const [userName, setUserName] = useState("User");
+export default function Topbar() {
+  const { pathname } = useLocation();
+  const { profile, loading, error } = useAccount();
 
-  useEffect(() => {
-    // load user name from localStorage
-    const name = localStorage.getItem("userName");
-    if (name) setUserName(name);
-  }, []);
+  const userName = loading
+    ? ""
+    : profile?.fullName || profile?.name || "User";
+
+    //console.log("Profile in Topbar:", profile);
+    console.log("Profile in Topbar:", JSON.stringify(profile, null, 2));
 
   return (
     <div className="topbar">
       <div className="topbar-left">
         <Link
           to="/app/dashboard"
-          className={`topbar-link ${
-            activePath === "/app/dashboard" ? "active" : ""
-          }`}
+          className={`topbar-link ${pathname === "/app/dashboard" ? "active" : ""}`}
         >
           Dashboard
         </Link>
 
         <Link
           to="/app/bill-payments"
-          className={`topbar-link ${
-            activePath === "/app/bill-payments" ? "active" : ""
-          }`}
+          className={`topbar-link ${pathname === "/app/bill-payments" ? "active" : ""}`}
         >
           Bill Payments
         </Link>
 
         <Link
           to="/app/account-details"
-          className={`topbar-link ${
-            activePath === "/app/account-details" ? "active" : ""
-          }`}
+          className={`topbar-link ${pathname === "/app/account-details" ? "active" : ""}`}
         >
           Account Details
         </Link>
       </div>
 
       <div className="topbar-right">
-        <span className="topbar-user">Hello, {userName}!</span>
+        {error ? (
+          <span className="topbar-user" style={{ color: "#b10000" }}>
+            {error}
+          </span>
+        ) : (
+          <span className="topbar-user">
+            {loading ? "Loading…" : `Hello, ${userName}!`}
+          </span>
+        )}
       </div>
     </div>
   );
 }
-
-export default Topbar;

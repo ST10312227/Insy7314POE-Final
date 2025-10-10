@@ -1,8 +1,29 @@
-/* ✅ ensure page itself can scroll */
-html, body {
+html, body, #root {
   height: auto;
   min-height: 100%;
-  overflow-y: auto; /* ✅ always show vertical scroll when needed */
+  overflow-y: auto !important;  /* ✅ allows full page scroll */
+  overflow-x: hidden;
+}
+
+
+.error-box {
+  background-color: #ffe6e6;         /* soft red background */
+  color: #d8000c;                    /* bright red text */
+  border: 1.5px solid #d8000c;       /* red border */
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.2rem;
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* --- SIGNUP PAGE --- */
@@ -10,28 +31,28 @@ html, body {
   background-size: cover;
   background-position: center;
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  min-height: 100vh;
+  justify-content: flex-end;       /* stays on right side */
+  align-items: flex-start;         /* starts from top */
   width: 100%;
+  min-height: 120%;                /* ✅ allows it to grow naturally */
   padding: 3rem 5%;
-  overflow-y: auto; /* ✅ keep scroll active even inside signup-page */
-  overflow-x: hidden; /* ✅ prevent sideways scrolling */
+  flex-direction: row;      /* ✅ don’t trap scroll here */
 }
+
 
 /* --- SIGNUP BOX --- */
 .signup-box {
   background: #ffffff;
   border-radius: 20px;
   width: 100%;
-  max-width: 480px;
+  max-width: 530px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   text-align: center;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 2rem 0;
+  margin: 6rem 0;
 }
 
 /* --- TITLES --- */
@@ -119,12 +140,8 @@ input {
     padding: 2rem 1rem;
   }
 
-  .signup-box {
-    width: 100%;
-    padding: 1.5rem;
-  }
-
   .signup-title {
     font-size: 1.6rem;
   }
 }
+

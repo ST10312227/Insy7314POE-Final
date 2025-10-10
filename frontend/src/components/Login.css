@@ -22,6 +22,26 @@
   align-items: center;
 }
 
+/* --- ERROR BOX --- */
+.error-box {
+  background-color: #ffe6e6;        /* soft red background */
+  color: #d8000c;                   /* bright red text */
+  border: 1.5px solid #d8000c;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.2rem;
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* subtle fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 /* logo inside box */
 .form-logo {
@@ -118,19 +138,3 @@ input {
   box-sizing: border-box;
 }
 
-/* Eye icon positioning */
-.toggle-password-icon {
-  position: absolute;
-  right: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 26px;      /* adjust icon size */
-  height: 16px;
-  cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
-}
-
-.toggle-password-icon:hover {
-  opacity: 1;
-}

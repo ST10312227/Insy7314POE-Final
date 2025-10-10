@@ -1,0 +1,131 @@
+/* === Add Beneficiary Page === */
+.add-beneficiary-page {
+  position: relative;
+  min-height: 100vh;            /* ← fill the viewport */
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 96px 24px 120px;     /* ← create space instead of huge margins */
+  margin: 0;                    /* ← no big margins */
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  align-items: flex-start;      /* start at top; lets it scroll naturally */
+  justify-content: center;
+  overflow-y: auto;             /* ← enable scrolling if content is tall */
+}
+
+/* Back arrow */
+.back-icon {
+  position: sticky;             /* ← stays visible as you scroll */
+  top: 24px;
+  left: 24px;
+  background: none;
+  border: none;
+  color: #12255c;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 5;
+  align-self: flex-start;       /* keep it aligned to the top */
+  margin-right: 16px;
+}
+
+/* Main card */
+.add-beneficiary-card {
+  position: relative;
+  background-color: #ffffff;
+  border: 8px solid #1d2f7c;
+  border-radius: 25px;
+  padding: 28px 32px 36px;
+  width: 100%;
+  max-width: 720px;             /* ← responsive width */
+  text-align: center;
+  box-shadow: none;
+}
+
+/* Icon above card */
+.icon-circle {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1c2a8a;
+  color: white;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+}
+
+/* Title */
+.card-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #12255c;
+  margin-top: 30px;
+  margin-bottom: 18px;
+}
+
+/* Form */
+.beneficiary-form {
+  text-align: left;
+  margin-top: 8px;
+}
+
+.beneficiary-form label {
+  font-weight: 600;
+  display: block;
+  color: #12255c;
+  margin: 12px 0 6px;
+}
+
+.beneficiary-form input,
+.beneficiary-form select {
+  width: 100%;
+  border: 1.8px solid #808285;
+  border-radius: 8px;
+  padding: 12px;
+  outline: none;
+  font-size: 14px;
+  transition: 0.2s ease;
+  background: #fff;
+}
+
+.beneficiary-form input:focus,
+.beneficiary-form select:focus {
+  border-color: #1c2a8a;
+}
+
+/* Two-column row */
+.row {
+  display: flex;
+  gap: 12px;
+}
+.col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Primary button */
+.add-btn {
+  width: 100%;
+  background-color: #1c2a8a;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;              /* ← fixed typo */
+  margin-top: 16px;
+}
+
+/* Optional: better on small screens */
+@media (max-width: 640px) {
+  .add-beneficiary-card {
+    padding: 24px 20px 28px;
+  }
+  .row { flex-direction: column; }
+}

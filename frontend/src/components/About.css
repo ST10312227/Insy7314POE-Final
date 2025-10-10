@@ -1,0 +1,26 @@
+.about-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f3f5ff;
+  color: #12255c;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  padding: 40px;
+}
+
+.about-page h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #1c2a8a;
+}
+
+.about-page p {
+  max-width: 700px;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #333;
+}
