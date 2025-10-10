@@ -1,16 +1,16 @@
 // src/context/LocalTransferContext.jsx
 import { createContext, useCallback, useContext, useState } from "react";
-import { api } from "../lib/api"; // JWT-aware fetch wrapper: api(path, { method, json })
+import { api } from "../lib/api";
 
 const Ctx = createContext(null);
 
-// --- Enum normalizers (match backend EXACTLY) ---
+// ---------- ENUM NORMALIZERS (match backend EXACTLY) ----------
 const ACCOUNT_TYPE_MAP = {
   cheque: "Cheque",
   Cheque: "Cheque",
   savings: "Savings",
   Savings: "Savings",
-  transmission: "Credit",   // UI sometimes says "Transmission" -> backend wants "Credit"
+  transmission: "Credit", // UI "Transmission" -> backend "Credit"
   Transmission: "Credit",
   credit: "Credit",
   Credit: "Credit",
@@ -19,23 +19,23 @@ const ACCOUNT_TYPE_MAP = {
 const PAYMENT_TYPE_MAP = {
   eft: "EFT",
   EFT: "EFT",
-  "real-time": "RTC",
-  realtime: "RTC",
-  "real time": "RTC",
-  rtc: "RTC",
-  RTC: "RTC",
-  "Real-time": "RTC",
-  "Real Time": "RTC",
+  "real-time": "Real-time",
+  realtime: "Real-time",
+  "real time": "Real-time",
+  rtc: "Real-time",
+  RTC: "Real-time",
+  "Real-time": "Real-time",
+  "Real Time": "Real-time",
 };
 
-// --- Helpers ---
+// ---------- HELPERS ----------
 function toNumberAmount(v) {
   if (typeof v === "number") return v;
   const n = Number(String(v ?? "").replace(/[, ]/g, ""));
   return Number.isFinite(n) ? n : 0;
 }
 
-function normalizeBeneficiary(b) {
+function normalizeBeneficiary(b = {}) {
   const bank =
     (typeof b.bank === "string" ? b.bank : b.bank?.code ?? b.bank?.name ?? "")
       .toString()
@@ -43,11 +43,8 @@ function normalizeBeneficiary(b) {
 
   return {
     name: (b.name ?? b.holderName ?? "").toString().trim(),
-    bank, // string
-    branchCode: (b.branchCode ?? "")
-      .toString()
-      .replace(/\D/g, "")
-      .slice(0, 6),
+    bank,
+    branchCode: (b.branchCode ?? "").toString().replace(/\D/g, "").slice(0, 6),
     accountType:
       ACCOUNT_TYPE_MAP[(b.accountType ?? "").toString()] ??
       (b.accountType ?? "").toString(),
@@ -56,18 +53,16 @@ function normalizeBeneficiary(b) {
 }
 
 export function LocalTransferProvider({ children }) {
-  const [transfers, setTransfers] = useState([]); // saved beneficiaries list
+  const [transfers, setTransfers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // ----------------------------
   // Load saved local beneficiaries
-  // ----------------------------
   const loadLocalBeneficiaries = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const { items = [] } = await api("/payments/local/beneficiaries");
+      const { items = [] } = await api("/api/payments/local/beneficiaries");
       setTransfers(items);
       return items;
     } catch (err) {
@@ -78,25 +73,18 @@ export function LocalTransferProvider({ children }) {
     }
   }, []);
 
-  // ----------------------------
-  // Save a local beneficiary (flat, normalized)
-  // shape in DB: { name, bank, branchCode, accountType, accountNumber }
-  // ----------------------------
+  // Save a local beneficiary (FLAT, NORMALIZED)
   const saveLocalBeneficiary = useCallback(
     async (bene) => {
       const flat = normalizeBeneficiary(bene);
-
       try {
-        const saved = await api("/payments/local/beneficiaries", {
+        const saved = await api("/api/payments/local/beneficiaries", {
           method: "POST",
           json: flat,
         });
-        try {
-          await loadLocalBeneficiaries();
-        } catch {}
+        try { await loadLocalBeneficiaries(); } catch {}
         return saved;
       } catch (err) {
-        // If it already exists, backend returns 409; fetch and match
         if (err.status === 409) {
           const list = await loadLocalBeneficiaries();
           const existing = list.find(
@@ -112,21 +100,19 @@ export function LocalTransferProvider({ children }) {
     [loadLocalBeneficiaries]
   );
 
-  // ----------------------------
-  // Create a local transfer (payment)
-  // Accepts a FLAT payload (NO nested beneficiary)
-  // {
-  //   name, bank, branchCode, accountType, accountNumber,
-  //   amount, paymentType, beneficiaryReference, statementDescription, password
-  // }
-  // ----------------------------
+  // Create a local transfer (payment) — accepts a FLAT payload
   const createLocalTransfer = useCallback(
     async (payload) => {
-      // 1) Ensure beneficiary exists (or resolve existing on 409)
+      // Build/normalize beneficiary from flat payload
       const beneFlat = normalizeBeneficiary(payload);
+
+      // 1) Ensure beneficiary exists (or resolve existing on 409)
       const savedBene = await saveLocalBeneficiary(beneFlat);
 
-      // 2) Build the exact body your /transfers endpoint expects
+      // 2) Build exact body expected by /transfers
+      const ownRefRaw = (payload.beneficiaryReference ?? "").toString().trim();
+      const recipRefRaw = (payload.statementDescription ?? "").toString().trim();
+
       const body = {
         name: savedBene.name ?? beneFlat.name,
         bank: savedBene.bank ?? beneFlat.bank,
@@ -134,21 +120,21 @@ export function LocalTransferProvider({ children }) {
         accountType: savedBene.accountType ?? beneFlat.accountType,
         accountNumber: savedBene.accountNumber ?? beneFlat.accountNumber,
 
-        amount: toNumberAmount(payload.amount), // or send amountCents if your API wants cents
+        amount: toNumberAmount(payload.amount), // switch to cents if your API wants amountCents
         paymentType:
           PAYMENT_TYPE_MAP[(payload.paymentType ?? "").toString()] ??
           (payload.paymentType ?? "").toString(),
-        ownReference: (payload.beneficiaryReference ?? "").toString().trim(),
-        recipientReference: (payload.statementDescription ?? "")
-          .toString()
-          .trim(),
+
+        // ensure >= 1 char (backend requires non-empty)
+        ownReference: (ownRefRaw || (beneFlat.name || "Local transfer")).slice(0, 30),
+        recipientReference: (recipRefRaw || "Local transfer").slice(0, 30),
+
         password: payload.password || "",
       };
 
-      // Debug once while testing:
       // console.log("[createLocalTransfer] POST /transfers", body);
 
-      const { transfer } = await api("/payments/local/transfers", {
+      const { transfer } = await api("/api/payments/local/transfers", {
         method: "POST",
         json: body,
       });

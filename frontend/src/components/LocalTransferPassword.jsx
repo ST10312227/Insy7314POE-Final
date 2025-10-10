@@ -9,7 +9,7 @@ const ACCOUNT_TYPE_MAP = {
   Cheque: "Cheque",
   savings: "Savings",
   Savings: "Savings",
-  transmission: "Credit",   // map UI "Transmission" -> backend "Credit"
+  transmission: "Credit", // UI "Transmission" -> backend "Credit"
   Transmission: "Credit",
   credit: "Credit",
   Credit: "Credit",
@@ -18,13 +18,13 @@ const ACCOUNT_TYPE_MAP = {
 const PAYMENT_TYPE_MAP = {
   eft: "EFT",
   EFT: "EFT",
-  "real-time": "RTC",
-  realtime: "RTC",
-  "real time": "RTC",
-  rtc: "RTC",
-  RTC: "RTC",
-  "Real-time": "RTC",
-  "Real Time": "RTC",
+  "real-time": "Real-time",
+  realtime: "Real-time",
+  "real time": "Real-time",
+  rtc: "Real-time",
+  RTC: "Real-time",
+  "Real-time": "Real-time",
+  "Real Time": "Real-time",
 };
 
 export default function LocalTransferPassword() {
@@ -95,15 +95,15 @@ export default function LocalTransferPassword() {
       .trim()
       .slice(0, 30);
 
-    // FLAT payload (no 'beneficiary' object) — matches context/createLocalTransfer
+    // FLAT payload (no 'beneficiary' object)
     return {
       name,
       bank,
       branchCode,
       accountType,          // "Savings" | "Cheque" | "Credit"
       accountNumber,
-      amount,               // number (switch to amountCents in context if needed)
-      paymentType,          // "EFT" | "RTC"
+      amount,               // number (context can convert to cents if needed)
+      paymentType,          // "EFT" | "Real-time"
       beneficiaryReference,
       statementDescription,
       password,
@@ -117,7 +117,15 @@ export default function LocalTransferPassword() {
 
     try {
       const payload = buildPayload();
+
+      // Pre-validate: if both refs are empty, set sensible defaults
+      if (!payload.beneficiaryReference?.trim() && !payload.statementDescription?.trim()) {
+        payload.beneficiaryReference = payload.name.slice(0, 30) || "Local transfer";
+        payload.statementDescription = "Local transfer";
+      }
+
       const transfer = await createLocalTransfer(payload);
+
       navigate(`/app/local-transfer/details/${transfer?.id || ""}`, {
         state: transfer,
         replace: true,
@@ -142,27 +150,15 @@ export default function LocalTransferPassword() {
         <h2>Confirm Transfer</h2>
 
         <div className="lt-recap">
-          <div>
-            <strong>To:</strong> {recap.name} ({recap.bank})
-          </div>
-          <div>
-            <strong>Account:</strong> {recap.accountNumber}
-          </div>
-          <div>
-            <strong>Amount:</strong> {recap.amount}
-          </div>
-          <div>
-            <strong>Type:</strong> {recap.paymentType}
-          </div>
+          <div><strong>To:</strong> {recap.name} ({recap.bank})</div>
+          <div><strong>Account:</strong> {recap.accountNumber}</div>
+          <div><strong>Amount:</strong> {recap.amount}</div>
+          <div><strong>Type:</strong> {recap.paymentType}</div>
           {recap.beneficiaryReference && (
-            <div>
-              <strong>Beneficiary Ref:</strong> {recap.beneficiaryReference}
-            </div>
+            <div><strong>Beneficiary Ref:</strong> {recap.beneficiaryReference}</div>
           )}
           {recap.statementDescription && (
-            <div>
-              <strong>Statement Desc:</strong> {recap.statementDescription}
-            </div>
+            <div><strong>Statement Desc:</strong> {recap.statementDescription}</div>
           )}
         </div>
 
