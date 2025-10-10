@@ -7,9 +7,9 @@ function accountsCol() {
 
 async function ensureAccountIndexes() {
   const col = accountsCol();
-
-  // Best effort: drop the old unused index if it exists (ignore failures)
-  try { await col.dropIndex('userId_1_name_1'); } catch {}
+  try { await col.dropIndex('userId_1_name_1'); } catch (err) {
+  console.error("[accounts] operation failed:", err);
+}
 
   await col.createIndex({ number: 1 }, { unique: true });
   await col.createIndex({ userId: 1 });
