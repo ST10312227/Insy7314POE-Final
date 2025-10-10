@@ -7,8 +7,13 @@ function accountsCol() {
 
 async function ensureAccountIndexes() {
   const col = accountsCol();
-  await col.createIndex({ userId: 1, name: 1 }, { unique: true, sparse: true });
-  await col.createIndex({ userId: 1, archived: 1 });
+
+  // Best effort: drop the old unused index if it exists (ignore failures)
+  try { await col.dropIndex('userId_1_name_1'); } catch {}
+
+  await col.createIndex({ number: 1 }, { unique: true });
+  await col.createIndex({ userId: 1 });
+  await col.createIndex({ archived: 1 });
 }
 
 module.exports = { accountsCol, ensureAccountIndexes };

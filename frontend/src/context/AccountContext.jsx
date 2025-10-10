@@ -12,33 +12,41 @@ export function AccountProvider({ children }) {
   const navigate = useNavigate();
 
   const loadProfile = useCallback(async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {           // do nothing on public pages
-      setProfile(null);
-      setLoading(false);
-      setError("");
-      return;
-    }
-    setLoading(true);
+  const token = localStorage.getItem("token");
+  if (!token) {           // do nothing on public pages
+    setProfile(null);
+    setLoading(false);
     setError("");
-    try {
-      const { profile } = await api("/accounts/me");
-      setProfile(profile);
-    } catch (err) {
-      if (err.status === 401) {
-        localStorage.removeItem("token");
-        setProfile(null);
-        return; // App routes will handle redirect
-      }
-      setError(err.message || "Failed to load profile");
-    } finally {
-      setLoading(false);
+    return;
+  }
+  setLoading(true);
+  setError("");
+  try {
+    const data = await api("/api/accounts/me");
+
+    // log to see what the backend actually sent
+    console.log("Loaded /accounts/me response:", JSON.stringify(data, null, 2));
+    //console.log("Loaded /accounts/me response:", data);
+
+    // support both shapes — either { profile: {...} } or {...}
+    setProfile(data.profile || data);
+
+
+  } catch (err) {
+    if (err.status === 401) {
+      localStorage.removeItem("token");
+      setProfile(null);
+      return; // App routes will handle redirect
     }
-  }, []);
+    setError(err.message || "Failed to load profile");
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
   // Update partial fields and refresh local state
   const updateMe = useCallback(async (patch) => {
-    const { profile } = await api("/accounts/me", { method: "PUT", body: patch });
+    const { profile } = await api("/api/accounts/me", { method: "PUT", body: patch });
     setProfile(profile);
     return profile;
   }, []);
@@ -57,3 +65,4 @@ export function useAccount() {
   if (!ctx) throw new Error("useAccount must be used within AccountProvider");
   return ctx;
 }
+

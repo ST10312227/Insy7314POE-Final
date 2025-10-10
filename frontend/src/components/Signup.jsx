@@ -50,39 +50,53 @@ export default function Signup() {
     return "";
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setApiError("");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  console.log("✅ Form submitted");
+  setApiError("");
 
-    const localErr = validateLocal();
-    if (localErr) return setApiError(localErr);
+  const localErr = validateLocal();
+  console.log("Validation result:", localErr);
 
-    setLoading(true);
-    try {
-      const res = await fetch("/api/auth/register-full", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, recaptchaToken: DEV_RECAPTCHA }),
-      });
+  if (localErr) {
+    console.warn("⚠️ Validation stopped submission:", localErr);
+    return setApiError(localErr);
+  }
 
-      const data = await res.json();
-      if (!res.ok) {
-        setApiError(data?.error || "Signup failed. Try again.");
-        return;
-      }
+  setLoading(true);
+  console.log("🚀 Sending request to backend...");
 
-      localStorage.setItem("token", data.token);
-      alert("Account created successfully!");
-      navigate("/dashboard");
-    } catch {
-      setApiError("Could not reach the server.");
-    } finally {
-      setLoading(false);
+  try {
+    const res = await fetch("/api/auth/register-full", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...formData, recaptchaToken: DEV_RECAPTCHA }),
+    });
+
+    console.log("Response status:", res.status);
+    const data = await res.json();
+    console.log("Response data:", data);
+
+    if (!res.ok) {
+      setApiError(data?.error || "Signup failed. Try again.");
+      return;
     }
-  };
+
+    localStorage.setItem("token", data.token);
+    alert("Account created successfully!");
+    navigate("/app/dashboard");
+  } catch (err) {
+    console.error("❌ Fetch error:", err);
+    setApiError("Could not reach the server.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <AuthLayout>
+    <div className="signup-page">
       <div className="signup-box">
         <img src={logo} alt="The Vault Logo" className="form-logo" />
         <h2 className="signup-title">Create Account</h2>
@@ -111,6 +125,7 @@ export default function Signup() {
           Have an account? <Link to="/login">Log in</Link>
         </p>
       </div>
+    </div>
     </AuthLayout>
   );
 }

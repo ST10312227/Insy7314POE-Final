@@ -11,6 +11,9 @@ export default function Topbar() {
     ? ""
     : profile?.fullName || profile?.name || "User";
 
+    //console.log("Profile in Topbar:", profile);
+    console.log("Profile in Topbar:", JSON.stringify(profile, null, 2));
+
   return (
     <div className="topbar">
       <div className="topbar-left">

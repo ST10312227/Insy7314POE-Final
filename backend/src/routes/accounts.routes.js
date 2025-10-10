@@ -49,11 +49,11 @@ router.get("/_ping", (_req, res) => res.json({ ok: true, scope: "accounts" }));
 // ---- GET /accounts/me ---------------------------------------
 router.get("/me", checkAuth, async (req, res) => {
   try {
-    const { users } = collections();
-    const userId = new ObjectId(req.user.id);
+    const { users } = collections(); // ✅ use users, not accounts
+    const userId = req.user.id || req.user._id;
 
     const doc = await users.findOne(
-      { _id: userId },
+      { _id: new ObjectId(userId) },
       {
         projection: {
           _id: 1,
@@ -70,11 +70,13 @@ router.get("/me", checkAuth, async (req, res) => {
         },
       }
     );
+
     if (!doc) return res.status(404).json({ error: "user_not_found" });
 
+    // Return in frontend-expected format
     res.json({ profile: toProfile(doc) });
   } catch (err) {
-    req.log?.error({ err }, "accounts_me_error");
+    console.error("accounts_me_error:", err);
     res.status(500).json({ error: "server_error" });
   }
 });
