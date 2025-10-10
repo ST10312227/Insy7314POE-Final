@@ -43,7 +43,7 @@ export async function api(path, options = {}) {
   });
 
   let data = null;
-  try { data = await res.json(); } catch {}
+  try { data = await res.json(); } catch {data = null;}
 
   if (!res.ok) {
     const err = new Error(
