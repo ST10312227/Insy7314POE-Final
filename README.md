@@ -198,60 +198,65 @@ Authorization: Bearer <token>
 
 
 
-<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/1dd5f094-7370-4951-89f8-c2bca8b30589" />
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/383ef8a1-1f7d-4fad-9b4d-be2423707f52" />
 
 ## Log In Page:
 
 
 
-<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/1bc00236-3b04-40b7-a26f-165acdccb977" />
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/2f3fb12a-da31-4767-88c4-a2d9e474b8d8" />
 
 ## Create Account Page:
 
 
 
-<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/fd0de8e1-52ea-4be1-b2cd-649c38c4cfe4" />
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/f38ec1f6-d29e-4b94-9fe2-d35b286c8026" />
+
 
 ## Dashboard Page:
 
 
 
-<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/4bceeae7-3197-4bae-91b3-6740c68a35e6" />
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/29e46f69-1d77-42fd-997f-0bbe92294954" />
+
 
 
 ## Bill Payments Page:
 
 
 
-<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/0a3dc67d-8f09-487f-b61f-3e5edef659ee" />
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/dec1064f-e1c0-49d2-a4a6-bc687e194ca2" />
+
 
 ## Account Details Page:
 
 
 
-<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/9dda18af-c62f-48dd-ab2e-7de25de8575a" />
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/222ddb0d-30a5-418c-b2eb-404566b212e7" />
+
 
 
 ## Search Page:
 
 
 
-<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/abbaf553-073b-42e6-a6c3-a2d42f94950e" />
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/5b25456c-1767-4ca4-a3a8-00bc8fbd31cd" />
+
 
 
 ## Funds Transfer Page:
 
 
 
-<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/35ecb055-baf8-477e-a5c4-7dd5320b86d5" />
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/d513965d-a05a-402a-bb4c-e237038db615" />
+
 
 
 ## Transaction History Page:
 
 
 
-<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/3ec9e8a6-95e5-4490-8e50-940ea50e32ca" />
-
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/66d741a8-b985-4437-89d7-bc923d7aa70d" />
 
 
 
