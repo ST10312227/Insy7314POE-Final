@@ -13,4 +13,14 @@ module.exports = {
     'no-console': 'off',
   },
   ignorePatterns: ['node_modules/', 'dist/', 'coverage/', 'build/'],
+  overrides: [
+    {
+      files: ['tests/**/*', '**/*.test.js'],
+      env: { jest: true, node: true, es2022: true },
+      rules: {
+
+        'no-console': 'off',
+      },
+    },
+  ],
 };
