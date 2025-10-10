@@ -121,7 +121,7 @@ function RecurringAddPayment() {
             </label>
           </div>
 
-          {/* ✅ Recurring Payment Section */}
+          
           {formData.recurringPayment && (
             <div className="recurring-section">
               <label>Choose Frequency</label>
