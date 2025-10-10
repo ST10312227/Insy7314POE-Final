@@ -7,20 +7,48 @@
 ![Status](https://img.shields.io/badge/Status-In%20Development-orange)
 
 
-The **Vault** is a secure banking web application built using **React + Vite** for the frontend and **Node.js + MongoDB** for the backend.  
-It supports **local and international payments**, **beneficiary management**, and **JWT authentication**.
+## Application Overview
 
----
+**Vault** is a modern digital banking application built with React + Vite, Node.js, and MongoDB that provides a seamless experience for managing both local and international financial transactions. The app replicates the core features of an online banking system while focusing on usability, security, and performance.
 
-# Features
+Users can easily send money locally, make international payments, and manage beneficiaries — all from a unified dashboard. Vault’s secure backend architecture ensures that every transaction is authenticated and verified before processing, while the frontend offers clear guidance and feedback for each step of the user’s journey.
 
--  Secure login & JWT-based authentication  
-- Add & manage beneficiaries  
--  Local and international fund transfers  
--  Real-time form validation and feedback  
-- Built with Vite for fast development  
--  RESTful API integration  
--  Clean, responsive design
+### Core Features and Functionality
+
+- **Secure Login System**
+  - User authentication using email and password.
+  - Session-based access to sensitive pages and transactions.
+
+- **Local Fund Transfers**
+  - Add and manage local beneficiaries.
+  - Make once-off or recurring transfers.
+  - Validate beneficiary details and account information before confirming payment.
+  - Password-protected payment confirmation for extra security.
+
+- **International Payments**
+  - Initiate payments to beneficiaries in other countries.
+  - Store SWIFT and IBAN details for future transfers.
+  - Manage both sending and receiving of international funds.
+
+- **Beneficiary Management**
+  - Add, view, edit, or delete saved beneficiaries.
+  - Categorize beneficiaries as local or international.
+  - Search and filter through existing beneficiaries.
+
+- **Payment Confirmation & Validation**
+  - Real-time validation of account numbers, branch codes, and payment references.
+  - Display of clear success and error messages during the transfer process.
+  - Redirects to the appropriate summary or beneficiary page upon successful transactions.
+
+- **Transaction Overview**
+  - Review past and pending transactions.
+  - View payment status, type (EFT/Real-time), and related references.
+
+- **Additional Features**
+  - Responsive design for desktop and mobile users.
+  - Integration with custom API endpoints for handling payments, beneficiaries, and authentication.
+  - Error-handling mechanisms to prevent data loss or duplicate submissions.
+
   
 ## Tech Stack
 
