@@ -60,3 +60,12 @@ vault/
     └── config/
 
 ---
+
+
+
+# Project Team
+
+-  Kresen Naicker (ST102312227) 
+-  Keenia Geemooi (ST10263301)
+-  Thania Mathews (ST10381071)
+-  Thando Fredericks (ST10187895)
