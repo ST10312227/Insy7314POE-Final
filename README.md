@@ -212,24 +212,49 @@ Authorization: Bearer <token>
 
 <img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/fd0de8e1-52ea-4be1-b2cd-649c38c4cfe4" />
 
-
-Overview of Accounts
-
+## Dashboard Page:
 
 
-Add Beneficiaries, send local payments
 
-**International Payments**
+<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/4bceeae7-3197-4bae-91b3-6740c68a35e6" />
 
-(Insert here)
 
-Send Money abroad
+## Bill Payments Page:
 
-**Settings**
 
-(Insert here)
 
-Manage profile and preferences
+<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/0a3dc67d-8f09-487f-b61f-3e5edef659ee" />
+
+## Account Details Page:
+
+
+
+<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/9dda18af-c62f-48dd-ab2e-7de25de8575a" />
+
+
+## Search Page:
+
+
+
+<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/abbaf553-073b-42e6-a6c3-a2d42f94950e" />
+
+
+## Funds Transfer Page:
+
+
+
+<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/35ecb055-baf8-477e-a5c4-7dd5320b86d5" />
+
+
+## Transaction History Page:
+
+
+
+<img width="600" height="650" alt="image" src="https://github.com/user-attachments/assets/3ec9e8a6-95e5-4490-8e50-940ea50e32ca" />
+
+
+
+
 
 # Project Team
 
