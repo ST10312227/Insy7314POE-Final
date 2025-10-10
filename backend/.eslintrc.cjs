@@ -1,11 +1,9 @@
 // backend/.eslintrc.cjs
-const js = require('@eslint/js');
-
 module.exports = {
   root: true,
   env: { node: true, es2022: true },
   extends: [
-    js.configs.recommended,
+    'eslint:recommended',
     'plugin:security/recommended',
   ],
   plugins: ['security', 'node'],
@@ -14,5 +12,5 @@ module.exports = {
     'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     'no-console': 'off',
   },
-  ignorePatterns: ['node_modules/', 'dist/', 'coverage/'],
+  ignorePatterns: ['node_modules/', 'dist/', 'coverage/', 'build/'],
 };
