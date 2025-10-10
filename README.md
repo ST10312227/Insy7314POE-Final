@@ -1,9 +1,13 @@
 #  Vault Banking App
 
 ![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-blue?logo=react)
+<br>
 ![Backend](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-green?logo=node.js)
+<br>
 ![Database](https://img.shields.io/badge/Database-MongoDB-brightgreen?logo=mongodb)
+<br>
 ![License](https://img.shields.io/badge/License-MIT-yellow)
+<br>
 ![Status](https://img.shields.io/badge/Status-In%20Development-orange)
 
 <img width="300" height="300" alt="logo" src="https://github.com/user-attachments/assets/0bbafbbb-335e-450f-8390-2ccaf8b1ad37" />
