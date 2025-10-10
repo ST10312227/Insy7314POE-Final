@@ -1,5 +1,12 @@
 #  The Vault — Banking App
 
+![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-blue?logo=react)
+![Backend](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-green?logo=node.js)
+![Database](https://img.shields.io/badge/Database-MongoDB-brightgreen?logo=mongodb)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![Status](https://img.shields.io/badge/Status-In%20Development-orange)
+
+
 The **Vault** is a secure banking web application built using **React + Vite** for the frontend and **Node.js + MongoDB** for the backend.  
 It supports **local and international payments**, **beneficiary management**, and **JWT authentication**.
 
