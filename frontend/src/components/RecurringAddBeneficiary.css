@@ -1,27 +1,35 @@
-/* === Add Beneficiary Page === */
+/* === Add Beneficiary Intl Payments Page (scrollable, no clipping) === */
 .add-beneficiary-page {
   position: relative;
-  height: 100%;
   background-color: #fff;
   border-radius: 20px;
-  margin-top: 200px;
-  margin-bottom: 200px;
   font-family: "Poppins", sans-serif;
+  padding: 24px 16px;      /* normal page padding */
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;        /* page scrolls */
+  overflow-x: hidden;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
-/* Back arrow (top left corner) */
+/* Keep back button visible while scrolling */
 .back-icon {
-  position: absolute;
-  top: 40px;
-  left: 40px;
+  position: sticky;
+  top: 12px;
+  left: 16px;              /* sticky ignores left, so align via margin */
+  margin-left: 4px;
+  align-self: flex-start;
   background: none;
   border: none;
   color: #12255c;
   font-size: 22px;
   cursor: pointer;
+  z-index: 5;
 }
 
 /* Main card */
@@ -30,50 +38,59 @@
   background-color: #ffffff;
   border: 3px solid #1c2a8a;
   border-radius: 25px;
-  padding: 60px 80px;
-  width: 550px;
+  /* 👇 create room *inside* the card for the icon */
+  padding: 88px 28px 36px; /* extra top padding so the circle sits inside */
+  width: 100%;
+  max-width: 620px;
   text-align: center;
-  box-shadow: none;
+  margin: 24px 0 56px;     /* no negative overlap with container top */
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
 }
 
-/* Phone icon above card */
+/* Icon now sits *inside* the card, so nothing is clipped */
 .icon-circle {
   position: absolute;
-  top: -35px;
+  top: 16px;               /* was -35px; bring it inside the card */
   left: 50%;
   transform: translateX(-50%);
   background-color: #1c2a8a;
-  color: white;
+  color: #fff;
   border-radius: 50%;
   width: 70px;
   height: 70px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   font-size: 28px;
+  z-index: 2;
 }
 
-/* Card Title */
 .card-title {
   font-size: 22px;
   font-weight: 700;
   color: #12255c;
-  margin-top: 30px;
-  margin-bottom: 25px;
+  margin: 18px 0 18px;
 }
 
-/* Form Fields */
+.step-indicator {
+  color: #12255c;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 14px;
+  opacity: 0.85;
+}
+
 .beneficiary-form {
   text-align: left;
-  margin-top: 15px;
+  margin-top: 8px;
 }
 
 .beneficiary-form label {
   font-weight: 600;
-  display: block;
   color: #12255c;
-  margin-bottom: 3px;
-  margin-top: 5px;
+  margin: 10px 0 6px;
+  display: block;
 }
 
 .beneficiary-form input,
@@ -82,17 +99,21 @@
   border: 1.8px solid #ccc;
   border-radius: 8px;
   padding: 12px;
-  outline: none;
   font-size: 14px;
-  transition: 0.2s ease;
+  box-sizing: border-box;
+  background: #fff;
+  transition: border-color 0.2s ease;
 }
 
 .beneficiary-form input:focus,
 .beneficiary-form select:focus {
   border-color: #1c2a8a;
+  outline: none;
 }
 
-/* Add button */
+.row { display: flex; gap: 12px; }
+.col { flex: 1; display: flex; flex-direction: column; }
+
 .add-btn {
   width: 100%;
   background-color: #1c2a8a;
@@ -102,64 +123,25 @@
   border-radius: 10px;
   font-weight: 600;
   font-size: 15px;
-  cursor: p
+  cursor: pointer;
+  margin-top: 18px;
+  transition: background-color 0.2s ease;
 }
+.add-btn:hover { background-color: #16246a; }
 
-.confirmation-page {
-  position: relative;
-  height: 100%;
-  background-color: #fff;
-  border-radius: 20px;
-  padding: 40px; /* same as Add Beneficiary */
-  font-family: "Poppins", sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center; /*  vertically and horizontally centered */
-  overflow: hidden; /*  no scrollbars */
-}
+/* Optional: prettier scrollbar just for this page */
+.add-beneficiary-page::-webkit-scrollbar { width: 8px; }
+.add-beneficiary-page::-webkit-scrollbar-thumb { background: #1c2a8a; border-radius: 8px; }
+.add-beneficiary-page::-webkit-scrollbar-track { background: #f1f1f1; }
 
-/* Confirmation card */
-.confirmation-card {
-  position: relative;
-  background-color: #ffffff;
-  border: 3px solid #1c2a8a;
-  border-radius: 25px;
-  padding: 60px 80px;
-  width: 550px;
-  text-align: center;
-  box-shadow: none;
-}
-
-/* Tick icon */
-.icon-circle.success {
-  position: absolute;
-  top: -35px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #b7ff4a; /* bright lime */
-  color: #fff;
-  border-radius: 50%;
-  width: 70px;
-  height: 70px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 28px;
-  animation: popIn 0.5s ease-out;
-  z-index: 2;
-}
-
-/* Center fade in animation */
-@keyframes popIn {
-  0% {
-    transform: scale(0) translateX(-50%);
-    opacity: 0;
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .add-beneficiary-card {
+    padding: 80px 20px 28px;
+    margin: 16px 0 40px;
+    border-width: 2px;
+    border-radius: 18px;
   }
-  60% {
-    transform: scale(1.2) translateX(-50%);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1) translateX(-50%);
-  }
+  .icon-circle { width: 60px; height: 60px; top: 12px; font-size: 24px; }
+  .add-btn { font-size: 14px; padding: 12px; }
 }

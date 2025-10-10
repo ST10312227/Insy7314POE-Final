@@ -1,12 +1,11 @@
+// components/RecurringAddBeneficiary.jsx
 import "./RecurringAddBeneficiary.css";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaPhone } from "react-icons/fa";
 import { useState } from "react";
-import { useBeneficiaries } from "../context/BeneficiaryContext"; // ✅ import context
 
 function RecurringAddBeneficiary() {
   const navigate = useNavigate();
-  const { addBeneficiary } = useBeneficiaries(); // ✅ use context
   const [form, setForm] = useState({
     beneficiaryName: "",
     accountNumber: "",
@@ -21,13 +20,23 @@ function RecurringAddBeneficiary() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addBeneficiary(form); // ✅ add to shared list
-    navigate("/beneficiary-confirmation"); // ✅ go back to list
+
+    // send to /app/recurring/add-payment with the beneficiary details
+    navigate("/app/recurring/add-payment", {
+      state: {
+        name: form.beneficiaryName,
+        bank: form.bank,
+        accountNumber: form.accountNumber,
+        branchCode: form.branchCode,
+        reference: form.reference,
+        notificationType: form.notificationType,
+      },
+    });
   };
 
   return (
     <div className="add-beneficiary-page">
-      <button className="back-icon" onClick={() => navigate("/add-beneficiary-options")}>
+      <button className="back-icon" onClick={() => navigate("/app/recurring/options")}>
         <FaArrowLeft />
       </button>
 
@@ -43,8 +52,7 @@ function RecurringAddBeneficiary() {
           <input
             type="text"
             name="beneficiaryName"
-            placeholder=""
-            value={form.name}
+            value={form.beneficiaryName}
             onChange={handleChange}
             required
           />
@@ -53,7 +61,6 @@ function RecurringAddBeneficiary() {
           <input
             type="text"
             name="accountNumber"
-            placeholder=""
             value={form.accountNumber}
             onChange={handleChange}
             required
@@ -62,29 +69,29 @@ function RecurringAddBeneficiary() {
           <label>Select Bank</label>
           <select
             name="bank"
-            value={form.network}
+            value={form.bank}
             onChange={handleChange}
             required
           >
             <option value="">Choose Bank</option>
-            <option value="Vault">Cell C</option>
-            <option value="Nedbank">MTN</option>
-            <option value="FNB">Telkom Mobile</option>
-            <option value="ABSA">Vodacom</option>
-             <option value="Capitec">Vodacom</option>
+            <option value="Vault">Vault</option>
+            <option value="Nedbank">Nedbank</option>
+            <option value="FNB">FNB</option>
+            <option value="ABSA">ABSA</option>
+            <option value="Capitec">Capitec</option>
+            <option value="Standard Bank">Standard Bank</option>
           </select>
 
-            <label>Branch Code</label>
+          <label>Branch Code</label>
           <input
             type="text"
             name="branchCode"
-            placeholder=""
             value={form.branchCode}
             onChange={handleChange}
             required
           />
 
-           <label>Beneficiary Reference</label>
+          <label>Beneficiary Reference</label>
           <input
             type="text"
             name="reference"
@@ -92,7 +99,8 @@ function RecurringAddBeneficiary() {
             onChange={handleChange}
             required
           />
-           <label>Payment Notification</label>
+
+          <label>Payment Notification</label>
           <select
             name="notificationType"
             value={form.notificationType}
@@ -105,10 +113,7 @@ function RecurringAddBeneficiary() {
             <option value="None">None</option>
           </select>
 
-
-          <button type="submit" className="add-btn">
-            Add
-          </button>
+          <button type="submit" className="add-btn">Continue</button>
         </form>
       </div>
     </div>

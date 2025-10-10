@@ -1,3 +1,4 @@
+// components/BillPayments.jsx
 import { useNavigate } from "react-router-dom";
 import "./BillPayments.css";
 
@@ -14,7 +15,6 @@ function BillPayments() {
       </p>
 
       <div className="bill-card-wrapper">
-        {/* ✅ Redirect to /app/buy-airtime */}
         <div
           className="bill-card white-card"
           onClick={() => navigate("/app/buy-airtime")}
@@ -23,20 +23,16 @@ function BillPayments() {
           <h3>Buy Airtime</h3>
         </div>
 
-        {/* ✅ Redirect to /app/recurring-payments (future page) */}
+        {/* ✅ wire to recurring */}
         <div
           className="bill-card blue-card"
-          onClick={() => navigate("/app/recurring-payments")}
+          onClick={() => navigate("/app/recurring/options")}
         >
           <i className="fa-solid fa-hand-holding-dollar"></i>
           <h3>Recurring Payments</h3>
         </div>
 
-        {/* ✅ Redirect to /app/buy-electricity (future page) */}
-        <div
-          className="bill-card white-card"
-          onClick={() => navigate("/app/buy-electricity")}
-        >
+        <div className="bill-card white-card">
           <i className="fa-solid fa-bolt"></i>
           <h3>Buy Electricity</h3>
         </div>

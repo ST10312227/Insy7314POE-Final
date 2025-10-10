@@ -1,4 +1,4 @@
-// src/App.jsx
+// App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
 import Dashboard from "./components/Dashboard";
@@ -15,14 +15,14 @@ import Login from "./components/Login";
 import Home from "./components/Home";
 import About from "./components/About";
 
-// ✅ International payments
-import InternationalBeneficiaries from "./components/InternationalBeneficiaries";
-import AddBeneficiaryIntlPayments from "./components/AddBeneficiaryIntlPayments";
-import IntlSwiftConfirmation from "./components/IntlSwiftConfirmation";
+// ✅ Recurring Payments flow
+import AddBeneficiaryOptions from "./components/AddBeneficiaryOptions";
+import RecurringAddBeneficiary from "./components/RecurringAddBeneficiary";
+import RecurringAddPayment from "./components/RecurringAddPayment";
 
 import "./App.css";
 
-export default function App() {
+function App() {
   return (
     <Routes>
       {/* PUBLIC */}
@@ -41,15 +41,15 @@ export default function App() {
         <Route path="funds-transfer" element={<FundsTransfer />} />
         <Route path="transaction-history" element={<TransactionHistory />} />
 
-        {/* Airtime */}
+        {/* Airtime flow (already in your app) */}
         <Route path="buy-airtime" element={<BuyAirtime />} />
         <Route path="add-beneficiary" element={<AddBeneficiary />} />
         <Route path="beneficiary-details/:id" element={<BeneficiaryDetails />} />
 
-        {/* ✅ International */}
-        <Route path="international" element={<InternationalBeneficiaries />} />
-        <Route path="international/add" element={<AddBeneficiaryIntlPayments />} />
-        <Route path="international/confirm" element={<IntlSwiftConfirmation />} />
+        {/* ✅ Recurring Payments flow */}
+        <Route path="recurring/options" element={<AddBeneficiaryOptions />} />
+        <Route path="recurring/add-beneficiary" element={<RecurringAddBeneficiary />} />
+        <Route path="recurring/add-payment" element={<RecurringAddPayment />} />
       </Route>
 
       {/* Fallback */}
@@ -57,3 +57,5 @@ export default function App() {
     </Routes>
   );
 }
+
+export default App;

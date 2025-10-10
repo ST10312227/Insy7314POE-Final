@@ -1,3 +1,4 @@
+// components/RecurringAddPayment.jsx
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaArrowLeft, FaUserFriends } from "react-icons/fa";
@@ -5,8 +6,7 @@ import "./RecurringAddPayment.css";
 
 function RecurringAddPayment() {
   const navigate = useNavigate();
-  const { state } = useLocation(); // ✅ get beneficiary info from previous page
-
+  const { state } = useLocation();
   const beneficiary = state || {};
 
   const [formData, setFormData] = useState({
@@ -24,14 +24,15 @@ function RecurringAddPayment() {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" || type === "radio" ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const completeData = { ...beneficiary, ...formData };
-    navigate("/local-transfer/password", { state: completeData });
+    // For now we just go to your existing password screen
+    navigate("/app/local-transfer/password", { state: completeData });
   };
 
   return (
@@ -47,24 +48,15 @@ function RecurringAddPayment() {
 
         <h2 className="card-title">Add Payment</h2>
 
-       
-       
-        <p
-          style={{
-            marginTop: "-10px",
-            color: "#12255c",
-            fontWeight: 500,
-            lineHeight: "1.6",
-          }}
-        >
-          <strong>John Doe</strong>  <br />
-          <strong>Standard Bank</strong> <br />
-          <strong>123456789</strong> 
+        {/* Beneficiary summary */}
+        <p style={{ marginTop: "-10px", color: "#12255c", fontWeight: 500, lineHeight: "1.6" }}>
+          <strong>{beneficiary?.name || "—"}</strong> <br />
+          <strong>{beneficiary?.bank || "—"}</strong> <br />
+          <strong>{beneficiary?.accountNumber || "—"}</strong>
         </p>
 
         <hr className="divider" />
 
-        
         <h4
           style={{
             textAlign: "left",
@@ -77,7 +69,6 @@ function RecurringAddPayment() {
           From
         </h4>
 
-        
         <div className="account-box">
           <div>
             <strong>Main Account</strong>
@@ -87,7 +78,6 @@ function RecurringAddPayment() {
           <div className="account-balance">R15 000.00</div>
         </div>
 
-        {/* Payment Form */}
         <form onSubmit={handleSubmit} className="payment-form">
           <label>Amount</label>
           <input
@@ -102,7 +92,7 @@ function RecurringAddPayment() {
           <div className="payment-type">
             <label>
               <input
-                type="radio"
+                type="checkbox"
                 name="futureDated"
                 checked={formData.futureDated}
                 onChange={handleChange}
@@ -112,7 +102,7 @@ function RecurringAddPayment() {
 
             <label>
               <input
-                type="radio"
+                type="checkbox"
                 name="recurringPayment"
                 checked={formData.recurringPayment}
                 onChange={handleChange}
@@ -121,7 +111,6 @@ function RecurringAddPayment() {
             </label>
           </div>
 
-          
           {formData.recurringPayment && (
             <div className="recurring-section">
               <label>Choose Frequency</label>
@@ -133,11 +122,11 @@ function RecurringAddPayment() {
               >
                 <option value="">Select Frequency</option>
                 <option value="Weekly">Weekly</option>
-                 <option value="Fortnightly">Fortnightly</option>
+                <option value="Fortnightly">Fortnightly</option>
                 <option value="Monthly">Monthly</option>
-                 <option value="MonthlyEnd">Monthly: Month End</option>
-                  <option value="Quaterly">Quarterly</option>
-                   <option value="QuarterlyEnd">Quarterly: Month End</option>
+                <option value="MonthEnd">Monthly: Month End</option>
+                <option value="Quarterly">Quarterly</option>
+                <option value="QuarterlyEnd">Quarterly: Month End</option>
               </select>
 
               <label>Start Date</label>
@@ -180,9 +169,7 @@ function RecurringAddPayment() {
             required
           />
 
-          <button type="submit" className="submit-btn">
-            Add 
-          </button>
+          <button type="submit" className="submit-btn">Add</button>
         </form>
       </div>
     </div>
