@@ -1,226 +1,126 @@
-// src/routes/accounts.routes.js
-const router = require('express').Router();
-const { ObjectId } = require('mongodb');
-const rateLimit = require('express-rate-limit');
+// backend/src/routes/accounts.routes.js
+const router = require("express").Router();
+const { ObjectId } = require("mongodb");
+const rateLimit = require("express-rate-limit");
+const checkAuth = require("../middlewares/authRequired");
+const validate = require("../middlewares/validate");
+const { collections } = require("../db/collections");
+const { z } = require("zod");
 
-const checkAuth = require('../middlewares/authRequired');
-const validate = require('../middlewares/validate');
-const {
-  createAccountSchema,
-  updateAccountSchema,
-  listQuerySchema,
-  paramIdSchema,
-} = require('../schemas/accounts.schema');
-const { accountsCol } = require('../models/accounts');
+// ---- helpers -------------------------------------------------
+function toProfile(doc = {}) {
+  const fullName =
+    (doc.fullName && String(doc.fullName).trim()) ||
+    [doc.firstName, doc.lastName].filter(Boolean).join(" ").trim() ||
+    (doc.name ? String(doc.name).trim() : "");
 
-// --- Optional: light limiter ---
+  return {
+    id: doc._id?.toString?.() || "",
+    fullName: fullName || "",
+    email: doc.email || "",
+    phone: doc.phone || doc.cell || "",
+    idNumber: doc.idNumber || doc.identityNumber || "",
+    currency: doc.currency || "ZAR",
+  };
+}
+
+const updateSchema = z
+  .object({
+    fullName: z.string().trim().min(1).max(120).optional(),
+    firstName: z.string().trim().min(1).max(80).optional(),
+    lastName: z.string().trim().min(1).max(80).optional(),
+    email: z.string().trim().email().max(254).optional(),
+    phone: z.string().trim().regex(/^\+?\d{6,15}$/).optional(),
+    idNumber: z.string().trim().min(6).max(64).optional(),
+    currency: z.enum(["ZAR", "USD", "EUR", "GBP", "CNY"]).optional(),
+  })
+  .refine(v => Object.keys(v).length > 0, { message: "No changes submitted" });
+
 const writeLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 30,
+  windowMs: 15 * 60 * 1000,
+  max: 60,
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-router.get('/_ping', (_req, res) => res.json({ ok: true, scope: 'accounts' }));
+// quick health
+router.get("/_ping", (_req, res) => res.json({ ok: true, scope: "accounts" }));
 
-// Helpers
-function scopeUserId(req) {
-  const isAdmin = req.user?.role === 'admin';
-  const requestedUserId = req.query.userId;
-  if (isAdmin && requestedUserId) return new ObjectId(requestedUserId);
-  return new ObjectId(req.user.sub);
-}
+// ---- GET /accounts/me ---------------------------------------
+router.get("/me", checkAuth, async (req, res) => {
+  try {
+    const { users } = collections();
+    const userId = new ObjectId(req.user.id);
 
-// --- List accounts ---
-router.get(
-  '/',
-  checkAuth,
-  validate(listQuerySchema, 'query'),
-  async (req, res) => {
-    try {
-      const { q, archived, limit, cursor } = req.query;
-      const userId = scopeUserId(req);
-
-      const filter = { userId };
-      if (typeof archived === 'boolean') filter.archived = archived;
-      if (q) filter.name = { $regex: q, $options: 'i' };
-
-      if (cursor) {
-        // naive cursor using _id
-        filter._id = { $gt: new ObjectId(cursor) };
+    const doc = await users.findOne(
+      { _id: userId },
+      {
+        projection: {
+          _id: 1,
+          fullName: 1,
+          firstName: 1,
+          lastName: 1,
+          name: 1,
+          email: 1,
+          phone: 1,
+          cell: 1,
+          idNumber: 1,
+          identityNumber: 1,
+          currency: 1,
+        },
       }
+    );
+    if (!doc) return res.status(404).json({ error: "user_not_found" });
 
-      const docs = await accountsCol
-        .find(filter)
-        .sort({ _id: 1 })
-        .limit(Number(limit))
-        .toArray();
-
-      const nextCursor = docs.length ? docs[docs.length - 1]._id.toString() : null;
-
-      res.json({
-        items: docs.map(doc => ({
-          id: doc._id.toString(),
-          name: doc.name,
-          type: doc.type,
-          currency: doc.currency,
-          balance: doc.balance,
-          note: doc.note || null,
-          archived: !!doc.archived,
-          createdAt: doc.createdAt,
-          updatedAt: doc.updatedAt,
-        })),
-        nextCursor,
-      });
-    } catch (err) {
-      console.error('[accounts.list] error:', err);
-      res.status(500).json({ error: 'Failed to list accounts.' });
-    }
+    res.json({ profile: toProfile(doc) });
+  } catch (err) {
+    req.log?.error({ err }, "accounts_me_error");
+    res.status(500).json({ error: "server_error" });
   }
-);
+});
 
-// --- Create account ---
-router.post(
-  '/',
-  checkAuth,
-  writeLimiter,
-  validate(createAccountSchema),
-  async (req, res) => {
-    try {
-      const userId = scopeUserId(req);
-      const { name, type, currency, balance, note } = req.body;
+// ---- PUT /accounts/me ---------------------------------------
+router.put("/me", checkAuth, writeLimiter, validate(updateSchema), async (req, res) => {
+  try {
+    const { users } = collections();
+    const userId = new ObjectId(req.user.id);
+    const payload = req.validated;
 
-      const now = new Date();
-      const doc = {
-        userId,
-        name,
-        type,
-        currency,
-        balance,
-        note: note || null,
-        archived: false,
-        createdAt: now,
-        updatedAt: now,
-      };
-
-      const existing = await accountsCol.findOne({ userId, name });
-      if (existing) {
-        return res.status(409).json({ error: 'Account name already exists for this user.' });
+    const $set = { updatedAt: new Date() };
+    if (payload.fullName) {
+      $set.fullName = payload.fullName;
+      const parts = payload.fullName.split(/\s+/);
+      if (parts.length >= 2) {
+        $set.firstName = parts.slice(0, -1).join(" ");
+        $set.lastName  = parts.slice(-1).join(" ");
       }
-
-      const insert = await accountsCol.insertOne(doc);
-      res.status(201).json({
-        id: insert.insertedId.toString(),
-        ...doc,
-        userId: undefined, // don’t leak userId
-      });
-    } catch (err) {
-      console.error('[accounts.create] error:', err);
-      res.status(500).json({ error: 'Failed to create account.' });
+    } else {
+      if (payload.firstName !== undefined) $set.firstName = payload.firstName;
+      if (payload.lastName  !== undefined) $set.lastName  = payload.lastName;
     }
-  }
-);
+    if (payload.email    !== undefined) $set.email    = payload.email;
+    if (payload.phone    !== undefined) $set.phone    = payload.phone;
+    if (payload.idNumber !== undefined) $set.idNumber = payload.idNumber;
+    if (payload.currency !== undefined) $set.currency = payload.currency;
 
-// --- Get by id ---
-router.get(
-  '/:id',
-  checkAuth,
-  validate(paramIdSchema, 'params'),
-  async (req, res) => {
-    try {
-      const userId = scopeUserId(req);
-      const _id = new ObjectId(req.params.id);
-
-      const doc = await accountsCol.findOne({ _id, userId });
-      if (!doc) return res.status(404).json({ error: 'Account not found.' });
-
-      res.json({
-        id: doc._id.toString(),
-        name: doc.name,
-        type: doc.type,
-        currency: doc.currency,
-        balance: doc.balance,
-        note: doc.note || null,
-        archived: !!doc.archived,
-        createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt,
-      });
-    } catch (err) {
-      console.error('[accounts.get] error:', err);
-      res.status(500).json({ error: 'Failed to fetch account.' });
-    }
-  }
-);
-
-// --- Update (partial) ---
-router.patch(
-  '/:id',
-  checkAuth,
-  writeLimiter,
-  validate(paramIdSchema, 'params'),
-  validate(updateAccountSchema),
-  async (req, res) => {
-    try {
-      const userId = scopeUserId(req);
-      const _id = new ObjectId(req.params.id);
-
-      // If name changes, enforce uniqueness per user
-      if (req.body.name) {
-        const dupe = await accountsCol.findOne({ userId, name: req.body.name, _id: { $ne: _id } });
-        if (dupe) return res.status(409).json({ error: 'Account name already exists for this user.' });
+    const r = await users.findOneAndUpdate(
+      { _id: userId },
+      { $set },
+      {
+        returnDocument: "after",
+        projection: {
+          _id: 1, fullName: 1, firstName: 1, lastName: 1, name: 1,
+          email: 1, phone: 1, cell: 1, idNumber: 1, identityNumber: 1, currency: 1,
+        },
       }
+    );
+    if (!r.value) return res.status(404).json({ error: "user_not_found" });
 
-      const update = { ...req.body, updatedAt: new Date() };
-      const { value } = await accountsCol.findOneAndUpdate(
-        { _id, userId },
-        { $set: update },
-        { returnDocument: 'after' }
-      );
-
-      if (!value) return res.status(404).json({ error: 'Account not found.' });
-
-      res.json({
-        id: value._id.toString(),
-        name: value.name,
-        type: value.type,
-        currency: value.currency,
-        balance: value.balance,
-        note: value.note || null,
-        archived: !!value.archived,
-        createdAt: value.createdAt,
-        updatedAt: value.updatedAt,
-      });
-    } catch (err) {
-      console.error('[accounts.update] error:', err);
-      res.status(500).json({ error: 'Failed to update account.' });
-    }
+    res.json({ profile: toProfile(r.value) });
+  } catch (err) {
+    req.log?.error({ err }, "accounts_update_error");
+    res.status(500).json({ error: "update_failed" });
   }
-);
-
-// --- Soft delete (archive) ---
-router.delete(
-  '/:id',
-  checkAuth,
-  writeLimiter,
-  validate(paramIdSchema, 'params'),
-  async (req, res) => {
-    try {
-      const userId = scopeUserId(req);
-      const _id = new ObjectId(req.params.id);
-
-      const { value } = await accountsCol.findOneAndUpdate(
-        { _id, userId },
-        { $set: { archived: true, updatedAt: new Date() } },
-        { returnDocument: 'after' }
-      );
-
-      if (!value) return res.status(404).json({ error: 'Account not found.' });
-      res.status(204).send();
-    } catch (err) {
-      console.error('[accounts.delete] error:', err);
-      res.status(500).json({ error: 'Failed to delete account.' });
-    }
-  }
-);
+});
 
 module.exports = router;

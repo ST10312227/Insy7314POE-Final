@@ -17,7 +17,7 @@ export default function FundsTransfer() {
       <div className="fund-card-wrapper">
         <div
           className="fund-card white-card"
-          onClick={() => navigate("/app/local-transfer")}
+          onClick={() => navigate("/app/local-transfer/beneficiaries")}
           role="button"
           tabIndex={0}
         >
