@@ -1,7 +1,28 @@
-// src/lib/api.js
 // Robust JSON fetch with JWT header and optional CSRF support.
+// Safe against double-prefixing when VITE_API_BASE=/api.
 
-const BASE = (import.meta?.env?.VITE_API_BASE ?? "").replace(/\/+$/, "");
+const RAW_BASE = import.meta?.env?.VITE_API_BASE ?? "/api";
+const BASE = (RAW_BASE || "/api").replace(/\/+$/, ""); // strip trailing slashes
+
+function buildUrl(path) {
+  // Absolute URL? (http/https) -> use as-is
+  if (/^https?:\/\//i.test(path)) return path;
+
+  // Normalize incoming path
+  const p = (path || "").startsWith("/") ? path : `/${path || ""}`;
+
+  // If BASE is empty, just return the normalized path
+  if (!BASE) return p;
+
+  // If path already starts with BASE (/api or your absolute base), don't prefix again
+  if (p === BASE || p.startsWith(`${BASE}/`)) return p;
+
+  // Special guard: if BASE is "/api" and path already starts with "/api", don't prefix
+  if (BASE === "/api" && p.startsWith("/api")) return p;
+
+  // Otherwise prepend BASE
+  return `${BASE}${p}`;
+}
 
 function getToken() {
   const s = sessionStorage.getItem("token");
@@ -14,6 +35,17 @@ function asBearer(token) {
   return token.startsWith("Bearer ") ? token : `Bearer ${token}`;
 }
 
+/**
+ * api(path, options)
+ *  - path: string ("/accounts/me", "beneficiaries", "/api/beneficiaries", etc.)
+ *  - options:
+ *      - json: any (if provided -> POST by default; body is JSON.stringified)
+ *      - method: "GET" | "POST" | ...
+ *      - headers: object
+ *      - withCsrf: boolean
+ *      - csrfToken: string
+ *      - ...rest: fetch init overrides
+ */
 export async function api(path, options = {}) {
   const token = getToken();
   const bearer = asBearer(token);
@@ -34,7 +66,9 @@ export async function api(path, options = {}) {
     ...headers,
   };
 
-  const res = await fetch(`${BASE}${path}`, {
+  const url = buildUrl(path);
+
+  const res = await fetch(url, {
     method: method || (json !== undefined ? "POST" : "GET"),
     headers: finalHeaders,
     credentials: "include",
@@ -43,7 +77,11 @@ export async function api(path, options = {}) {
   });
 
   let data = null;
-  try { data = await res.json(); } catch {data = null;}
+  try {
+    data = await res.json();
+  } catch {
+    data = null;
+  }
 
   if (!res.ok) {
     const err = new Error(
@@ -53,7 +91,7 @@ export async function api(path, options = {}) {
       `HTTP ${res.status}`
     );
     err.status = res.status;
-    err.response = { data };
+    err.response = { data, url };
     throw err;
   }
 
