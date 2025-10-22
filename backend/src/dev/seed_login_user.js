@@ -14,7 +14,6 @@ async function run() {
     email: 'demo@vault.app',
     idNumber: '9001015008087',
     role: 'user',
-    // password = Pass@123
     passwordHash: await bcrypt.hash('Pass@123', 10),
     createdAt: new Date(),
   };

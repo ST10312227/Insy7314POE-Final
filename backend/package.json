@@ -9,9 +9,9 @@
     "dev": "cross-env NODE_ENV=development nodemon src/server.js",
     "start": "node src/server.js",
     "seed:login": "node src/dev/seed_login_user.js",
-    "test": "cross-env NODE_ENV=test jest --runInBand",
     "test:ci": "cross-env NODE_ENV=test jest --ci --runInBand",
-    "lint": "eslint ."
+    "lint": "eslint . --ext .js,.cjs",
+    "test": "jest --runInBand"
   },
   "keywords": [],
   "dependencies": {
@@ -38,17 +38,15 @@
     "zod": "^4.1.9"
   },
   "devDependencies": {
+    "@eslint/js": "^8.57.1",
     "@types/jest": "^29.5.11",
     "cross-env": "^10.1.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-security": "^1.7.1",
     "jest": "^29.7.0",
     "mongodb-memory-server": "^10.1.4",
     "nodemon": "^3.1.10",
-    "supertest": "^7.1.1"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "testMatch": [
-      "**/__tests__/**/*.test.js"
-    ]
+    "supertest": "^6.3.4"
   }
 }
