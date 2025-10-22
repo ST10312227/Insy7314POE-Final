@@ -1,18 +1,12 @@
-#  Vault Banking App
-
-![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-blue?logo=react)
-<br>
-![Backend](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-green?logo=node.js)
-<br>
-![Database](https://img.shields.io/badge/Database-MongoDB-brightgreen?logo=mongodb)
-<br>
-![License](https://img.shields.io/badge/License-MIT-yellow)
-<br>
-![Status](https://img.shields.io/badge/Status-In%20Development-orange)
+# The Vault Banking App
 
 <img width="300" height="300" alt="logo" src="https://github.com/user-attachments/assets/0bbafbbb-335e-450f-8390-2ccaf8b1ad37" />
 
----
+![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-blue?logo=react)  ![Backend](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-green?logo=node.js)
+![Database](https://img.shields.io/badge/Database-MongoDB-brightgreen?logo=mongodb)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![Status](https://img.shields.io/badge/Status-In%20Development-orange)
+
 ## Application Overview
 
 **Vault** is a modern digital banking application built with React + Vite, Node.js, and MongoDB that provides a seamless experience for managing both local and international financial transactions. The app replicates the core features of an online banking system while focusing on usability, security, and performance.
@@ -200,30 +194,72 @@ Authorization: Bearer <token>
 
 ## Screens
 
-**Dashboard**
+## Home Page:
 
 
 
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/383ef8a1-1f7d-4fad-9b4d-be2423707f52" />
 
-Overview of Accounts
+## Log In Page:
 
-**Local Transfer**
 
-(Insert here)
 
-Add Beneficiaries, send local payments
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/2f3fb12a-da31-4767-88c4-a2d9e474b8d8" />
 
-**International Payments**
+## Create Account Page:
 
-(Insert here)
 
-Send Money abroad
 
-**Settings**
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/f38ec1f6-d29e-4b94-9fe2-d35b286c8026" />
 
-(Insert here)
 
-Manage profile and preferences
+## Dashboard Page:
+
+
+
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/29e46f69-1d77-42fd-997f-0bbe92294954" />
+
+
+
+## Bill Payments Page:
+
+
+
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/dec1064f-e1c0-49d2-a4a6-bc687e194ca2" />
+
+
+## Account Details Page:
+
+
+
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/222ddb0d-30a5-418c-b2eb-404566b212e7" />
+
+
+
+## Search Page:
+
+
+
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/5b25456c-1767-4ca4-a3a8-00bc8fbd31cd" />
+
+
+
+## Funds Transfer Page:
+
+
+
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/d513965d-a05a-402a-bb4c-e237038db615" />
+
+
+
+## Transaction History Page:
+
+
+
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/66d741a8-b985-4437-89d7-bc923d7aa70d" />
+
+
+
 
 # Project Team
 
