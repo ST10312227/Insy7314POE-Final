@@ -1,44 +1,41 @@
 // src/context/AccountContext.jsx
 import { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
 
 const AccountCtx = createContext(null);
-
-function normalizeProfile(res) {
-  // Support shapes: { data: { user } }, { user }, { profile }, raw user object
-  const data = res?.data ?? res ?? null;
-  return data?.user ?? data?.profile ?? data ?? null;
-}
 
 export function AccountProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
-  const hasToken = () => Boolean(localStorage.getItem("token"));
+  const hasToken = () =>
+    Boolean(sessionStorage.getItem("token") || localStorage.getItem("token"));
 
   const loadProfile = useCallback(async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {           // do nothing on public pages
+    // If no token, don't call the API (keeps public pages noise-free)
+    if (!hasToken()) {
       setProfile(null);
       setLoading(false);
       setError("");
       return;
     }
+
     setLoading(true);
     setError("");
     try {
-      const { profile } = await api("/accounts/me");
+      const { profile } = await api("/accounts/me"); // GET
       setProfile(profile);
     } catch (err) {
       if (err.status === 401) {
+        // Token invalid/expired: clear and leave profile null
+        sessionStorage.removeItem("token");
         localStorage.removeItem("token");
         setProfile(null);
-        return; // App routes will handle redirect
+        setError("");
+      } else {
+        setError(err.message || "Failed to load profile");
       }
-      setError(err.message || "Failed to load profile");
     } finally {
       setLoading(false);
     }
@@ -46,12 +43,13 @@ export function AccountProvider({ children }) {
 
   // Update partial fields and refresh local state
   const updateMe = useCallback(async (patch) => {
-    const { profile } = await api("/accounts/me", { method: "PUT", body: patch });
+    // IMPORTANT: use PATCH + json so api() sets Content-Type and stringifies
+    const { profile } = await api("/accounts/me", { method: "PATCH", json: patch });
     setProfile(profile);
     return profile;
   }, []);
 
-  // Keep context in sync when token changes (e.g., login/logout in another tab)
+  // Keep context in sync if token changes in another tab (localStorage only triggers 'storage')
   useEffect(() => {
     const onStorage = (e) => {
       if (e.key === "token") loadProfile();
@@ -60,6 +58,7 @@ export function AccountProvider({ children }) {
     return () => window.removeEventListener("storage", onStorage);
   }, [loadProfile]);
 
+  // Initial load on mount
   useEffect(() => {
     loadProfile();
   }, [loadProfile]);
@@ -72,10 +71,11 @@ export function AccountProvider({ children }) {
       isAuthenticated: Boolean(profile) && hasToken(),
       refresh: loadProfile,
       updateMe,
+      clearError: () => setError(""),
       logout: () => {
+        sessionStorage.removeItem("token");
         localStorage.removeItem("token");
         setProfile(null);
-        // navigate("/login", { replace: true }); // optional explicit redirect
       },
     }),
     [profile, loading, error, loadProfile, updateMe]
@@ -89,4 +89,3 @@ export function useAccount() {
   if (!ctx) throw new Error("useAccount must be used within AccountProvider");
   return ctx;
 }
-
