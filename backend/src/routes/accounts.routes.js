@@ -72,4 +72,6 @@ router.get("/me", checkAuth, async (req, res) => {
 router.patch("/me", checkAuth, validate(updateSchema), updateMeHandler);
 router.put("/me",   checkAuth, validate(updateSchema), updateMeHandler);
 
+router.get('/_alive', (_req, res) => res.json({ ok: true, scope: 'accounts' }));
+
 module.exports = router;

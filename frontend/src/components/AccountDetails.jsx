@@ -15,7 +15,7 @@ function readInitial(p) {
 }
 
 export default function AccountDetails() {
-  const { profile, loading, error, updateMe } = useAccount();
+  const { profile, loading, error, updateMe, refresh } = useAccount();
   const [activeTab, setActiveTab] = useState("personal");
   const [form, setForm] = useState(readInitial(profile));
   const [saving, setSaving] = useState(false);
@@ -54,6 +54,7 @@ export default function AccountDetails() {
         currency: form.currency,
       };
       await updateMe(patch);
+      await refresh();
     } catch (err) {
       setSaveError(err.message || "Could not save changes");
     } finally {
