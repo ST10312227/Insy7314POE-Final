@@ -1,0 +1,207 @@
+:root{
+  --blue-900:#122861;
+  --blue-700:#1d3c8c;
+  --blue-600:#1f49b6;
+  --blue-500:#2563eb;
+  --text:#0f172a;
+  --muted:#6b7280;
+  --bg:#f3f5fa;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --shadow:0 16px 32px rgba(2,6,23,0.08);
+}
+
+/* Page layout */
+.emp-page{
+  display:grid;
+  grid-template-columns: 96px 1fr;
+  min-height:100vh;
+  background:var(--blue-900);
+}
+
+/* Sidebar */
+.emp-sidebar{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:18px;
+  padding:24px 14px;
+  color:#fff;
+}
+
+.emp-sidebar .brand{
+  width:60px;
+  height:60px;
+  border-radius:14px;
+  border:2px solid rgba(255,255,255,.3);
+  display:grid;
+  place-items:center;
+  font-weight:800;
+  line-height:1.05;
+  text-transform:lowercase;
+  letter-spacing:.5px;
+  margin-bottom:8px;
+}
+
+.sb-item{
+  width:68px;
+  text-align:center;
+  color:#e8ecff;
+}
+.sb-item .sb-icon{
+  width:68px;
+  height:68px;
+  border-radius:14px;
+  background:#1f2f6e;
+  display:grid;
+  place-items:center;
+  margin:0 auto 8px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.sb-item.active .sb-icon{
+  background:#203989;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.16);
+}
+.sb-item .sb-label{
+  font-size:.68rem;
+  line-height:1.15;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:#cbd5ff;
+}
+.sb-spacer{ flex:1; }
+.sb-item .dot{
+  width:10px;height:10px;border-radius:999px;background:#fff;
+}
+
+/* Main panel */
+.emp-main{
+  background:var(--bg);
+  border-top-left-radius:22px;
+  border-bottom-left-radius:22px;
+  padding:24px 28px 36px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+/* Topbar greeting */
+.emp-topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  color:#fff;
+}
+.emp-topbar .hello{
+  font-weight:700;
+  color:#e5edff;
+}
+
+/* Card */
+.card{
+  background:var(--card);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  padding:22px;
+}
+.card-head{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  border-bottom:1px solid var(--border);
+  padding-bottom:16px;
+  margin-bottom:14px;
+}
+
+.title-wrap .page-title{
+  margin:0 0 6px 0;
+  font-size:1.35rem;
+  color:var(--text);
+}
+.page-title .pipe{
+  margin:0 8px;
+  color:#64748b;
+  font-weight:600;
+}
+.linkish{
+  color:var(--blue-600);
+  font-weight:700;
+}
+.sub{
+  margin:0;
+  color:var(--muted);
+  font-size:.92rem;
+}
+
+/* Actions */
+.actions{
+  display:flex; gap:10px; align-items:center;
+}
+.search{
+  display:flex; align-items:center; gap:6px;
+  background:#f7f8fc; border:1px solid var(--border);
+  border-radius:12px; padding:6px 8px 6px 10px;
+}
+.search input{
+  border:none; background:transparent; outline:none;
+  min-width:180px; font-size:.95rem;
+}
+.icon-btn{
+  border:none; background:var(--blue-600); color:#fff;
+  width:34px; height:34px; border-radius:8px; cursor:pointer;
+}
+.filter-btn{
+  display:flex; gap:8px; align-items:center;
+  border:1px solid var(--border); background:#fff;
+  height:34px; padding:0 12px; border-radius:10px; cursor:pointer;
+}
+
+/* Table */
+.table-wrap{ overflow:auto; }
+table.grid{
+  width:100%; border-collapse:separate; border-spacing:0;
+}
+.grid thead th{
+  text-align:left; font-size:.86rem; color:#64748b;
+  font-weight:700; padding:12px 14px; border-bottom:1px solid var(--border);
+}
+.grid tbody td{
+  padding:12px 14px; border-bottom:1px solid var(--border);
+  color:#111827; font-size:.96rem;
+}
+.grid tbody tr:hover td{
+  background:#fafbff;
+}
+.grid .num{ text-align:right; }
+
+/* Status pills */
+.status-pill{
+  padding:6px 10px; border-radius:999px; font-size:.78rem; font-weight:700;
+  display:inline-block; line-height:1;
+}
+.status-pill.ok{ background:#e8f8ee; color:#0f8b45; }
+.status-pill.pending{ background:#fff6e6; color:#b46909; }
+.status-pill.bad{ background:#ffe8e8; color:#b91c1c; }
+
+/* Pager */
+.pager{
+  display:flex; gap:8px; align-items:center; justify-content:center;
+  padding-top:12px;
+}
+.pager .dot{
+  width:8px; height:8px; border-radius:999px; background:#c9d1ff; display:inline-block;
+}
+.pager .dot.active{ background:#6c7bff; }
+.pager .caret{ margin-left:6px; color:#6c7bff; }
+
+/* Responsive tweaks */
+@media (max-width: 980px){
+  .emp-page{ grid-template-columns: 84px 1fr; }
+  .search input{ min-width:120px; }
+}
+@media (max-width: 720px){
+  .emp-sidebar{ display:none; }
+  .emp-main{ border-radius:0; }
+}

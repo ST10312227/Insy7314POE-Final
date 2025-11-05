@@ -1,7 +1,8 @@
 // App.jsx
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 
 // Shell + screens
+import Navbar from "./components/Navbar";
 import DashboardLayout from "./components/DashboardLayout";
 import Dashboard from "./components/Dashboard";
 import BillPayments from "./components/BillPayments";
@@ -12,7 +13,7 @@ import TransactionHistory from "./components/TransactionHistory";
 import BuyAirtime from "./components/BuyAirtime";
 import AddBeneficiary from "./components/AddBeneficiary";
 import BeneficiaryDetails from "./components/BeneficiaryDetails";
-import Signup from "./components/Signup";
+// import Signup from "./components/Signup"; // ⟵ removed
 import Login from "./components/Login";
 import Home from "./components/Home";
 import About from "./components/About";
@@ -26,6 +27,9 @@ import LocalTransferDetails from "./components/LocalTransferDetails";
 import LocalTransferPay from "./components/LocalTransferPay";
 import LocalTransferPassword from "./components/LocalTransferPassword";
 
+// NEW: Employee pages
+import EmployeeLogin from "./components/EmployeeLogin";
+import EmployeeDashboard from "./components/EmployeeDashboard";
 
 // Recurring flow
 import AddBeneficiaryOptions from "./components/AddBeneficiaryOptions";
@@ -40,23 +44,54 @@ import { InternationalProvider } from "./context/InternationalContext";
 
 import "./App.css";
 
-// Simple auth gate – keeps public routes public and protects /app
+// -------- Guards --------
 function RequireAuth({ children }) {
   const token = localStorage.getItem("token");
   if (!token) return <Navigate to="/login" replace />;
   return children;
 }
 
+function RequireEmployee({ children }) {
+  const empToken = localStorage.getItem("employee_token");
+  if (!empToken) return <Navigate to="/employee-login" replace />;
+  return children;
+}
+
+// Public shell to show Navbar on public pages (Home, About, Login, Employee Login/Dashboard if public)
+function PublicShell() {
+  return (
+    <>
+      <Navbar />
+      <Outlet />
+    </>
+  );
+}
+
 export default function App() {
   return (
     <Routes>
-      {/* PUBLIC */}
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+      {/* PUBLIC (Navbar visible via PublicShell) */}
+      <Route element={<PublicShell />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/login" element={<Login />} />
 
-      {/* AUTHENTICATED APP */}
+        {/* Employee auth + dashboard */}
+        <Route path="/employee-login" element={<EmployeeLogin />} />
+        <Route
+          path="/employee/dashboard"
+          element={
+            <RequireEmployee>
+              <EmployeeDashboard />
+            </RequireEmployee>
+          }
+        />
+
+        {/* Back-compat redirect if anything still links to /signup */}
+        <Route path="/signup" element={<Navigate to="/employee-login" replace />} />
+      </Route>
+
+      {/* AUTHENTICATED CUSTOMER APP (no public Navbar here) */}
       <Route
         path="/app"
         element={
@@ -87,15 +122,14 @@ export default function App() {
         <Route path="add-beneficiary" element={<AddBeneficiary />} />
         <Route path="beneficiary-details/:id" element={<BeneficiaryDetails />} />
 
-         {/* Local Transfer routes */}
-<Route path="local-transfer/beneficiaries" element={<LocalTransferBeneficiaries />} />
-<Route path="local-transfer/new" element={<LocalTransferForm />} />
-<Route path="local-transfer/details/:id" element={<LocalTransferDetails />} />
-<Route path="local-transfer/pay" element={<LocalTransferPay />} />
-<Route path="local-transfer/password" element={<LocalTransferPassword />} />
+        {/* Local Transfer routes */}
+        <Route path="local-transfer/beneficiaries" element={<LocalTransferBeneficiaries />} />
+        <Route path="local-transfer/new" element={<LocalTransferForm />} />
+        <Route path="local-transfer/details/:id" element={<LocalTransferDetails />} />
+        <Route path="local-transfer/pay" element={<LocalTransferPay />} />
+        <Route path="local-transfer/password" element={<LocalTransferPassword />} />
 
-
-         {/* International flow */}
+        {/* International flow */}
         <Route path="international" element={<InternationalBeneficiaries />} />
         <Route path="international/add" element={<AddBeneficiaryIntlPayments />} />
         <Route path="international/confirm" element={<IntlSwiftConfirmation />} />

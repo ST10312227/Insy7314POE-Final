@@ -15,9 +15,9 @@ const pinoHttp = require('pino-http');
 const app = express();
 
 // ---------------- Env ----------------
-const IS_PROD   = (process.env.NODE_ENV || 'development') === 'production';
-const FRONTEND  = process.env.FRONTEND_ORIGIN || 'http://localhost:5173';
-const API_BASE  = process.env.API_BASE || '/api';
+const IS_PROD  = (process.env.NODE_ENV || 'development') === 'production';
+const FRONTEND = process.env.FRONTEND_ORIGIN || 'http://localhost:5173';
+const API_BASE = process.env.API_BASE || '/api';
 
 // ---------------- Security headers (Helmet – hardened) ----------------
 app.use(helmet({
@@ -44,12 +44,13 @@ app.use(helmet({
 }));
 
 // ---------------- CORS ----------------
-app.use(cors({
+const corsOptions = {
   origin: FRONTEND,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
-}));
+};
+app.use(cors(corsOptions));  // handles preflight automatically
 
 // ---------------- Body parsers ----------------
 app.use(express.json({ limit: '1mb' }));
@@ -122,33 +123,46 @@ const { runBeneficiariesMigration } = require('./migrations/beneficiaries-number
   }
 })();
 
-// ---------------- Routers (mounted under /api) ----------------
+// ---------------- Routers (mounted under API_BASE) ----------------
 const api = express.Router();
 
+// Auth (customer/general)
 const authRoutes = require('./routes/auth.routes');
 api.use('/auth', authRoutes);
 
+// Employee auth (separate "employees" collection)
+const employeeAuthRoutes = require('./routes/auth.employee');
+api.use('/auth', employeeAuthRoutes);
+
+// Payments root
 const paymentsRoutes = require('./routes/payments.routes');
 api.use('/payments', paymentsRoutes);
 
+// Accounts
 const accountsRoutes = require('./routes/accounts.routes');
 api.use('/accounts', accountsRoutes);
 
+// Dashboard
 const dashboardRoutes = require('./routes/dashboard.routes');
 api.use('/dashboard', dashboardRoutes);
 
+// Transfers (payments)
 const transfersRoutes = require('./routes/transfers.routes');
 api.use('/payments/transfers', transfersRoutes);
 
+// Beneficiaries (payments)
 const beneficiariesRoutes = require('./routes/beneficiaries.routes');
 api.use('/payments/beneficiaries', beneficiariesRoutes);
 
+// International (payments)
 const internationalRoutes = require('./routes/international.routes');
 api.use('/payments/international', internationalRoutes);
 
+// International beneficiaries
 const internationalbeneficiariesRoutes = require('./routes/internationalbeneficiaries.routes');
 api.use('/payments/international-beneficiaries', internationalbeneficiariesRoutes);
 
+// Local transfers
 const localTransfersRoutes = require('./routes/localTransfers.routes');
 api.use('/payments/local', localTransfersRoutes);
 
