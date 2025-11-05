@@ -1,28 +1,39 @@
-// src/components/EmployeeSwiftVerification.jsx
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./EmployeeDashboard.css";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "/api";
 const LIST_URL  = `${API_BASE}/dashboard/intl-beneficiaries`;
-const PATCH_URL = (id) => `${API_BASE}/dashboard/intl-payments/${id}/status`; // keep as-is if you later approve real payments
+const PATCH_URL = (id) => `${API_BASE}/dashboard/intl-beneficiaries/${id}/status`;
 
+function buildKey(x) {
+  return (
+    x?._id?.toString?.() ||
+    x?.id ||
+    [x?.userId ?? "", x?.accountNumber ?? "", x?.swiftCode ?? "", x?.firstName ?? "", x?.lastName ?? ""].join("|")
+  );
+}
+
+// --- make value text explicitly dark ---
 function Row({ k, v }) {
   return (
     <div className="fx-row" style={{ display: "flex", gap: 24, padding: "6px 0" }}>
-      <div style={{ width: 180, color: "var(--muted,#6b7280)" }}>{k}</div>
-      <div style={{ fontWeight: 500 }}>{v || "—"}</div>
+      <div style={{ width: 180, color: "#6b7280" }}>{k}</div>
+      <div style={{ fontWeight: 600, color: "#111827" /* NEW */ }}>
+        {(v ?? "") !== "" ? v : "—"}
+      </div>
     </div>
   );
 }
 
 export default function EmployeeSwiftVerification() {
-  const { id } = useParams();                                // /employee/approvals/:id
-  const { state } = useLocation();                           // preferred: item passed via navigate
+  const { id: rawId } = useParams();
+  const id = decodeURIComponent(rawId || "");
+  const { state } = useLocation();
   const navigate = useNavigate();
 
-  const [item, setItem] = useState(state?.item || null);
-  const [loading, setLoading] = useState(!state?.item);
+  const [item, setItem] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const [updating, setUpdating] = useState(false);
 
@@ -30,36 +41,49 @@ export default function EmployeeSwiftVerification() {
     if (!x) return null;
     const status = x.status ?? (x.archived === true ? "Archived" : "Pending");
     const customerName =
-      x.customerName || x.name || `${x.firstName ?? ""} ${x.lastName ?? ""}`.trim();
+      x.customerName ||
+      x.name ||
+      x.userName ||
+      `${x.firstName ?? ""} ${x.lastName ?? ""}`.trim() ||
+      x?.user?.fullName ||
+      `${x?.user?.firstName ?? ""} ${x?.user?.lastName ?? ""}`.trim();
+
     const beneficiaryName =
       x.beneficiaryName ||
       x?.beneficiary?.name ||
       `${x?.beneficiary?.firstName ?? x.firstName ?? ""} ${x?.beneficiary?.lastName ?? x.lastName ?? ""}`.trim();
+
     return {
-      id: x.id || x._id || id,
+      id: buildKey(x),
       customerName: customerName || "—",
-      customerAccount: x.customerAccount || x.accountNumber || x.sourceAccount || "—",
+      customerAccount: x.customerAccount || x.accountNumber || x.sourceAccount || x?.acct?.number || "—",
       beneficiaryName: beneficiaryName || "—",
       bank: x.bank || x?.beneficiary?.bank || "—",
       beneficiaryAccount: x.beneficiaryAccount || x?.beneficiary?.accountNumber || x.accountNumber || "—",
       swift: x.swift || x.swiftCode || x?.beneficiary?.swiftCode || "—",
-      amountCents: x.amountCents ?? null, // often not present in this feed
+      amountCents: x.amountCents ?? null,
       currency: x.currency || x.curr || "—",
       createdAt: x.createdAt || x.submittedAt || null,
       status,
       _raw: x,
     };
-  }, [id]);
+  }, []);
 
-  // If item not passed via state, fetch the list and try to find one that matches :id
   useEffect(() => {
+    if (state?.item) {
+      setItem(mapFromSource(state.item));
+      setLoading(false);
+      setErr("");
+    }
+  }, [state?.item, mapFromSource]);
+
+  useEffect(() => {
+    if (state?.item) return;
     let alive = true;
-    async function run() {
-      if (state?.item) return; // already set
+    (async () => {
       try {
         setLoading(true);
         setErr("");
-
         const res = await fetch(`${LIST_URL}?_=${Date.now()}`, {
           headers: {
             "Content-Type": "application/json",
@@ -73,37 +97,38 @@ export default function EmployeeSwiftVerification() {
           return;
         }
         if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-
         const data = await res.json();
         const arr = Array.isArray(data) ? data : data?.items || [];
+        const found =
+          arr.find((r) => String(r._id || r.id) === id) ||
+          arr.find((r) => buildKey(r) === id) ||
+          null;
 
-        // try match by id or _id
-        const found = arr.find((r) => String(r._id || r.id) === id) || arr[0]; // fallback: first
-        if (alive) setItem(mapFromSource(found));
+        if (!found && alive) setErr("Record not found.");
+        if (found && alive) setItem(mapFromSource(found));
       } catch (e) {
         if (alive) setErr(e.message || "Failed to load record.");
       } finally {
         if (alive) setLoading(false);
       }
-    }
-    if (!item) run();
+    })();
     return () => { alive = false; };
-  }, [id, item, mapFromSource, navigate, state?.item]);
+  }, [id, navigate, state?.item, mapFromSource]);
 
   const money = useMemo(() => {
-    if (!item?.amountCents && item?.amountCents !== 0) return "—";
+    if (item?.amountCents == null) return "—";
     const n = Number(item.amountCents) / 100;
     return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }, [item]);
 
   async function setStatus(next) {
     if (!item?.id) {
-      alert("Missing payment id to update. (You can still style/demo this screen.)");
+      alert("Missing payment id to update.");
       return;
     }
     try {
       setUpdating(true);
-      const res = await fetch(PATCH_URL(item.id), {
+      const res = await fetch(PATCH_URL(encodeURIComponent(item.id)), {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +140,6 @@ export default function EmployeeSwiftVerification() {
         const txt = await res.text();
         throw new Error(`${res.status} ${res.statusText} – ${txt}`);
       }
-      // Success — go back to approvals list
       navigate("/employee/approvals", { replace: true });
     } catch (e) {
       alert(e.message || "Failed to update status.");
@@ -178,32 +202,37 @@ export default function EmployeeSwiftVerification() {
 
           {!loading && !err && item && (
             <div style={{ display: "grid", placeItems: "center" }}>
-              {/* framed panel */}
-              <div style={{
-                width: "min(880px, 100%)",
-                border: "3px solid rgba(29,78,216,0.25)",
-                borderRadius: 16,
-                padding: "28px 28px 22px",
-                position: "relative",
-                background: "white",
-                boxShadow: "0 8px 24px rgba(0,0,0,0.06)"
-              }}>
-                {/* top badge */}
-                <div style={{
-                  position: "absolute",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  top: 0,
-                  background: "#E11D48",
-                  color: "white",
-                  padding: "10px 14px",
-                  borderRadius: 14,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  fontWeight: 700
-                }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l9 4v6c0 5-3.8 9.7-9 10-5.2-.3-9-5-9-10V6l9-4zm-1 12l6-6-1.4-1.4L11 10.2 8.4 7.6 7 9l4 5z"/></svg>
+              <div
+                style={{
+                  width: "min(880px, 100%)",
+                  border: "3px solid rgba(29,78,216,0.25)",
+                  borderRadius: 16,
+                  padding: "28px 28px 22px",
+                  position: "relative",
+                  background: "white",
+                  color: "#111827",             // NEW: force dark text for panel
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
+                }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    top: 0,
+                    background: "#E11D48",
+                    color: "white",
+                    padding: "10px 14px",
+                    borderRadius: 14,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    fontWeight: 700,
+                  }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2l9 4v6c0 5-3.8 9.7-9 10-5.2-.3-9-5-9-10V6l9-4zm-1 12l6-6-1.4-1.4L11 10.2 8.4 7.6 7 9l4 5z"/>
+                  </svg>
                   Verify SWIFT Payment
                 </div>
 
@@ -216,7 +245,7 @@ export default function EmployeeSwiftVerification() {
                   <Row k="Beneficiary Bank"    v={item.bank} />
                   <Row k="Beneficiary Account" v={item.beneficiaryAccount} />
                   <Row k="SWIFT Code"          v={item.swift} />
-                  <Row k="Amount"              v={item.amountCents != null ? (Number(item.amountCents)/100).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}) : "—"} />
+                  <Row k="Amount"              v={money} />
                   <Row k="Currency"            v={item.currency} />
                   <Row k="Date Submitted"      v={item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—"} />
                   <Row k="Status"              v={item.status} />

@@ -1,10 +1,9 @@
-// src/components/EmployeeApprovals.jsx
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./EmployeeDashboard.css"; // reuse styles
 
 const API_BASE = import.meta.env.VITE_API_BASE || "/api";
-const DATA_URL  = `${API_BASE}/dashboard/intl-beneficiaries`;
+const DATA_URL = `${API_BASE}/dashboard/intl-beneficiaries`;
 
 function Money({ cents, currency }) {
   if (cents == null || Number.isNaN(cents)) return <span>—</span>;
@@ -36,7 +35,7 @@ export default function EmployeeApprovals() {
 
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError]   = useState("");
+  const [error, setError] = useState("");
   const [q, setQ] = useState("");
 
   const fetchData = useCallback(async () => {
@@ -57,29 +56,42 @@ export default function EmployeeApprovals() {
         navigate("/employee-login", { replace: true });
         return;
       }
-      if (!res.ok) {
-        const txt = await res.text();
-        throw new Error(`${res.status} ${res.statusText} – ${txt}`);
-      }
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
 
       const data = await res.json();
       const src = Array.isArray(data) ? data : data?.items || [];
 
-      // Same mapping as EmployeeDashboard
       const mapped = src.map((x) => {
         const status = x.status ?? (x.archived === true ? "Archived" : "Pending");
+
+        // prefer server id; else stable-ish composite
+        const id =
+          x.id ||
+          x._id?.toString?.() ||
+          [
+            x.userId ?? "",
+            x.accountNumber ?? "",
+            x.swiftCode ?? "",
+            x.firstName ?? "",
+            x.lastName ?? "",
+          ].join("|");
+
         return {
+          id,
           customerName:
             x.customerName ||
             x.name ||
             x.userName ||
             `${x.firstName ?? ""} ${x.lastName ?? ""}`.trim() ||
+            x?.user?.fullName ||
+            `${x?.user?.firstName ?? ""} ${x?.user?.lastName ?? ""}`.trim() ||
             "—",
           customerAccount:
             x.customerAccount ||
             x.customerAccountNumber ||
             x.accountNumber ||
             x.sourceAccount ||
+            x?.acct?.number ||
             "—",
           beneficiaryName:
             x.beneficiaryName ||
@@ -87,14 +99,15 @@ export default function EmployeeApprovals() {
             x.name ||
             `${x?.beneficiary?.firstName ?? x.firstName ?? ""} ${
               x?.beneficiary?.lastName ?? x.lastName ?? ""
-            }`.trim() || "—",
-          amountCents: x.amountCents ?? null, // not present in this feed -> "—"
+            }`.trim() ||
+            "—",
+          amountCents: x.amountCents ?? null, // not supplied by this feed
           currency: x.currency || x.curr || "—",
           beneficiaryAccount:
             x.beneficiaryAccount || x?.beneficiary?.accountNumber || x.accountNumber || "—",
           swift: x.swift || x.swiftCode || x?.beneficiary?.swiftCode || "—",
           status,
-          _raw: x,
+          _raw: x, // keep original for detail page if needed
         };
       });
 
@@ -130,6 +143,21 @@ export default function EmployeeApprovals() {
         .includes(term)
     );
   }, [rows, q]);
+
+  // Row navigation -> detail verification page
+  function goDetail(row) {
+    if (!row?.id) return;
+    navigate(`/employee/approvals/${encodeURIComponent(row.id)}`, {
+      state: { item: row }, // pass normalized row for instant render
+    });
+  }
+
+  function rowKeyDown(e, row) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      goDetail(row);
+    }
+  }
 
   return (
     <div className="emp-page">
@@ -235,8 +263,17 @@ export default function EmployeeApprovals() {
                     </tr>
                   </thead>
                   <tbody>
-                    {pending.map((r, i) => (
-                      <tr key={i}>
+                    {pending.map((r) => (
+                      <tr
+                        key={r.id}
+                        className="row-clickable"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => goDetail(r)}
+                        onKeyDown={(e) => rowKeyDown(e, r)}
+                        title="Open verification"
+                        style={{ cursor: "pointer" }}
+                      >
                         <td>{r.customerName}</td>
                         <td>{r.customerAccount}</td>
                         <td>{r.beneficiaryName}</td>

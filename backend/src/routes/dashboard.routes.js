@@ -24,6 +24,81 @@ function employeeRequired(req, res, next) {
 }
 
 /**
+ * Common projection pipeline for intl_beneficiaries
+ * (used by list and single-get).
+ */
+function beneficiariesProjectStage() {
+  return {
+    $project: {
+      id: { $toString: "$_id" },
+
+      customerName: {
+        $ifNull: [
+          "$user.fullName",
+          {
+            $trim: {
+              input: {
+                $concat: [
+                  { $ifNull: ["$user.firstName", ""] },
+                  " ",
+                  { $ifNull: ["$user.lastName", ""] },
+                ],
+              },
+            },
+          },
+        ],
+      },
+      customerAccount: { $ifNull: ["$acct.number", ""] },
+
+      beneficiaryName: {
+        $ifNull: [
+          "$name",
+          {
+            $trim: {
+              input: {
+                $concat: [
+                  { $ifNull: ["$firstName", ""] },
+                  " ",
+                  { $ifNull: ["$lastName", ""] },
+                ],
+              },
+            },
+          },
+        ],
+      },
+      beneficiaryAccount: { $ifNull: ["$accountNumber", ""] },
+      swift: { $ifNull: ["$swiftCode", ""] },
+      currency: { $ifNull: ["$currency", ""] },
+
+      amountCents: null,
+
+      // Status precedence:
+      // 1) explicit status
+      // 2) archived=true  => "Archived"
+      // 3) verified=true  => "Verified"
+      // 4) default        => "Pending"
+      status: {
+        $cond: [
+          { $ifNull: ["$status", false] },
+          "$status",
+          {
+            $cond: [
+              { $eq: ["$archived", true] },
+              "Archived",
+              {
+                $cond: [{ $eq: ["$verified", true] }, "Verified", "Pending"],
+              },
+            ],
+          },
+        ],
+      },
+      createdAt: 1,
+      updatedAt: 1,
+    },
+  };
+}
+
+/**
  * GET /api/dashboard/intl-beneficiaries
  * Returns international beneficiaries with light enrichment from users/accounts.
  * Transactions are NOT involved.
@@ -61,77 +136,62 @@ router.get("/intl-beneficiaries", employeeRequired, async (_req, res) => {
     },
     { $addFields: { acct: { $first: "$acct" } } },
 
-    // Shape for the UI table
-    {
-      $project: {
-        id: { $toString: "$_id" },
-        customerName: {
-          $ifNull: [
-            "$user.fullName",
-            {
-              $trim: {
-                input: {
-                  $concat: [
-                    { $ifNull: ["$user.firstName", ""] },
-                    " ",
-                    { $ifNull: ["$user.lastName", ""] },
-                  ],
-                },
-              },
-            },
-          ],
-        },
-        customerAccount: { $ifNull: ["$acct.number", ""] },
-
-        beneficiaryName: {
-          $ifNull: [
-            "$name",
-            {
-              $trim: {
-                input: {
-                  $concat: [
-                    { $ifNull: ["$firstName", ""] },
-                    " ",
-                    { $ifNull: ["$lastName", ""] },
-                  ],
-                },
-              },
-            },
-          ],
-        },
-        beneficiaryAccount: { $ifNull: ["$accountNumber", ""] },
-        swift: { $ifNull: ["$swiftCode", ""] },
-        currency: { $ifNull: ["$currency", ""] },
-
-        amountCents: null,
-
-        // ✅ Status logic:
-        // 1) If explicit "status" exists, use it.
-        // 2) Else if archived==true -> "Archived".
-        // 3) Else if verified==true -> "Verified".
-        // 4) Else default -> "Pending".
-        status: {
-          $cond: [
-            { $ifNull: ["$status", false] },
-            "$status",
-            {
-              $cond: [
-                { $eq: ["$archived", true] },
-                "Archived",
-                {
-                  $cond: [{ $eq: ["$verified", true] }, "Verified", "Pending"],
-                },
-              ],
-            },
-          ],
-        },
-      },
-    },
+    beneficiariesProjectStage(),
     { $sort: { _id: -1 } },
   ];
 
   const items = await db.collection("intl_beneficiaries").aggregate(pipeline).toArray();
   res.json(items);
+});
+
+/**
+ * GET /api/dashboard/intl-beneficiaries/:id
+ * Fetch a single beneficiary (same shape as list).
+ */
+router.get("/intl-beneficiaries/:id", employeeRequired, async (req, res) => {
+  const db = getDb();
+  let _id;
+  try {
+    _id = new ObjectId(req.params.id);
+  } catch (e) {
+    return res.status(400).json({ message: "Invalid id" });
+  }
+
+  const pipeline = [
+    { $match: { _id } },
+
+    // Join owning user
+    {
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+    { $addFields: { user: { $first: "$user" } } },
+
+    // Join first account
+    {
+      $lookup: {
+        from: "accounts",
+        let: { uid: "$userId" },
+        pipeline: [
+          { $match: { $expr: { $eq: ["$userId", "$$uid"] } } },
+          { $sort: { createdAt: 1 } },
+          { $limit: 1 },
+        ],
+        as: "acct",
+      },
+    },
+    { $addFields: { acct: { $first: "$acct" } } },
+
+    beneficiariesProjectStage(),
+  ];
+
+  const doc = await db.collection("intl_beneficiaries").aggregate(pipeline).next();
+  if (!doc) return res.status(404).json({ message: "Not found" });
+  res.json(doc);
 });
 
 /**
@@ -242,5 +302,51 @@ router.patch("/intl-payments/:id/status", employeeRequired, async (req, res) => 
     res.status(500).json({ message: "Internal error" });
   }
 });
+
+
+// PATCH /api/dashboard/intl-beneficiaries/:id/status
+// Body: { status: "Verified" | "Declined" | "Pending" | "Archived" }
+router.patch("/intl-beneficiaries/:id/status", employeeRequired, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { status } = req.body || {};
+
+    const ALLOWED = ["Verified", "Declined", "Pending", "Archived"];
+    if (!ALLOWED.includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const db = getDb();
+    const set = {
+      status,
+      updatedAt: new Date(),
+    };
+
+    if (status === "Verified") {
+      set.verifiedAt = new Date();
+      set.verifiedBy = req.employeeJwt.sub;
+      set.archived = false;
+    } else if (status === "Archived") {
+      set.archived = true;
+      set.verifiedAt = null;
+      set.verifiedBy = null;
+    } else {
+      set.archived = false;
+      set.verifiedAt = null;
+      set.verifiedBy = null;
+    }
+
+    const r = await db
+      .collection("intl_beneficiaries")
+      .updateOne({ _id: new ObjectId(id) }, { $set: set });
+
+    if (!r.matchedCount) return res.status(404).json({ message: "Not found" });
+
+    res.json({ ok: true, id, status });
+  } catch (e) {
+    res.status(500).json({ message: "Internal error" });
+  }
+});
+
 
 module.exports = router;

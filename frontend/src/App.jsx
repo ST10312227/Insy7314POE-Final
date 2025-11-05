@@ -31,7 +31,8 @@ import LocalTransferPassword from "./components/LocalTransferPassword";
 import EmployeeLogin from "./components/EmployeeLogin";
 import EmployeeDashboard from "./components/EmployeeDashboard";
 import CreateUser from "./components/CreateUser";
-import EmployeeApprovals from "./components/EmployeeApprovals"; // ⟵ NEW
+import EmployeeApprovals from "./components/EmployeeApprovals";
+import EmployeeSwiftVerification from "./components/EmployeeSwiftVerification"; // ⟵ NEW
 
 // Recurring flow
 import AddBeneficiaryOptions from "./components/AddBeneficiaryOptions";
@@ -96,12 +97,21 @@ export default function App() {
             </RequireEmployee>
           }
         />
-        {/* NEW: Pending approvals list */}
+        {/* Approvals list (pending only) */}
         <Route
           path="/employee/approvals"
           element={
             <RequireEmployee>
               <EmployeeApprovals />
+            </RequireEmployee>
+          }
+        />
+        {/* Detail/verification page */}
+        <Route
+          path="/employee/approvals/:id"
+          element={
+            <RequireEmployee>
+              <EmployeeSwiftVerification />
             </RequireEmployee>
           }
         />
@@ -115,7 +125,7 @@ export default function App() {
         path="/app"
         element={
           <RequireAuth>
-            {/* Providers are mounted only after auth to avoid 401s on public pages */}
+            {/* Providers mounted only after auth to avoid 401s on public pages */}
             <AccountProvider>
               <BeneficiaryProvider>
                 <LocalTransferProvider>
