@@ -13,7 +13,13 @@ function StatusPill({ value }) {
     <span
       className={
         "status-pill " +
-        (v === "verified" ? "ok" : v === "declined" ? "bad" : v === "archived" ? "bad" : "pending")
+        (v === "verified"
+          ? "ok"
+          : v === "declined"
+          ? "bad"
+          : v === "archived"
+          ? "bad"
+          : "pending")
       }
     >
       {value || "Pending"}
@@ -87,11 +93,7 @@ export default function EmployeeDashboard() {
       const data = await res.json();
 
       const mapped = (Array.isArray(data) ? data : data?.items || []).map((x) => {
-        // Prefer backend-provided status; else show "Archived" if flagged; else default to "Pending"
-        const status =
-          x.status ??
-          (x.archived === true ? "Archived" : "Pending");
-
+        const status = x.status ?? (x.archived === true ? "Archived" : "Pending");
         return {
           customerName:
             x.customerName ||
@@ -167,6 +169,7 @@ export default function EmployeeDashboard() {
           vault
         </div>
 
+        {/* Make this navigate to the approvals page */}
         <SidebarItem
           icon={
             <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
@@ -174,7 +177,7 @@ export default function EmployeeDashboard() {
             </svg>
           }
           label="Pending Transactions"
-          active
+          onClick={() => navigate("/employee/approvals")}
         />
 
         <SidebarItem

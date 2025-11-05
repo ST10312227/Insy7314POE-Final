@@ -31,6 +31,7 @@ import LocalTransferPassword from "./components/LocalTransferPassword";
 import EmployeeLogin from "./components/EmployeeLogin";
 import EmployeeDashboard from "./components/EmployeeDashboard";
 import CreateUser from "./components/CreateUser";
+import EmployeeApprovals from "./components/EmployeeApprovals"; // ⟵ NEW
 
 // Recurring flow
 import AddBeneficiaryOptions from "./components/AddBeneficiaryOptions";
@@ -92,6 +93,15 @@ export default function App() {
           element={
             <RequireEmployee>
               <CreateUser />
+            </RequireEmployee>
+          }
+        />
+        {/* NEW: Pending approvals list */}
+        <Route
+          path="/employee/approvals"
+          element={
+            <RequireEmployee>
+              <EmployeeApprovals />
             </RequireEmployee>
           }
         />
