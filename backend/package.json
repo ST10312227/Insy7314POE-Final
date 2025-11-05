@@ -11,7 +11,8 @@
     "seed:login": "node src/dev/seed_login_user.js",
     "test:ci": "cross-env NODE_ENV=test jest --ci --runInBand",
     "lint": "eslint . --ext .js,.cjs",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "coverage": "jest --coverage --runInBand --config ./jest.config.cjs"
   },
   "keywords": [],
   "dependencies": {

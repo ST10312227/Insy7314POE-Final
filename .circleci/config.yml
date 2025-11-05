@@ -1,0 +1,52 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5
+  sonarcloud: sonarsource/sonarcloud@2.0.0
+
+jobs:
+  backend-build-and-scan:
+    docker:
+      - image: cimg/node:20.18
+    steps:
+      - checkout
+
+      # Cache only backend node_modules using its lockfile
+      - restore_cache:
+          keys:
+            - v1-backend-npm-{{ checksum "backend/package-lock.json" }}
+            - v1-backend-npm-
+
+      - run:
+          name: Install backend dependencies
+          command: |
+            if [ -f backend/package-lock.json ]; then
+              npm ci --prefix backend
+            else
+              npm i --prefix backend
+            fi
+
+      - run:
+          name: Run backend tests (with coverage if available)
+          command: |
+            if npm --prefix backend run | grep -q " coverage"; then
+              npm run coverage --prefix backend || npm test --prefix backend
+            elif npm --prefix backend run | grep -q " test"; then
+              npm test --prefix backend
+            else
+              echo "No test script found in backend/package.json, skipping tests"
+            fi
+
+      - save_cache:
+          key: v1-backend-npm-{{ checksum "backend/package-lock.json" }}
+          paths:
+            - backend/node_modules
+
+      # Runs SonarCloud scanner; needs env vars in a CircleCI Context (next steps)
+      - sonarcloud/scan
+
+workflows:
+  backend:
+    jobs:
+      - backend-build-and-scan:
+          context: sonarcloud
