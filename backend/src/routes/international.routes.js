@@ -1,4 +1,4 @@
-// src/routes/international.routes.js
+// backend/src/routes/international.routes.js
 const router = require('express').Router();
 const { ObjectId } = require('mongodb');
 const rateLimit = require('express-rate-limit');
@@ -68,7 +68,12 @@ const writeLimiter = rateLimit({
       { userId: 1, createdAt: -1 },
       { name: 'transfers_user_createdAt' }
     );
-  } catch (err) {
+
+    await internationalTransfers.createIndex(
+      { status: 1, createdAt: -1 },
+      { name: 'transfers_status_createdAt' }
+    );
+  } catch (_err) {
     // ignore on boot
   }
 })();
@@ -124,6 +129,7 @@ router.post(
 );
 
 // POST /payments/international/transfers
+// Always creates a transfer with status = "Pending"
 router.post(
   '/transfers',
   checkAuth,
@@ -133,7 +139,7 @@ router.post(
     const { internationalTransfers, internationalBeneficiaries } = collections();
     const userId = new ObjectId(req.user.id);
 
-    // make sure beneficiary belongs to user
+    // ensure beneficiary belongs to logged-in user
     const bId = new ObjectId(req.validated.beneficiaryId);
     const b = await internationalBeneficiaries.findOne({ _id: bId, userId });
     if (!b) return res.status(404).json({ error: 'beneficiary_not_found' });
@@ -142,16 +148,36 @@ router.post(
     const tx = {
       userId,
       beneficiaryId: bId,
+
       amount: req.validated.amount,
-      currency: req.validated.currency,
+      currency: (req.validated.currency || '').toUpperCase(),
       reference: req.validated.reference || null,
-      status: 'submitted', // or pending
+
+      // snapshot some beneficiary fields for auditing
+      beneficiary: {
+        name: b.name || `${b.firstName ?? ''} ${b.lastName ?? ''}`.trim(),
+        firstName: b.firstName ?? null,
+        lastName: b.lastName ?? null,
+        accountNumber: b.accountNumber || '',
+        swiftCode: b.swiftCode || '',
+        bank: b.bank || '',
+        address: b.address || '',
+        cityName: b.cityName || '',
+        country: b.country || '',
+      },
+
+      // workflow
+      status: 'Pending',         // <— requested change
+      verifiedAt: null,
+      verifiedBy: null,
+      archived: false,
+
       createdAt: now,
       updatedAt: now,
     };
 
     const r = await internationalTransfers.insertOne(tx);
-    res.status(201).json({ id: r.insertedId.toString(), ...tx, beneficiary: b });
+    res.status(201).json({ id: r.insertedId.toString(), ...tx });
   }
 );
 

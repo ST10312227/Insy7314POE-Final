@@ -13,7 +13,7 @@ function StatusPill({ value }) {
     <span
       className={
         "status-pill " +
-        (v === "verified" ? "ok" : v === "declined" ? "bad" : "pending")
+        (v === "verified" ? "ok" : v === "declined" ? "bad" : v === "archived" ? "bad" : "pending")
       }
     >
       {value || "Pending"}
@@ -70,9 +70,7 @@ export default function EmployeeDashboard() {
       const res = await fetch(DATA_URL, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${
-            localStorage.getItem("employee_token") || ""
-          }`,
+          Authorization: `Bearer ${localStorage.getItem("employee_token") || ""}`,
         },
       });
 
@@ -83,15 +81,18 @@ export default function EmployeeDashboard() {
 
       if (!res.ok) {
         const txt = await res.text();
-        throw new Error(
-          `Failed to load: ${res.status} ${res.statusText} – ${txt}`
-        );
+        throw new Error(`Failed to load: ${res.status} ${res.statusText} – ${txt}`);
       }
 
       const data = await res.json();
 
-      const mapped = (Array.isArray(data) ? data : data?.items || []).map(
-        (x) => ({
+      const mapped = (Array.isArray(data) ? data : data?.items || []).map((x) => {
+        // Prefer backend-provided status; else show "Archived" if flagged; else default to "Pending"
+        const status =
+          x.status ??
+          (x.archived === true ? "Archived" : "Pending");
+
+        return {
           customerName:
             x.customerName ||
             x.name ||
@@ -108,9 +109,7 @@ export default function EmployeeDashboard() {
             x.beneficiaryName ||
             x?.beneficiary?.name ||
             x.name ||
-            `${x?.beneficiary?.firstName ?? x.firstName ?? ""} ${
-              x?.beneficiary?.lastName ?? x.lastName ?? ""
-            }`.trim() ||
+            `${x?.beneficiary?.firstName ?? x.firstName ?? ""} ${x?.beneficiary?.lastName ?? x.lastName ?? ""}`.trim() ||
             "—",
           amountCents: x.amountCents ?? null, // renders as "—"
           currency: x.currency || x.curr || "—",
@@ -120,10 +119,10 @@ export default function EmployeeDashboard() {
             x.accountNumber ||
             "—",
           swift: x.swift || x.swiftCode || x?.beneficiary?.swiftCode || "—",
-          status: x.status || x.state || "Verified",
+          status,
           _raw: x,
-        })
-      );
+        };
+      });
 
       setRows(mapped);
     } catch (e) {
@@ -180,13 +179,7 @@ export default function EmployeeDashboard() {
 
         <SidebarItem
           icon={
-            <svg
-              width="26"
-              height="26"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-            >
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4 0-8 2-8 6v1h16v-1c0-4-4-6-8-6Z" />
               <path d="M19 10v-2h-2V6h-2v2h-2v2h2v2h2v-2z" />
             </svg>
@@ -236,8 +229,7 @@ export default function EmployeeDashboard() {
                 <span className="linkish">International Payments</span>
               </h1>
               <p className="sub">
-                Review and verify customer international payments before
-                submitting to SWIFT.
+                Review and verify customer international payments before submitting to SWIFT.
               </p>
             </div>
 
@@ -250,28 +242,14 @@ export default function EmployeeDashboard() {
                   aria-label="Search"
                 />
                 <button className="icon-btn" aria-label="Search">
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-5-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                   </svg>
                 </button>
               </div>
 
-              <button
-                className="filter-btn"
-                onClick={fetchData}
-                title="Refresh"
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
+              <button className="filter-btn" onClick={fetchData} title="Refresh">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M17.65 6.35A7.95 7.95 0 0 0 12 4V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 13.65-6.65z" />
                 </svg>
                 <span>Refresh</span>
@@ -317,17 +295,13 @@ export default function EmployeeDashboard() {
                         <td>{r.currency}</td>
                         <td>{r.beneficiaryAccount}</td>
                         <td>{r.swift}</td>
-                        <td>
-                          <StatusPill value={r.status} />
-                        </td>
+                        <td><StatusPill value={r.status} /></td>
                       </tr>
                     ))}
 
                     {filtered.length === 0 && (
                       <tr>
-                        <td colSpan={8} className="empty">
-                          No results.
-                        </td>
+                        <td colSpan={8} className="empty">No results.</td>
                       </tr>
                     )}
                   </tbody>
@@ -338,13 +312,7 @@ export default function EmployeeDashboard() {
                 <span className="dot active" />
                 <span className="dot" />
                 <span className="dot" />
-                <svg
-                  className="caret"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
+                <svg className="caret" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M9 6l6 6-6 6" />
                 </svg>
               </div>
