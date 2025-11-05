@@ -30,6 +30,7 @@ import LocalTransferPassword from "./components/LocalTransferPassword";
 // NEW: Employee pages
 import EmployeeLogin from "./components/EmployeeLogin";
 import EmployeeDashboard from "./components/EmployeeDashboard";
+import CreateUser from "./components/CreateUser";
 
 // Recurring flow
 import AddBeneficiaryOptions from "./components/AddBeneficiaryOptions";
@@ -57,7 +58,7 @@ function RequireEmployee({ children }) {
   return children;
 }
 
-// Public shell to show Navbar on public pages (Home, About, Login, Employee Login/Dashboard if public)
+// Public shell to show Navbar on public pages
 function PublicShell() {
   return (
     <>
@@ -76,13 +77,21 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Employee auth + dashboard */}
+        {/* Employee auth + pages */}
         <Route path="/employee-login" element={<EmployeeLogin />} />
         <Route
           path="/employee/dashboard"
           element={
             <RequireEmployee>
               <EmployeeDashboard />
+            </RequireEmployee>
+          }
+        />
+        <Route
+          path="/employee/create-user"
+          element={
+            <RequireEmployee>
+              <CreateUser />
             </RequireEmployee>
           }
         />

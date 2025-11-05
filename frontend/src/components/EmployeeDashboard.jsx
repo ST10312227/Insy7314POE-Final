@@ -1,5 +1,11 @@
-import { useMemo, useState } from "react";
+// src/components/EmployeeDashboard.jsx
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import "./EmployeeDashboard.css";
+
+const API_BASE = import.meta.env.VITE_API_BASE || "/api";
+// Pull directly from intl_beneficiaries (no transactions)
+const DATA_URL = `${API_BASE}/dashboard/intl-beneficiaries`;
 
 function StatusPill({ value }) {
   const v = (value || "").toLowerCase();
@@ -7,56 +13,160 @@ function StatusPill({ value }) {
     <span
       className={
         "status-pill " +
-        (v === "verified"
-          ? "ok"
-          : v === "declined"
-          ? "bad"
-          : "pending")
+        (v === "verified" ? "ok" : v === "declined" ? "bad" : "pending")
       }
     >
-      {value}
+      {value || "Pending"}
     </span>
   );
 }
 
-function SidebarItem({ icon, label, active }) {
+function SidebarItem({ icon, label, active, onClick }) {
+  function handleKeyDown(e) {
+    if (!onClick) return;
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onClick();
+    }
+  }
   return (
-    <div className={"sb-item " + (active ? "active" : "")}>
-      <div className="sb-icon" aria-hidden>{icon}</div>
+    <div
+      className={"sb-item " + (active ? "active" : "")}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-current={active ? "page" : undefined}
+    >
+      <div className="sb-icon" aria-hidden>
+        {icon}
+      </div>
       <div className="sb-label">{label}</div>
     </div>
   );
 }
 
-export default function EmployeeDashboard() {
-  // Demo dataset (swap with API data)
-  const rows = useMemo(
-    () => [
-      ["John Doe", "789455515557", "Chen Wei", "10,000.00", "CNY", "ES792100081361", "BKCHCNBJ", "Pending"],
-      ["Thabo Land", "784562100339", "Bob Win", "12,000.00", "ZAR", "ES792100081361", "DEUTDEFF", "Pending"],
-      ["Emily Blunt", "784562100339", "Tara Kyl", "12,000.00", "USD", "ES792100081361", "BARCGB22", "Verified"],
-      ["Jacob Day", "784562100339", "Justin Kil", "5,000.00", "USD", "ES792100081361", "BARCGB22", "Declined"],
-      ["William Fin", "784562100339", "Jen Ling", "5,000.00", "GBP", "ES792100081361", "DEUTDEFF", "Pending"],
-      ["Ahmed Val", "784562100339", "Ken Min", "5,000.00", "GBP", "ES792100081361", "DEUTDEFF", "Verified"],
-      ["Katy Wing", "784562100339", "Alysa Die", "12,000.00", "GBP", "ES792100081361", "BARCGB22", "Declined"],
-      ["Jenna Night", "784562100339", "Jon Bin", "12,000.00", "EUR", "ES792100081361", "DEUTDEFF", "Pending"],
-      ["Bob Villan", "784562100339", "Mat Davis", "12,000.00", "ZAR", "ES792100081361", "MIDLGB22", "Verified"],
-      ["Carter Ring", "784562100339", "Kat Gram", "5,000.00", "EUR", "ES792100081361", "MIDLGB22", "Verified"],
-    ],
-    []
-  );
+function centsToMoney(v) {
+  if (v === null || v === undefined || Number.isNaN(v)) return "—";
+  const n = Number(v) / 100;
+  return n.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
 
+export default function EmployeeDashboard() {
+  const navigate = useNavigate();
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [query, setQuery] = useState("");
 
-  const filtered = rows.filter((r) =>
-    r.join(" ").toLowerCase().includes(query.toLowerCase())
-  );
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const res = await fetch(DATA_URL, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${
+            localStorage.getItem("employee_token") || ""
+          }`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        navigate("/employee-login", { replace: true });
+        return;
+      }
+
+      if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(
+          `Failed to load: ${res.status} ${res.statusText} – ${txt}`
+        );
+      }
+
+      const data = await res.json();
+
+      const mapped = (Array.isArray(data) ? data : data?.items || []).map(
+        (x) => ({
+          customerName:
+            x.customerName ||
+            x.name ||
+            x.userName ||
+            `${x.firstName ?? ""} ${x.lastName ?? ""}`.trim() ||
+            "—",
+          customerAccount:
+            x.customerAccount ||
+            x.customerAccountNumber ||
+            x.accountNumber ||
+            x.sourceAccount ||
+            "—",
+          beneficiaryName:
+            x.beneficiaryName ||
+            x?.beneficiary?.name ||
+            x.name ||
+            `${x?.beneficiary?.firstName ?? x.firstName ?? ""} ${
+              x?.beneficiary?.lastName ?? x.lastName ?? ""
+            }`.trim() ||
+            "—",
+          amountCents: x.amountCents ?? null, // renders as "—"
+          currency: x.currency || x.curr || "—",
+          beneficiaryAccount:
+            x.beneficiaryAccount ||
+            x?.beneficiary?.accountNumber ||
+            x.accountNumber ||
+            "—",
+          swift: x.swift || x.swiftCode || x?.beneficiary?.swiftCode || "—",
+          status: x.status || x.state || "Verified",
+          _raw: x,
+        })
+      );
+
+      setRows(mapped);
+    } catch (e) {
+      setError(e?.message || "Failed to load data.");
+      setRows([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return rows;
+    return rows.filter((r) =>
+      [
+        r.customerName,
+        r.customerAccount,
+        r.beneficiaryName,
+        r.currency,
+        r.beneficiaryAccount,
+        r.swift,
+        r.status,
+        centsToMoney(r.amountCents),
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(q)
+    );
+  }, [rows, query]);
 
   return (
     <div className="emp-page">
       {/* Sidebar */}
       <aside className="emp-sidebar">
-        <div className="brand">the<br/>vault</div>
+        <div className="brand">
+          the
+          <br />
+          vault
+        </div>
 
         <SidebarItem
           icon={
@@ -70,31 +180,40 @@ export default function EmployeeDashboard() {
 
         <SidebarItem
           icon={
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-3.31 0-6 2.69-6 6h2a4 4 0 0 1 8 0h2c0-3.31-2.69-6-6-6z"/>
+            <svg
+              width="26"
+              height="26"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4 0-8 2-8 6v1h16v-1c0-4-4-6-8-6Z" />
+              <path d="M19 10v-2h-2V6h-2v2h-2v2h2v2h2v-2z" />
             </svg>
           }
-          label="Account Details"
+          label="Create user"
+          onClick={() => navigate("/employee/create-user")}
         />
 
         <div className="sb-spacer" />
 
-        <SidebarItem
-          icon={<span className="dot" />}
-          label="Notifications"
-        />
+        <SidebarItem icon={<span className="dot" />} label="Notifications" />
         <SidebarItem
           icon={
             <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M16 13v-2H7v-2l-5 3 5 3v-2zM20 3H10v2h10v14H10v2h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/>
+              <path d="M16 13v-2H7v-2l-5 3 5 3v-2zM20 3H10v2h10v14H10v2h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z" />
             </svg>
           }
           label="Logout"
+          onClick={() => {
+            localStorage.removeItem("employee_token");
+            navigate("/employee-login");
+          }}
         />
         <SidebarItem
           icon={
             <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm1 17h-2v-2h2v2zm2.07-7.75-.9.92A3.49 3.49 0 0 0 13 15h-2v-.5c0-1 .5-1.5 1.1-2.1l1.2-1.2a1.5 1.5 0 1 0-2.6-1 1 1 0 0 1-1.9-.6A3.5 3.5 0 1 1 15.07 11.25z"/>
+              <path d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2zm1 17h-2v-2h2v2zm2.07-7.75-.9.92A3.49 3.49 0 0 0 13 15h-2v-.5c0-1 .5-1.5 1.1-2.1l1.2-1.2a1.5 1.5 0 1 0-2.6-1 1 0 0 1-1.9-.6A3.5 3.5 0 1 1 15.07 11.25z" />
             </svg>
           }
           label="Help"
@@ -117,7 +236,8 @@ export default function EmployeeDashboard() {
                 <span className="linkish">International Payments</span>
               </h1>
               <p className="sub">
-                Review and verify customer international payments before submitting to SWIFT.
+                Review and verify customer international payments before
+                submitting to SWIFT.
               </p>
             </div>
 
@@ -130,64 +250,106 @@ export default function EmployeeDashboard() {
                   aria-label="Search"
                 />
                 <button className="icon-btn" aria-label="Search">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-5-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-5-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                   </svg>
                 </button>
               </div>
-              <button className="filter-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M10 18h4v-2h-4v2zm-7-8v2h18v-2H3zm3-6v2h12V4H6z"/>
+
+              <button
+                className="filter-btn"
+                onClick={fetchData}
+                title="Refresh"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M17.65 6.35A7.95 7.95 0 0 0 12 4V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 13.65-6.65z" />
                 </svg>
-                <span>Filter</span>
+                <span>Refresh</span>
               </button>
             </div>
           </div>
 
-          <div className="table-wrap">
-            <table className="grid">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Customer Account</th>
-                  <th>Beneficiary Name</th>
-                  <th>Amount.</th>
-                  <th>Curr.</th>
-                  <th>Beneficiary Account</th>
-                  <th>SWIFT co.</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((r, i) => (
-                  <tr key={i}>
-                    <td>{r[0]}</td>
-                    <td>{r[1]}</td>
-                    <td>{r[2]}</td>
-                    <td className="num">{r[3]}</td>
-                    <td>{r[4]}</td>
-                    <td>{r[5]}</td>
-                    <td>{r[6]}</td>
-                    <td><StatusPill value={r[7]} /></td>
-                  </tr>
-                ))}
-                {filtered.length === 0 && (
-                  <tr>
-                    <td colSpan={8} className="empty">No results.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+          {loading && (
+            <div className="table-wrap">
+              <div className="empty">Loading…</div>
+            </div>
+          )}
 
-          <div className="pager">
-            <span className="dot active" />
-            <span className="dot" />
-            <span className="dot" />
-            <svg className="caret" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9 6l6 6-6 6" />
-            </svg>
-          </div>
+          {error && !loading && (
+            <div className="table-wrap">
+              <div className="empty">Error: {error}</div>
+            </div>
+          )}
+
+          {!loading && !error && (
+            <>
+              <div className="table-wrap">
+                <table className="grid">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Customer Account</th>
+                      <th>Beneficiary Name</th>
+                      <th>Amount.</th>
+                      <th>Curr.</th>
+                      <th>Beneficiary Account</th>
+                      <th>SWIFT co.</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((r, i) => (
+                      <tr key={i}>
+                        <td>{r.customerName}</td>
+                        <td>{r.customerAccount}</td>
+                        <td>{r.beneficiaryName}</td>
+                        <td className="num">{centsToMoney(r.amountCents)}</td>
+                        <td>{r.currency}</td>
+                        <td>{r.beneficiaryAccount}</td>
+                        <td>{r.swift}</td>
+                        <td>
+                          <StatusPill value={r.status} />
+                        </td>
+                      </tr>
+                    ))}
+
+                    {filtered.length === 0 && (
+                      <tr>
+                        <td colSpan={8} className="empty">
+                          No results.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="pager">
+                <span className="dot active" />
+                <span className="dot" />
+                <span className="dot" />
+                <svg
+                  className="caret"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M9 6l6 6-6 6" />
+                </svg>
+              </div>
+            </>
+          )}
         </section>
       </main>
     </div>
