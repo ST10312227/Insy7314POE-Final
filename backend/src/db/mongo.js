@@ -1,58 +1,69 @@
-// backend/src/db/mongo.js
+// Central Mongo connection helper (lint-safe, no inner declarations)
 const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config();
 
-const isTest = process.env.NODE_ENV === 'test';
-const uri = process.env.MONGO_URI;                 // Atlas connection string
+const uri = process.env.MONGO_URI;
 const dbName = process.env.MONGO_DB || 'insy7314';
 
-// If no URI: in tests export harmless stubs; otherwise fail fast (throw).
-if (!uri) {
-  if (isTest) {
-    module.exports = {
-      initMongo: async () => null,
-      getDb: () => ({ collection: () => ({}) }),
-      closeMongo: async () => {},
-      client: null,
-      __isMocked: true,
-    };
-  } else {
+let client;
+let db;
+let isInitialized = false;
+
+function createClient(connectionString) {
+  return new MongoClient(connectionString, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    },
+  });
+}
+
+/** Connect once and cache the db handle */
+async function initMongo() {
+  if (isInitialized && db) return db;
+
+  // In test runs, allow a lightweight stub when no URI is present
+  if (!uri) {
+    if ((process.env.NODE_ENV || '').toLowerCase() === 'test') {
+      db = {
+        databaseName: 'mockdb',
+        // mimic db.command({ ping: 1 })
+        command: async () => ({ ok: 1 }),
+        // callers using collection() in unit tests can be stubbed/mocked
+        collection: () => ({}),
+      };
+      isInitialized = true;
+      return db;
+    }
     throw new Error('Missing MONGO_URI in .env');
   }
-} else {
-  const client = new MongoClient(uri, {
-    serverApi: { version: ServerApiVersion.v1, strict: true, deprecationErrors: true },
-  });
 
-  let db = null;
-  let connectingPromise = null;
-
-  async function initMongo() {
-    if (db) return db;
-    if (connectingPromise) return connectingPromise;
-
-    connectingPromise = (async () => {
-      await client.connect();
-      const database = client.db(dbName);
-      await database.command({ ping: 1 });
-      db = database;
-      if (!isTest) console.log(`✅ MongoDB connected (db: ${dbName})`);
-      return db;
-    })();
-
-    return connectingPromise;
-  }
-
-  function getDb() {
-    if (!db) throw new Error('Mongo not initialized — call initMongo() first.');
-    return db;
-  }
-
-  async function closeMongo() {
-    if (client && client.topology) await client.close();
-    db = null;
-    connectingPromise = null;
-  }
-
-  module.exports = { initMongo, getDb, closeMongo, client };
+  client = createClient(uri);
+  await client.connect();
+  db = client.db(dbName);
+  // sanity check
+  await db.command({ ping: 1 });
+  isInitialized = true;
+  return db;
 }
+
+/** Get the db after initMongo() ran */
+function getDb() {
+  if (!isInitialized || !db) {
+    throw new Error('Mongo not initialized — call initMongo() first.');
+  }
+  return db;
+}
+
+/** Gracefully close the client (optional for tests/shutdown) */
+async function closeMongo() {
+  if (client) {
+    await client.close();
+    client = undefined;
+  }
+  db = undefined;
+  isInitialized = false;
+}
+
+module.exports = { initMongo, getDb, closeMongo };
