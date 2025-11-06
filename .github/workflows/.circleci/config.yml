@@ -1,0 +1,44 @@
+# .circleci/config.yml
+version: 2.1
+
+orbs:
+  node: circleci/node@6.3.0
+  sonarcloud: sonarsource/sonarcloud@2.0.0
+
+workflows:
+  ci:
+    jobs:
+      - backend
+
+jobs:
+  backend:
+    docker:
+      - image: cimg/node:20.19
+    working_directory: ~/project/backend
+
+    steps:
+      - checkout
+
+      # Install deps with cache
+      - node/install-packages:
+          app-dir: ~/project/backend
+          pkg-manager: npm
+
+      # Lint (fails the build on errors)
+      - run:
+          name: Lint
+          command: npm run lint
+
+      # Tests with coverage (uses your jest.config.cjs)
+      - run:
+          name: Test (with coverage)
+          command: npm run coverage
+
+      # Store coverage as an artifact (optional)
+      - store_artifacts:
+          path: coverage
+          destination: coverage
+
+      # SonarCloud scan (reads sonar-project.properties in backend/)
+      - sonarcloud/scan:
+          project-root: ~/project/backend
