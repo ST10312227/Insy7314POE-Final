@@ -15,7 +15,9 @@ const pinoHttp = require('pino-http');
 const app = express();
 
 // ---------------- Env ----------------
-const IS_PROD  = (process.env.NODE_ENV || 'development') === 'production';
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const IS_TEST = NODE_ENV === 'test';
+const IS_PROD = NODE_ENV === 'production';
 const FRONTEND = process.env.FRONTEND_ORIGIN || 'http://localhost:5173';
 const API_BASE = process.env.API_BASE || '/api';
 
@@ -92,9 +94,14 @@ app.use((req, _res, next) => {
 // 3) HTTP Parameter Pollution guard
 app.use(hpp({ whitelist: ['days', 'txLimit', 'limit', 'cursor', 'archived'] }));
 
-// ---------------- Health check (root path) ----------------
+// ---------------- Health checks ----------------
+// Root ping used by tests
+app.get('/_ping', (_req, res) => {
+  res.status(200).json({ ok: true });
+});
+// Additional health endpoint
 app.get('/health', (_req, res) => {
-  res.json({ ok: true, env: process.env.NODE_ENV || 'development' });
+  res.json({ ok: true, env: NODE_ENV });
 });
 
 // ---------------- Logging ----------------
@@ -105,23 +112,6 @@ app.use((req, res, next) => {
   res.on('finish', () => req.log.info({ status: res.statusCode }, 'request_end'));
   next();
 });
-
-// ---------------- DB migration at startup (code-based) ----------------
-const { getDb } = require('./db/mongo');
-const { runBeneficiariesMigration } = require('./migrations/beneficiaries-numberNorm.migration');
-
-(async () => {
-  try {
-    const db = getDb();
-    logger.info({ db: db?.databaseName }, 'mongo_connected');
-    await runBeneficiariesMigration(logger);
-    logger.info('beneficiaries_migration_completed');
-  } catch (e) {
-    logger.error({ err: e?.message }, 'beneficiaries_migration_failed');
-    // Optionally fail fast:
-    // process.exit(1);
-  }
-})();
 
 // ---------------- Routers (mounted under API_BASE) ----------------
 const api = express.Router();
@@ -167,6 +157,7 @@ const localTransfersRoutes = require('./routes/localTransfers.routes');
 api.use('/payments/local', localTransfersRoutes);
 
 // DB ping (under /api for consistency)
+const { initMongo, getDb } = require('./db/mongo');
 api.get('/db/ping', async (_req, res) => {
   try {
     const db = getDb();
@@ -179,6 +170,29 @@ api.get('/db/ping', async (_req, res) => {
 
 // Mount the API base
 app.use(API_BASE, api);
+
+// ---------------- DB migration at startup (code-based) ----------------
+// IMPORTANT: do NOT run migrations during tests to avoid DB dependency in Jest
+if (!IS_TEST) {
+  const { runBeneficiariesMigration } = require('./migrations/beneficiaries-numberNorm.migration');
+  (async () => {
+    try {
+      const db = await initMongo();
+      logger.info({ db: db?.databaseName }, 'mongo_connected');
+      await runBeneficiariesMigration(db);
+      logger.info('beneficiaries_migration_completed');
+    } catch (e) {
+      logger.error({ err: e?.message }, 'beneficiaries_migration_failed');
+      // Optional: fail fast in non-test envs
+      // process.exit(1);
+    }
+  })();
+}
+
+// 404 fallback (keep last)
+app.use((req, res) => {
+  res.status(404).send('Not found');
+});
 
 // ---------------- Export app ----------------
 module.exports = app;
