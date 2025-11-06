@@ -1,12 +1,20 @@
 /** @type {import('jest').Config} */
 module.exports = {
   testEnvironment: "node",
-  // point Jest at your backend code & tests
+
+  // Point Jest at your backend code & tests
   roots: ["<rootDir>"],
   testMatch: [
     "<rootDir>/tests/**/*.test.[jt]s?(x)",
     "<rootDir>/__tests__/**/*.test.[jt]s?(x)"
   ],
+
+  // Ensure NODE_ENV=test (so DB init guards don't exit the process)
+  setupFiles: ["<rootDir>/jest.setup-env.js"],
+
+  // Ignore generated folders
+  testPathIgnorePatterns: ["/node_modules/", "/dist/", "/build/", "/coverage/"],
+
   // ---- coverage setup
   collectCoverage: true,
   collectCoverageFrom: [
@@ -17,5 +25,8 @@ module.exports = {
     "!**/build/**"
   ],
   coverageDirectory: "coverage",
-  coverageReporters: ["lcov", "text", "text-summary"]
+  coverageReporters: ["lcov", "text", "text-summary"],
+
+  // Optional niceties
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx", "json"]
 };
