@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30.95% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/42</span>
+                <span class='fraction'>0/42</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">37.14% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/35</span>
+                <span class='fraction'>0/35</span>
             </div>
         
             
@@ -141,14 +141,14 @@
 <a name='L76'></a><a href='#L76'>76</a>
 <a name='L77'></a><a href='#L77'>77</a>
 <a name='L78'></a><a href='#L78'>78</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -170,12 +170,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -183,6 +177,12 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -199,33 +199,33 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// backend/src/routes/accounts.routes.js
-const router = require("express").Router();
-const checkAuth = require("../middlewares/authRequired");
-const validate = require("../middlewares/validate");
-const { collections } = require("../db/collections");
-const { ObjectId } = require("mongodb");
-const { z } = require("zod");
+const router = <span class="cstat-no" title="statement not covered" >require("express").Router();</span>
+const checkAuth = <span class="cstat-no" title="statement not covered" >require("../middlewares/authRequired");</span>
+const validate = <span class="cstat-no" title="statement not covered" >require("../middlewares/validate");</span>
+const { collections } = <span class="cstat-no" title="statement not covered" >require("../db/collections");</span>
+const { ObjectId } = <span class="cstat-no" title="statement not covered" >require("mongodb");</span>
+const { z } = <span class="cstat-no" title="statement not covered" >require("zod");</span>
 &nbsp;
-const updateSchema = z.object({
+const updateSchema = <span class="cstat-no" title="statement not covered" >z.object({</span>
   fullName: z.string().trim().min(1).max(120).optional(),
   email: z.string().trim().email().optional(),
   phone: z.string().trim().min(7).max(20).optional(),
@@ -247,7 +247,7 @@ function <span class="fstat-no" title="function not covered" >toProfile(</span>d
   };
 }
 &nbsp;
-const updateMeHandler = <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
+const updateMeHandler = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  try {</span>
     const { users } = <span class="cstat-no" title="statement not covered" >collections();</span>
     const userId = <span class="cstat-no" title="statement not covered" >new ObjectId(req.user.id || req.user._id);</span>
@@ -276,7 +276,7 @@ const updateMeHandler = <span class="fstat-no" title="function not covered" >as<
 };
 &nbsp;
 // GET still unchanged
-router.get("/me", checkAuth, <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
+<span class="cstat-no" title="statement not covered" >router.get("/me", checkAuth, <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {</span>
   const { users } = <span class="cstat-no" title="statement not covered" >collections();</span>
   const userId = <span class="cstat-no" title="statement not covered" >new ObjectId(req.user.id || req.user._id);</span>
   const doc = <span class="cstat-no" title="statement not covered" >await users.findOne(</span>
@@ -288,12 +288,12 @@ router.get("/me", checkAuth, <span class="fstat-no" title="function not covered"
 });
 &nbsp;
 // Accept both PATCH and PUT
-router.patch("/me", checkAuth, validate(updateSchema), updateMeHandler);
-router.put("/me",   checkAuth, validate(updateSchema), updateMeHandler);
+<span class="cstat-no" title="statement not covered" >router.patch("/me", checkAuth, validate(updateSchema), updateMeHandler);</span>
+<span class="cstat-no" title="statement not covered" >router.put("/me",   checkAuth, validate(updateSchema), updateMeHandler);</span>
 &nbsp;
-router.get('/_alive', <span class="fstat-no" title="function not covered" >(_</span>req, res) =&gt; <span class="cstat-no" title="statement not covered" >res.json({ ok: true, scope: 'accounts' }))</span>;
+<span class="cstat-no" title="statement not covered" >router.get('/_alive', <span class="fstat-no" title="function not covered" >(_</span>req, res) =&gt; <span class="cstat-no" title="statement not covered" >res.json({ ok: true, scope: 'accounts' }))</span>;</span>
 &nbsp;
-module.exports = router;
+<span class="cstat-no" title="statement not covered" >module.exports = router;</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -301,7 +301,7 @@ module.exports = router;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-05T21:15:05.492Z
+                at 2025-11-06T08:45:25.338Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
