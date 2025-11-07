@@ -1,9 +1,9 @@
+// src/components/EmployeeSwiftVerification.jsx
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./EmployeeDashboard.css";
-import whiteBackground from "../assets/white_background.png";
 import "./EmployeeSwiftVerification.css";
-import bgImage from "../assets/white_background.png";
+import whiteBackground from "../assets/white_background.png";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "/api";
 const LIST_URL  = `${API_BASE}/dashboard/intl-beneficiaries`;
@@ -17,14 +17,11 @@ function buildKey(x) {
   );
 }
 
-// --- make value text explicitly dark ---
 function Row({ k, v }) {
   return (
     <div className="fx-row" style={{ display: "flex", gap: 24, padding: "6px 0" }}>
       <div style={{ width: 180, color: "#6b7280" }}>{k}</div>
-      <div style={{ fontWeight: 600, color: "#111827" /* NEW */ }}>
-        {(v ?? "") !== "" ? v : "—"}
-      </div>
+      <div style={{ fontWeight: 600, color: "#111827" }}>{(v ?? "") !== "" ? v : "—"}</div>
     </div>
   );
 }
@@ -72,6 +69,7 @@ export default function EmployeeSwiftVerification() {
     };
   }, []);
 
+  // Instant render if we came from the list with state
   useEffect(() => {
     if (state?.item) {
       setItem(mapFromSource(state.item));
@@ -80,6 +78,7 @@ export default function EmployeeSwiftVerification() {
     }
   }, [state?.item, mapFromSource]);
 
+  // Deep link / refresh
   useEffect(() => {
     if (state?.item) return;
     let alive = true;
@@ -104,8 +103,7 @@ export default function EmployeeSwiftVerification() {
         const arr = Array.isArray(data) ? data : data?.items || [];
         const found =
           arr.find((r) => String(r._id || r.id) === id) ||
-          arr.find((r) => buildKey(r) === id) ||
-          null;
+          arr.find((r) => buildKey(r) === id) || null;
 
         if (!found && alive) setErr("Record not found.");
         if (found && alive) setItem(mapFromSource(found));
@@ -139,11 +137,22 @@ export default function EmployeeSwiftVerification() {
         },
         body: JSON.stringify({ status: next }),
       });
+
+      // if token expired mid-session, bounce to login
+      if (res.status === 401 || res.status === 403) {
+        navigate("/employee-login", { replace: true });
+        return;
+      }
+
       if (!res.ok) {
         const txt = await res.text();
         throw new Error(`${res.status} ${res.statusText} – ${txt}`);
       }
-      navigate("/employee/approvals", { replace: true });
+
+      // give Mongo a tick to persist (avoids flicker) then go to dashboard
+      setTimeout(() => {
+        navigate("/employee/dashboard", { replace: true });
+      }, 120);
     } catch (e) {
       alert(e.message || "Failed to update status.");
     } finally {
@@ -154,7 +163,6 @@ export default function EmployeeSwiftVerification() {
   return (
     <main className="emp-verification-page" style={{ backgroundImage: `url(${whiteBackground})` }}>
       <section className="emp-verification-card">
-        {/* Top badge */}
         <div className="emp-verification-badge">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2l9 4v6c0 5-3.8 9.7-9 10-5.2-.3-9-5-9-10V6l9-4zm-1 12l6-6-1.4-1.4L11 10.2 8.4 7.6 7 9l4 5z" />
@@ -184,10 +192,10 @@ export default function EmployeeSwiftVerification() {
             <Row k="Status" v={item.status} />
 
             <div className="emp-verification-buttons">
-              <button className="primary" disabled={updating} onClick={() => setStatus("Verified")}>
+              <button type="button" className="primary" disabled={updating} onClick={() => setStatus("Verified")}>
                 {updating ? "Updating…" : "Approve"}
               </button>
-              <button className="secondary" disabled={updating} onClick={() => setStatus("Declined")}>
+              <button type="button" className="secondary" disabled={updating} onClick={() => setStatus("Declined")}>
                 Reject
               </button>
             </div>

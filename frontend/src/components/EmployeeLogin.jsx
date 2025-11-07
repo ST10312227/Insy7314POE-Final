@@ -50,7 +50,7 @@ export default function EmployeeLogin() {
       if (data.profile) localStorage.setItem("employee_profile", JSON.stringify(data.profile));
 
       // Redirect to Employee Dashboard
-      navigate("/employee", { replace: true });
+      navigate("/employee/dashboard", { replace: true });
     } catch (err) {
       setError(err.message || "Something went wrong.");
     } finally {

@@ -11,11 +11,7 @@ function StatusPill({ value }) {
     <span
       className={
         "status-pill " +
-        (v === "verified"
-          ? "ok"
-          : v === "declined" || v === "archived"
-          ? "bad"
-          : "pending")
+        (v === "verified" ? "ok" : v === "declined" || v === "archived" ? "bad" : "pending")
       }
     >
       {value || "Pending"}
@@ -60,7 +56,8 @@ export default function EmployeeDashboard() {
 
       const data = await res.json();
       const mapped = (Array.isArray(data) ? data : data?.items || []).map((x) => ({
-        customerName: x.customerName || x.name || "—",
+        // 👇 Prefer the new `name` field from API, then `customerName`
+        customerName: x.name || x.customerName || "—",
         customerAccount: x.customerAccount || x.accountNumber || "—",
         beneficiaryName: x.beneficiaryName || x?.beneficiary?.name || "—",
         amountCents: x.amountCents ?? null,
@@ -109,7 +106,9 @@ export default function EmployeeDashboard() {
       <div className="card-head">
         <div className="title-wrap">
           <h1 className="pending-page-title">Pending Transactions</h1>
-          <p className="pending-page-subtitle">Review and verify customer international payments before submitting to SWIFT.</p>
+          <p className="pending-page-subtitle">
+            Review and verify customer international payments before submitting to SWIFT.
+          </p>
         </div>
         <div className="actions">
           <div className="search">
@@ -121,12 +120,22 @@ export default function EmployeeDashboard() {
             />
             <button className="icon-btn" aria-label="Search"></button>
           </div>
-          <button className="refresh-btn" onClick={fetchData} title="Refresh">Refresh</button>
+          <button className="refresh-btn" onClick={fetchData} title="Refresh">
+            Refresh
+          </button>
         </div>
       </div>
 
-      {loading && <div className="table-wrap"><div className="empty">Loading…</div></div>}
-      {error && !loading && <div className="table-wrap"><div className="empty">Error: {error}</div></div>}
+      {loading && (
+        <div className="table-wrap">
+          <div className="empty">Loading…</div>
+        </div>
+      )}
+      {error && !loading && (
+        <div className="table-wrap">
+          <div className="empty">Error: {error}</div>
+        </div>
+      )}
 
       {!loading && !error && (
         <div className="table-wrap">
@@ -153,10 +162,18 @@ export default function EmployeeDashboard() {
                   <td>{r.currency}</td>
                   <td>{r.beneficiaryAccount}</td>
                   <td>{r.swift}</td>
-                  <td><StatusPill value={r.status} /></td>
+                  <td>
+                    <StatusPill value={r.status} />
+                  </td>
                 </tr>
               ))}
-              {filtered.length === 0 && <tr><td colSpan={8} className="empty">No results.</td></tr>}
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="empty">
+                    No results.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

@@ -1,4 +1,3 @@
-// backend/src/routes/dashboard.routes.js
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
@@ -28,11 +27,12 @@ function employeeRequired(req, res, next) {
  * (used by list and single-get).
  */
 function beneficiariesProjectStage() {
-  return {
-    $project: {
-      id: { $toString: "$_id" },
-
-      customerName: {
+  // expression that resolves preferred display name:
+  // users.name -> users.fullName -> firstName + lastName
+  const preferredNameExpr = {
+    $ifNull: [
+      "$user.name",
+      {
         $ifNull: [
           "$user.fullName",
           {
@@ -48,6 +48,17 @@ function beneficiariesProjectStage() {
           },
         ],
       },
+    ],
+  };
+
+  return {
+    $project: {
+      id: { $toString: "$_id" },
+
+      // expose both name and customerName for UI convenience
+      name: preferredNameExpr,
+      customerName: preferredNameExpr,
+
       customerAccount: { $ifNull: ["$acct.number", ""] },
 
       beneficiaryName: {
@@ -201,6 +212,28 @@ router.get("/intl-beneficiaries/:id", employeeRequired, async (req, res) => {
 router.get("/intl-payments", employeeRequired, async (_req, res) => {
   const db = getDb();
 
+  const preferredNameExpr = {
+    $ifNull: [
+      "$user.name",
+      {
+        $ifNull: [
+          "$user.fullName",
+          {
+            $trim: {
+              input: {
+                $concat: [
+                  { $ifNull: ["$user.firstName", ""] },
+                  " ",
+                  { $ifNull: ["$user.lastName", ""] },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    ],
+  };
+
   const pipeline = [
     { $match: { archived: { $ne: true } } },
 
@@ -226,22 +259,11 @@ router.get("/intl-payments", employeeRequired, async (_req, res) => {
     {
       $project: {
         id: { $toString: "$_id" },
-        customerName: {
-          $ifNull: [
-            "$user.fullName",
-            {
-              $trim: {
-                input: {
-                  $concat: [
-                    { $ifNull: ["$user.firstName", ""] },
-                    " ",
-                    { $ifNull: ["$user.lastName", ""] },
-                  ],
-                },
-              },
-            },
-          ],
-        },
+
+        // expose both name & customerName
+        name: preferredNameExpr,
+        customerName: preferredNameExpr,
+
         customerAccount: { $ifNull: ["$acct.number", ""] },
         beneficiaryName: { $ifNull: ["$beneficiary.name", ""] },
         beneficiaryAccount: { $ifNull: ["$beneficiary.accountNumber", ""] },
@@ -303,7 +325,6 @@ router.patch("/intl-payments/:id/status", employeeRequired, async (req, res) => 
   }
 });
 
-
 // PATCH /api/dashboard/intl-beneficiaries/:id/status
 // Body: { status: "Verified" | "Declined" | "Pending" | "Archived" }
 router.patch("/intl-beneficiaries/:id/status", employeeRequired, async (req, res) => {
@@ -347,6 +368,5 @@ router.patch("/intl-beneficiaries/:id/status", employeeRequired, async (req, res
     res.status(500).json({ message: "Internal error" });
   }
 });
-
 
 module.exports = router;
