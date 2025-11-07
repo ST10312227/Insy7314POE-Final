@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CreateUser.css";
+import bgImage from "../assets/white_background.png";
 
 // === Same validation rules as Signup ===
 const ACCOUNT_RE = /^[A-Za-z0-9\- ]+$/;
@@ -98,7 +99,7 @@ export default function CreateUser() {
         throw new Error(data?.error || data?.message || "Failed to create user.");
       }
 
-      // ✅ Success — go back to employee dashboard
+      // Success — go back to employee dashboard
       navigate("/employee/dashboard", { replace: true });
       return;
     } catch (err) {
@@ -109,8 +110,8 @@ export default function CreateUser() {
   }
 
   return (
-    <div className="employee-create">
-      <div className="create-card">
+    <div className="employee-create" style={{ backgroundImage: `url(${bgImage})`, backgroundSize: "cover", backgroundPosition: "center" }}>
+        <div className="create-card">
         <h1 className="title">Create user</h1>
         <p className="subtitle">Register a new customer account</p>
 
@@ -178,7 +179,7 @@ export default function CreateUser() {
             />
             <button
               type="button"
-              className="pw-toggle"
+              className="createUser-toggle"
               onClick={() => setShowPw((s) => !s)}
               aria-label={showPw ? "Hide password" : "Show password"}
             >
@@ -201,7 +202,7 @@ export default function CreateUser() {
             />
             <button
               type="button"
-              className="pw-toggle"
+              className="createUser-toggle"
               onClick={() => setShowPw2((s) => !s)}
               aria-label={showPw2 ? "Hide password" : "Show password"}
             >
@@ -217,7 +218,7 @@ export default function CreateUser() {
             })()}
           </div>
 
-          <button className="submit" type="submit" disabled={!canSubmit}>
+          <button className="submit-user" type="submit" disabled={!canSubmit}>
             {loading ? "Creating..." : "Create user"}
           </button>
         </form>
@@ -231,7 +232,7 @@ export default function CreateUser() {
             ← Back to dashboard
           </button>
         </div>
+        </div>
       </div>
-    </div>
   );
 }

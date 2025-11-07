@@ -54,6 +54,9 @@ form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 100%;
+  align-items: stretch;
+  max-width: 380px;
   align-items: center; 
   font-family: 'Poppins', sans-serif;
 }
@@ -61,31 +64,31 @@ form {
 /* title */
 .login-title {
   font-family: 'Poppins', sans-serif;
-  font-size: 2.2rem;
+  font-size: 2rem;
   font-weight: 1000;
   color: black;
   margin-bottom: 1.5rem;
 }
 
 input {
-  width: 180%;
-  max-width: 700px; /* 👈 allows wider fields */
+  width: 100%;
   box-sizing: border-box;
   align-items: center;
   padding: 1rem; /* adds more height and comfort */
   border-radius: 24px;
   border: 1.5px solid #000; /* thicker, cleaner border */
   font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
+  font-size: 0.6rem;
 }
 
 .login-button {
   background: #1d2f7c !important;
   color: white !important;
-  width: 180%;
+  width: 100%;
   padding: 0.8rem;
   border: 2px solid #1d2f7c;        
   border-radius: 24px;
+  margin-top: 5px;
   cursor: pointer;
   font-weight: 600;
   font-family: 'Poppins', sans-serif;
@@ -104,6 +107,7 @@ input {
   display: block;
   margin-top: 0.5rem;
   font-size: 0.9rem;
+  padding-top: 5px;
   color: #1d2f7c;
   text-decoration: none;
   font-family: 'Poppins', sans-serif;
@@ -124,7 +128,7 @@ input {
 
 .password-container {
   position: relative;
-  width: 180%;
+  width: 100%;
   max-width: 700px;
 }
 

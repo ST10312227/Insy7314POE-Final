@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./EmployeeDashboard.css";
+import whiteBackground from "../assets/white_background.png";
+import "./EmployeeSwiftVerification.css";
+import bgImage from "../assets/white_background.png";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "/api";
 const LIST_URL  = `${API_BASE}/dashboard/intl-beneficiaries`;
@@ -149,121 +152,48 @@ export default function EmployeeSwiftVerification() {
   }
 
   return (
-    <div className="emp-page">
-      <aside className="emp-sidebar">
-        <div className="brand">the<br/>vault</div>
-        <div className="sb-item" role="button" tabIndex={0} onClick={() => navigate("/employee/approvals")}>
-          <div className="sb-icon" aria-hidden>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M3 3h18v4H3V3zm0 6h18v12H3V9zm2 2v8h14v-8H5zm2 2h4v4H7v-4z" />
-            </svg>
-          </div>
-          <div className="sb-label">Pending Transactions</div>
+    <main className="emp-verification-page" style={{ backgroundImage: `url(${whiteBackground})` }}>
+      <section className="emp-verification-card">
+        {/* Top badge */}
+        <div className="emp-verification-badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2l9 4v6c0 5-3.8 9.7-9 10-5.2-.3-9-5-9-10V6l9-4zm-1 12l6-6-1.4-1.4L11 10.2 8.4 7.6 7 9l4 5z" />
+          </svg>
+          Verify SWIFT Payment
         </div>
-        <div className="sb-item" role="button" tabIndex={0} onClick={() => navigate("/employee/create-user")}>
-          <div className="sb-icon" aria-hidden>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4 0-8 2-8 6v1h16v-1c0-4-4-6-8-6Z"/>
-              <path d="M19 10v-2h-2V6h-2v2h-2v2h2v2h2v-2z"/>
-            </svg>
-          </div>
-          <div className="sb-label">Create user</div>
-        </div>
-        <div className="sb-spacer" />
-        <div className="sb-item"><span className="sb-icon dot" /><div className="sb-label">Notifications</div></div>
-        <div className="sb-item" role="button" tabIndex={0} onClick={() => { localStorage.removeItem("employee_token"); navigate("/employee-login"); }}>
-          <div className="sb-icon" aria-hidden>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M16 13v-2H7v-2l-5 3 5 3v-2zM20 3H10v2h10v14H10v2h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/>
-            </svg>
-          </div>
-          <div className="sb-label">Logout</div>
-        </div>
-      </aside>
 
-      <main className="emp-main">
-        <header className="emp-topbar">
-          <button className="icon-btn" aria-label="Back" onClick={() => navigate(-1)}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M15 18l-6-6 6-6"/></svg>
-          </button>
-          <div className="hello">Hello, John Doe!</div>
-        </header>
+        <div className="emp-verification-title">
+          <h1 className="page-title">Employee Verification</h1>
+          <p className="sub">Review pending transactions, approve or reject.</p>
+        </div>
 
-        <section className="card">
-          <div className="card-head">
-            <div className="title-wrap">
-              <h1 className="page-title">Employee Verification</h1>
-              <p className="sub">Review pending transactions, approve or reject.</p>
+        {loading && <div className="empty" style={{ padding: 24, color: "#fff" }}>Loading…</div>}
+        {err && !loading && <div className="empty" style={{ padding: 24, color: "#fff" }}>Error: {err}</div>}
+
+        {!loading && !err && item && (
+          <div className="emp-verification-grid">
+            <Row k="Customer Name" v={item.customerName} />
+            <Row k="Customer Account" v={item.customerAccount} />
+            <Row k="Beneficiary Name" v={item.beneficiaryName} />
+            <Row k="Beneficiary Bank" v={item.bank} />
+            <Row k="Beneficiary Account" v={item.beneficiaryAccount} />
+            <Row k="SWIFT Code" v={item.swift} />
+            <Row k="Amount" v={money} />
+            <Row k="Currency" v={item.currency} />
+            <Row k="Date Submitted" v={item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—"} />
+            <Row k="Status" v={item.status} />
+
+            <div className="emp-verification-buttons">
+              <button className="primary" disabled={updating} onClick={() => setStatus("Verified")}>
+                {updating ? "Updating…" : "Approve"}
+              </button>
+              <button className="secondary" disabled={updating} onClick={() => setStatus("Declined")}>
+                Reject
+              </button>
             </div>
           </div>
-
-          {loading && <div className="empty" style={{ padding: 24 }}>Loading…</div>}
-          {err && !loading && <div className="empty" style={{ padding: 24 }}>Error: {err}</div>}
-
-          {!loading && !err && item && (
-            <div style={{ display: "grid", placeItems: "center" }}>
-              <div
-                style={{
-                  width: "min(880px, 100%)",
-                  border: "3px solid rgba(29,78,216,0.25)",
-                  borderRadius: 16,
-                  padding: "28px 28px 22px",
-                  position: "relative",
-                  background: "white",
-                  color: "#111827",             // NEW: force dark text for panel
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
-                }}
-              >
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    top: 0,
-                    background: "#E11D48",
-                    color: "white",
-                    padding: "10px 14px",
-                    borderRadius: 14,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    fontWeight: 700,
-                  }}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2l9 4v6c0 5-3.8 9.7-9 10-5.2-.3-9-5-9-10V6l9-4zm-1 12l6-6-1.4-1.4L11 10.2 8.4 7.6 7 9l4 5z"/>
-                  </svg>
-                  Verify SWIFT Payment
-                </div>
-
-                <div style={{ height: 6 }} />
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", columnGap: 28, rowGap: 4, marginTop: 12 }}>
-                  <Row k="Customer Name"       v={item.customerName} />
-                  <Row k="Customer Account"    v={item.customerAccount} />
-                  <Row k="Beneficiary Name"    v={item.beneficiaryName} />
-                  <Row k="Beneficiary Bank"    v={item.bank} />
-                  <Row k="Beneficiary Account" v={item.beneficiaryAccount} />
-                  <Row k="SWIFT Code"          v={item.swift} />
-                  <Row k="Amount"              v={money} />
-                  <Row k="Currency"            v={item.currency} />
-                  <Row k="Date Submitted"      v={item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "—"} />
-                  <Row k="Status"              v={item.status} />
-                </div>
-
-                <div style={{ display: "flex", gap: 16, justifyContent: "center", marginTop: 24 }}>
-                  <button className="primary" disabled={updating} onClick={() => setStatus("Verified")}>
-                    {updating ? "Updating…" : "Approve"}
-                  </button>
-                  <button className="secondary" disabled={updating} onClick={() => setStatus("Declined")}>
-                    Reject
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </section>
-      </main>
-    </div>
+        )}
+      </section>
+    </main>
   );
 }

@@ -9,30 +9,36 @@
 .create-card {
   width: 100%;
   max-width: 520px;
-  background: #fff;
+  background: #1d2f7c; /* Blue card */
   border-radius: 18px;
-  box-shadow: 0 16px 32px rgba(2,6,23,0.08);
+  box-shadow: 0 16px 32px rgba(2, 6, 23, 0.08);
   padding: 28px 26px;
+  color: white; /* text inside card will be white */
 }
 
 .title {
   margin: 0 0 6px 0;
-  font-size: 1.6rem;
-  color: #0f172a;
-}
-.subtitle {
-  margin: 0 0 16px 0;
-  color: #6b7280;
+  text-align: center;
+  font-size: 1.8rem;
+  color: white;
 }
 
-label {
+.subtitle {
+  margin: 0 0 16px 0;
+  line-height: 1.1px;
+  text-align: center;
+  color: white;
+}
+
+.create-card label {
   font-weight: 600;
   font-size: 0.9rem;
-  color: #111827;
+  color: white;
   margin-top: 12px;
   display: block;
 }
-input {
+
+.input {
   width: 100%;
   margin-top: 6px;
   padding: 12px 12px;
@@ -50,9 +56,10 @@ input:focus {
 .pw-wrap {
   position: relative;
 }
-.pw-toggle {
+
+.createUser-toggle {
   position: absolute;
-  right: 8px;
+  right: 20px;
   top: 50%;
   transform: translateY(-50%);
   border: 0;
@@ -64,22 +71,33 @@ input:focus {
 
 .hint {
   margin-top: 8px;
-  color: #b46909;
+  color: red;
   font-size: 0.86rem;
 }
 
-.submit {
+.submit-user{
+  background: white !important;
+  color: #1d2f7c !important;
   width: 100%;
-  margin-top: 18px;
-  height: 44px;
-  border-radius: 10px;
-  border: 0;
-  background: #1f49b6;
-  color: #fff;
-  font-weight: 700;
+  padding: 0.8rem;
+  border: 2px solid #1d2f7c;        
+  border-radius: 30px;
+  margin-top: 15px;
   cursor: pointer;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(29, 47, 124, 0.2); 
 }
-.submit:disabled {
+
+.submit-user:hover {
+  background: #1d2f7c !important;
+  color: white !important;
+  border: 2px solid white;
+  box-shadow: 0 0 10px rgba(29, 47, 124, 0.4);
+} 
+
+.submit-user:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
@@ -88,6 +106,7 @@ input:focus {
   padding: 10px 12px;
   border-radius: 10px;
   font-size: 0.92rem;
+  margin-top: 8px;
   margin-bottom: 12px;
 }
 .alert-error { background: #ffe8e8; color: #b91c1c; }
@@ -97,9 +116,18 @@ input:focus {
   margin-top: 12px;
   text-align: center;
 }
+
 .linkish-btn {
   background: transparent;
-  color: #1f49b6;
+  color: white;
+  border: 0;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.linkish-btn:hover {
+  background: transparent;
+  color:cornflowerblue;
   border: 0;
   font-weight: 700;
   cursor: pointer;
