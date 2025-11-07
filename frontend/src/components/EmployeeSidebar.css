@@ -1,0 +1,42 @@
+/* === Top Menu Icons === */
+.sidebar-menu .sidebar-icon1 {
+  margin-left: 115px;
+  width: 30px;                      
+  height: 30px;
+  object-fit: contain;
+  display: block;
+  margin-bottom: 0.3rem;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.sidebar-menu .sidebar-icon2 {
+  margin-left: 90px;
+  width: 30px;                      
+  height: 30px;
+  object-fit: contain;
+  display: block;
+  margin-bottom: 0.3rem;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.sidebar-menu .sidebar-icon3 {
+  margin-left: 110px;
+  width: 26px;                      
+  height: 26px;
+  object-fit: contain;
+  display: block;
+  margin-bottom: 0.3rem;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.sidebar-menu li .active .sidebar-label,
+.sidebar-bottom div.active .sidebar-bottom-label {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 2px;
+  color: #ffffff;
+}
+
+.sidebar-menu li:hover {
+  transform: scale(1.08);
+}

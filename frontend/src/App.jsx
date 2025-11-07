@@ -33,6 +33,7 @@ import EmployeeDashboard from "./components/EmployeeDashboard";
 import CreateUser from "./components/CreateUser";
 import EmployeeApprovals from "./components/EmployeeApprovals";
 import EmployeeSwiftVerification from "./components/EmployeeSwiftVerification"; // ⟵ NEW
+import EmployeeDashboardLayout from "./components/EmployeeDashboardLayout";
 
 // Recurring flow
 import AddBeneficiaryOptions from "./components/AddBeneficiaryOptions";
@@ -79,46 +80,44 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Employee auth + pages */}
-        <Route path="/employee-login" element={<EmployeeLogin />} />
-        <Route
-          path="/employee/dashboard"
-          element={
-            <RequireEmployee>
-              <EmployeeDashboard />
-            </RequireEmployee>
-          }
-        />
-        <Route
-          path="/employee/create-user"
-          element={
-            <RequireEmployee>
-              <CreateUser />
-            </RequireEmployee>
-          }
-        />
-        {/* Approvals list (pending only) */}
-        <Route
-          path="/employee/approvals"
-          element={
-            <RequireEmployee>
-              <EmployeeApprovals />
-            </RequireEmployee>
-          }
-        />
-        {/* Detail/verification page */}
-        <Route
-          path="/employee/approvals/:id"
-          element={
-            <RequireEmployee>
-              <EmployeeSwiftVerification />
-            </RequireEmployee>
-          }
-        />
+    </Route>
+
+    {/* EMPLOYEE LOGIN/ROUTES — NO PUBLIC NAVBAR */}
+    {/* Employee auth + pages */}
+
+    <Route element={<PublicShell />}>
+      <Route path="/employee-login" element={<EmployeeLogin />} />
+    </Route>
+    
+    <Route
+      path="/employee"
+      element={
+        <RequireEmployee>
+          <AccountProvider> 
+            <EmployeeDashboardLayout /> {/* Sidebar + Topbar layout */}
+          </AccountProvider>
+        </RequireEmployee>
+      }
+    >
+          {/* Default route → goes straight to pending transactions */}
+          <Route index element={<Navigate to="pending-transactions" replace />} />
+
+          
+          {/* Dashboard */}
+          <Route path="dashboard" element={<EmployeeDashboard />} />
+
+          {/* Pending transactions */}
+          <Route path="pending-transactions" element={<EmployeeApprovals />} />
+
+          {/* Create user page */}
+          <Route path="create-user" element={<CreateUser />} />
+
+          {/* Approval details / verification page */}
+          <Route path="approvals/:id" element={<EmployeeSwiftVerification />} />
+        </Route>
 
         {/* Back-compat redirect if anything still links to /signup */}
         <Route path="/signup" element={<Navigate to="/employee-login" replace />} />
-      </Route>
 
       {/* AUTHENTICATED CUSTOMER APP (no public Navbar here) */}
       <Route

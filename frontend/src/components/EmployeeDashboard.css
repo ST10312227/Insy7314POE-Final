@@ -85,6 +85,13 @@
   gap:18px;
 }
 
+.emp-main .card {
+  background: transparent;
+  border-radius: 0;         
+  box-shadow: none;         
+  padding: 0;                
+}
+
 /* Topbar greeting */
 .emp-topbar{
   display:flex;
@@ -103,6 +110,7 @@
   border-radius:18px;
   box-shadow:var(--shadow);
   padding:22px;
+  background-color: white;
 }
 .card-head{
   display:flex;
@@ -125,6 +133,33 @@
   color:#64748b;
   font-weight:600;
 }
+
+.pending-page-title{
+  margin-left: 10px;
+  color: #1d2f7c;
+  font-size: 1.6rem;
+}
+
+.pending-page-subtitle{
+  margin-left: 10px;
+  color: #6b7280;;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.approvals-title{
+  margin-left: 10px;
+  color: #1d2f7c;
+  font-size: 1.6rem;
+}
+
+.approvals-subtitle{
+  margin-left: 10px;
+  color: #6b7280;;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
 .linkish{
   color:var(--blue-600);
   font-weight:700;
@@ -140,23 +175,43 @@
   display:flex; gap:10px; align-items:center;
 }
 .search{
-  display:flex; align-items:center; gap:6px;
-  background:#f7f8fc; border:1px solid var(--border);
-  border-radius:12px; padding:6px 8px 6px 10px;
+  display:flex; 
+  align-items:center; 
+  gap:20px;
+  background:#f7f8fc; 
+  border:1px solid var(--border);
+  border-radius:12px;
 }
 .search input{
-  border:none; background:transparent; outline:none;
-  min-width:180px; font-size:.95rem;
+  border:none; 
+  outline:none;
+  width: 100%;  
+  min-width:180px; 
+  font-size:.95rem;
 }
-.icon-btn{
-  border:none; background:var(--blue-600); color:#fff;
-  width:34px; height:34px; border-radius:8px; cursor:pointer;
-}
+
 .filter-btn{
   display:flex; gap:8px; align-items:center;
   border:1px solid var(--border); background:#fff;
   height:34px; padding:0 12px; border-radius:10px; cursor:pointer;
 }
+
+.refresh-btn{
+  display:flex; 
+  gap:8px; align-items:center;
+  border:1px solid var(--border); background:#fff;
+  background-color: #1d2f7c;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  height:34px; padding:0 12px; border-radius:10px; cursor:pointer;
+}
+
+.refresh-btn:hover{
+  background-color: white;
+  color: #1d2f7c;
+  border: 2px solid #1d2f7c; /* thick blue border */
+}
+
 
 /* Table */
 .table-wrap{ overflow:auto; }

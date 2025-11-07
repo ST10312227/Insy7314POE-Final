@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./EmployeeLogin.css";
+import logo from "../assets/thevault_small_logo_blue.png";
+import bg from "../assets/login_signup_background.png";
 
 export default function EmployeeLogin() {
   const navigate = useNavigate();
@@ -47,8 +49,8 @@ export default function EmployeeLogin() {
       // Optionally keep profile too
       if (data.profile) localStorage.setItem("employee_profile", JSON.stringify(data.profile));
 
-      // ✅ Redirect to Employee Dashboard
-      navigate("/employee/dashboard", { replace: true });
+      // Redirect to Employee Dashboard
+      navigate("/employee", { replace: true });
     } catch (err) {
       setError(err.message || "Something went wrong.");
     } finally {
@@ -57,8 +59,9 @@ export default function EmployeeLogin() {
   }
 
   return (
-    <div className="employee-login">
+    <div className="employee-login" style={{ backgroundImage: `url(${bg})`, backgroundSize: "cover", backgroundPosition: "center" }}>
       <div className="login-card">
+        <img src={logo} alt="The Vault Logo" className="form-logo" />
         <h1 className="title">Employee Login</h1>
         <p className="subtitle">Access your internal tools</p>
 
@@ -90,7 +93,7 @@ export default function EmployeeLogin() {
             />
             <button
               type="button"
-              className="pw-toggle"
+              className="button-toggle"
               onClick={() => setShowPw((s) => !s)}
               aria-label={showPw ? "Hide password" : "Show password"}
             >
@@ -98,7 +101,7 @@ export default function EmployeeLogin() {
             </button>
           </div>
 
-          <button className="submit" type="submit" disabled={!canSubmit}>
+          <button className="submit-employee" type="submit" disabled={!canSubmit}>
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
