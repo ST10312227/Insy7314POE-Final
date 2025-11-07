@@ -49,6 +49,12 @@ Users can easily send money locally, make international payments, and manage ben
   - Integration with custom API endpoints for handling payments, beneficiaries, and authentication.
   - Error-handling mechanisms to prevent data loss or duplicate submissions.
 
+  - **Employee Login**
+  - Employees are able to login with their credentials.
+  - They are able to accept or decline SWIFT payments,
+  - They are able to create new bank users/ accounts.
+
+
   
 ## Tech Stack
 
@@ -192,6 +198,21 @@ Authorization: Bearer <token>
 ```
 5. Expired tokens prompt user to re-login.
 
+## Seeded Login Details
+**Employee Login:**
+<pre>Email: employee@thevault.co
+Password: Employee@123</pre>
+
+<br>
+  
+**User/ Customer Login:**
+<pre>Account Number: 0658381308
+ID Number: 9610116061083
+Password: Steven123!</pre>
+
+**Note: Employee can create new user accounts, which can be used to log in.**
+
+
 ## Screens
 
 ## Home Page:
@@ -258,6 +279,22 @@ Authorization: Bearer <token>
 
 <img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/66d741a8-b985-4437-89d7-bc923d7aa70d" />
 
+
+## Employee Login Page:
+
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/1c7e699e-72ca-4410-94fb-68086c837097" />
+
+
+## Employee Dashboard Page:
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/fcd0b0e9-ffbc-44d5-961e-b566bb6c3eac" />
+
+
+## Employee Pending/ Approval/ Rejection Page:
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/acb1731c-f528-47b7-a757-01842a1fc186" />
+
+
+## Employee: Create User Page:
+<img width="700" height="750" alt="image" src="https://github.com/user-attachments/assets/9bdf9827-465c-4b3b-b291-777b75f241d8" />
 
 
 
